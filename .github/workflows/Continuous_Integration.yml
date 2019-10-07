@@ -1,4 +1,4 @@
-name: Continous Intergration
+name: Continous Integration
 
 on: [push]
 
