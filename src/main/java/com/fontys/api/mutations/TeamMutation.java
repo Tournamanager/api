@@ -12,7 +12,7 @@ public class TeamMutation implements GraphQLMutationResolver {
     @Autowired
     private TeamService teamService;
 
-    public Team createTeam(Long id, String name) {
-        return teamService.createTeam(id, name);
+    public Team createTeam(String name) {
+        return teamService.createTeam(name);
     }
 }
