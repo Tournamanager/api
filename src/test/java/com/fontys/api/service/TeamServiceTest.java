@@ -23,7 +23,7 @@ class TeamServiceTest {
     }
 
     @Test
-    void getAllTeamsShouldReturnTwo() {
+    void getAllTeamsShouldReturnTwoTeams() {
         assertEquals(2, teamService.getAllTeams().size());
     }
 
@@ -36,5 +36,11 @@ class TeamServiceTest {
     void createTeamShouldReturnATeam() {
         teamService.createTeam("Team Three");
         assertEquals(3,teamService.getAllTeams().size());
+    }
+
+    @Test
+    void deleteTeamShouldReturnOneTeam() {
+        teamService.deleteTeam((long) 1);
+        assertEquals(1,teamService.getAllTeams().size());
     }
 }

@@ -24,6 +24,13 @@ public class TeamService {
         return teamRepository.save(new Team(name));
     }
 
+    @Transactional
+    public void deleteTeam(Long id) {
+        Optional<Team> team = teamRepository.findById(id);
+        team.ifPresent(teamRepository::delete);
+
+    }
+
     @Transactional(readOnly = true)
     public List<Team> getAllTeams() {
         return teamRepository.findAll();
