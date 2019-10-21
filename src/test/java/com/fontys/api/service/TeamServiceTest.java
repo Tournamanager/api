@@ -17,8 +17,8 @@ class TeamServiceTest {
     @BeforeEach
     void setUp() {
         List<Team> teamList = new ArrayList<>();
-        teamList.add(new Team((long) 0,"Team One"));
-        teamList.add(new Team((long) 1,"Team Two"));
+        teamList.add(new Team(0,"Team One"));
+        teamList.add(new Team(1,"Team Two"));
         teamService = new TeamService(new MockTeamRepository(teamList));
     }
 
@@ -29,7 +29,7 @@ class TeamServiceTest {
 
     @Test
     void getTeamShouldReturnTeamTwo() {
-        assertEquals("Team Two", teamService.getTeam((long) 1).get().getName());
+        assertEquals("Team Two", teamService.getTeam(1).get().getName());
     }
 
     @Test
@@ -40,7 +40,7 @@ class TeamServiceTest {
 
     @Test
     void deleteTeamShouldReturnOneTeam() {
-        teamService.deleteTeam((long) 1);
+        teamService.deleteTeam(1);
         assertEquals(1,teamService.getAllTeams().size());
     }
 }

@@ -35,7 +35,7 @@ public class MockTeamRepository implements TeamRepository {
     }
 
     @Override
-    public List<Team> findAllById(Iterable<Long> iterable) {
+    public List<Team> findAllById(Iterable<Integer> iterable) {
         return null;
     }
 
@@ -45,7 +45,7 @@ public class MockTeamRepository implements TeamRepository {
     }
 
     @Override
-    public void deleteById(Long aLong) {
+    public void deleteById(Integer integer) {
 
     }
 
@@ -66,7 +66,7 @@ public class MockTeamRepository implements TeamRepository {
 
     @Override
     public <S extends Team> S save(S s) {
-        Team t = new Team((long) teams.size(), s.getName());
+        Team t = new Team(teams.size(), s.getName());
         teams.add(t);
         return (S) t;
     }
@@ -77,9 +77,9 @@ public class MockTeamRepository implements TeamRepository {
     }
 
     @Override
-    public Optional<Team> findById(Long aLong) {
+    public Optional<Team> findById(Integer integer) {
         for (Team t: teams) {
-            if (t.getId().equals(aLong)) {
+            if (t.getId().equals(integer)) {
                 return Optional.of(t);
             }
         }
@@ -87,7 +87,7 @@ public class MockTeamRepository implements TeamRepository {
     }
 
     @Override
-    public boolean existsById(Long aLong) {
+    public boolean existsById(Integer integer) {
         return false;
     }
 
@@ -112,7 +112,7 @@ public class MockTeamRepository implements TeamRepository {
     }
 
     @Override
-    public Team getOne(Long aLong) {
+    public Team getOne(Integer integer) {
         return null;
     }
 

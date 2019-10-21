@@ -10,4 +10,6 @@ type Query {
 
 type Mutation {
     createTeam(name:String!):Team
+    deleteTeam(id:Int!):String
+    addUserToTeam(id:Int!):String
 }

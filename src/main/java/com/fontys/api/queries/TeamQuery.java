@@ -18,11 +18,11 @@ public class TeamQuery implements GraphQLQueryResolver {
         this.teamService = teamService;
     }
 
-    public List<Team> teams() {
+    public List<Team> teams(Integer count) {
         return this.teamService.getAllTeams();
     }
 
-    public Optional<Team> team(final Long id) {
+    public Optional<Team> team(final Integer id) {
         return this.teamService.getTeam(id);
     }
 }
