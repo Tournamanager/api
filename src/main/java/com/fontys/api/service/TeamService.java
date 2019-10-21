@@ -1,39 +1,36 @@
 package com.fontys.api.service;
 
 import com.fontys.api.entities.Team;
+import com.fontys.api.repositories.TeamRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 @Service
 public class TeamService {
 
-    private List<Team> teams = new ArrayList<>();
+    private final
+    TeamRepository teamRepository;
 
-    public Team createTeam(Long id, String name) {
-        Team team = new Team();
-        team.setId(id);
-        team.setName(name);
+    public TeamService(TeamRepository teamRepository) {
+        this.teamRepository = teamRepository;
+    }
 
-        teams.add(team);
-        return team;
+    @Transactional
+    public Team createTeam(String name) {
+        return teamRepository.save(new Team(name));
     }
 
     @Transactional(readOnly = true)
-    public List<Team> getAllTeams(int count) {
-        return teams;
+    public List<Team> getAllTeams() {
+        return teamRepository.findAll();
     }
 
     @Transactional(readOnly = true)
     public Optional<Team> getTeam(Long id) {
-        for(Team t : teams) {
-            if (t.getId().equals(id)) {
-                return Optional.of(t);
-            }
-        }
-        return Optional.empty();
+        return teamRepository.findById(id);
     }
 }
