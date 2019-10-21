@@ -15,6 +15,7 @@ public class TeamService {
     @Autowired
     TeamRepository teamRepository;
 
+    @Transactional
     public Team createTeam(String name) {
         return teamRepository.save(new Team(name));
     }
