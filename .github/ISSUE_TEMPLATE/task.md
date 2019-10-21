@@ -7,8 +7,11 @@ assignees: ''
 
 ---
 
-What needs to be:
+What has to be done:
+..........
 
-Why it needs to be done:
+Why it has to be done:
+..........
 
-When is the task Done:
+When the task is done:
+..........
