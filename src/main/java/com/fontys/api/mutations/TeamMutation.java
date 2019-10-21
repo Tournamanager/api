@@ -18,4 +18,8 @@ public class TeamMutation implements GraphQLMutationResolver {
     public Team createTeam(String name) {
         return teamService.createTeam(name);
     }
+
+    public void deleteTeam(Long id) {
+        teamService.deleteTeam(id);
+    }
 }
