@@ -20,4 +20,9 @@ public class Team {
     public Team(String name) {
         this.name = name;
     }
+
+    public Team(Long id, String name) {
+        this.id = id;
+        this.name = name;
+    }
 }

@@ -12,8 +12,12 @@ import java.util.Optional;
 @Service
 public class TeamService {
 
-    @Autowired
+    private final
     TeamRepository teamRepository;
+
+    public TeamService(TeamRepository teamRepository) {
+        this.teamRepository = teamRepository;
+    }
 
     @Transactional
     public Team createTeam(String name) {
@@ -21,7 +25,7 @@ public class TeamService {
     }
 
     @Transactional(readOnly = true)
-    public List<Team> getAllTeams(int count) {
+    public List<Team> getAllTeams() {
         return teamRepository.findAll();
     }
 
