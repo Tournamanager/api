@@ -1,11 +1,15 @@
 package com.fontys.api.entities;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
 @Data
 @Entity
+@NoArgsConstructor
+@AllArgsConstructor
 public class Tournament
 {
     @GeneratedValue @Id
@@ -16,7 +20,6 @@ public class Tournament
     private User user;
     private int numberOfTeams;
 
-    public Tournament() {}
 
     public Tournament(String name, String description, User user, int numberOfTeams)
     {
