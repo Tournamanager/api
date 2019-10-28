@@ -1,9 +1,8 @@
 package com.fontys.api.mockrepositories;
 
-import org.springframework.data.domain.Example;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import org.javatuples.Pair;
+import org.jetbrains.annotations.NotNull;
+import org.springframework.data.domain.*;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.ArrayList;
@@ -18,6 +17,7 @@ public class MockJPARepository<T, D> implements JpaRepository<T, D>
         this.findAllReturnValue = findAllReturnValue;
     }
 
+    @NotNull
     @Override
     public List<T> findAll()
     {
@@ -36,8 +36,9 @@ public class MockJPARepository<T, D> implements JpaRepository<T, D>
         return this.findAllWithSortCalledWithParameter;
     }
 
+    @NotNull
     @Override
-    public List<T> findAll(Sort sort)
+    public List<T> findAll(@NotNull Sort sort)
     {
         this.findAllWithSortCalledWithParameter = sort;
         return findAllWithSortReturnValue;
@@ -55,8 +56,9 @@ public class MockJPARepository<T, D> implements JpaRepository<T, D>
         return this.findAllWithPageableCalledWithParameter;
     }
 
+    @NotNull
     @Override
-    public Page<T> findAll(Pageable pageable)
+    public Page<T> findAll(@NotNull Pageable pageable)
     {
         this.findAllWithPageableCalledWithParameter = pageable;
         return this.findAllWithPageableReturnValue;
@@ -74,8 +76,9 @@ public class MockJPARepository<T, D> implements JpaRepository<T, D>
         return this.findAllByIdCalledWithParameter;
     }
 
+    @NotNull
     @Override
-    public List<T> findAllById(Iterable<D> iterable)
+    public List<T> findAllById(@NotNull Iterable<D> iterable)
     {
         this.findAllByIdCalledWithParameter = iterable;
         return this.findAllByIdReturnValue;
@@ -100,7 +103,7 @@ public class MockJPARepository<T, D> implements JpaRepository<T, D>
     }
 
     @Override
-    public void deleteById(D d)
+    public void deleteById(@NotNull D d)
     {
         this.deletedByIdCalledWithParameter = d;
     }
@@ -112,7 +115,7 @@ public class MockJPARepository<T, D> implements JpaRepository<T, D>
     }
 
     @Override
-    public void delete(T t)
+    public void delete(@NotNull T t)
     {
         this.deleteCalledWithParameter = t;
     }
@@ -125,7 +128,7 @@ public class MockJPARepository<T, D> implements JpaRepository<T, D>
     }
 
     @Override
-    public void deleteAll(Iterable<? extends T> iterable)
+    public void deleteAll(@NotNull Iterable<? extends T> iterable)
     {
         this.deleteAllWithIterableCalledWithParameter = iterable;
     }
@@ -135,8 +138,6 @@ public class MockJPARepository<T, D> implements JpaRepository<T, D>
     {
 
     }
-
-    //ToDo: Fix Generic Typing
 
     private T saveReturnValue = null;
     public void setSaveReturnValue(T t)
@@ -150,29 +151,97 @@ public class MockJPARepository<T, D> implements JpaRepository<T, D>
         return saveCalledWithParameter;
     }
 
+    @NotNull
     @Override
-    public <S extends T> S save(S s)
+    public <S extends T> S save(@NotNull S s)
     {
         this.saveCalledWithParameter = s;
-        return null;
+        try{
+            return (S) this.saveReturnValue;
+        }
+        catch (ClassCastException  e)
+        {
+            throw new AssertionError();
+        }
     }
 
+    private List<T> saveAllReturnValue = null;
+    public void setSaveAllReturnValue(List<T> saveAllReturnValue)
+    {
+        this.saveAllReturnValue = saveAllReturnValue;
+    }
+
+    private Iterable<T> saveAllCalledWithParameter = null;
+    public Iterable<T> getSaveAllCalledWithParameter()
+    {
+        return this.saveAllCalledWithParameter;
+    }
+
+    @NotNull
     @Override
     public <S extends T> List<S> saveAll(Iterable<S> iterable)
     {
-        return null;
+        List<T> parameterList = new ArrayList<>();
+        for(S item: iterable)
+        {
+            parameterList.add((T) item);
+        }
+
+        this.saveAllCalledWithParameter = parameterList;
+
+        List<S> returnList = new ArrayList<>();
+        for(T item: this.saveAllReturnValue)
+        {
+            try
+            {
+                returnList.add((S) item);
+            }
+            catch (ClassCastException e)
+            {
+                returnList.add(null);
+            }
+
+        }
+        return returnList;
+    }
+
+    private T findByIdReturnValue = null;
+    public void setFindByIdReturnValue(T findByIdReturnValue)
+    {
+        this.findByIdReturnValue = findByIdReturnValue;
+    }
+
+    private D findByIdCalledWithParameter = null;
+    public D getFindByIdCalledWithParameter()
+    {
+        return this.findByIdCalledWithParameter;
+    }
+
+    @NotNull
+    @Override
+    public Optional<T> findById(@NotNull D d)
+    {
+        this.findByIdCalledWithParameter = d;
+        return Optional.of(this.findByIdReturnValue);
+    }
+
+    private boolean existsByIdReturnValue = false;
+    public void setExistsByIdReturnValue(boolean existsByIdReturnValue)
+    {
+        this.existsByIdReturnValue = existsByIdReturnValue;
+    }
+
+    private D existsByIdCalledWithParameter = null;
+    public D getExistsByIdCalledWithParameter()
+    {
+        return this.existsByIdCalledWithParameter;
     }
 
     @Override
-    public Optional<T> findById(D d)
+    public boolean existsById(@NotNull D d)
     {
-        return Optional.empty();
-    }
-
-    @Override
-    public boolean existsById(D d)
-    {
-        return false;
+        this.existsByIdCalledWithParameter = d;
+        return existsByIdReturnValue;
     }
 
     @Override
@@ -181,16 +250,43 @@ public class MockJPARepository<T, D> implements JpaRepository<T, D>
 
     }
 
-    @Override
-    public <S extends T> S saveAndFlush(S s)
+    private T saveAndFlushReturnValue = null;
+    public void setSaveAndFlushReturnValue(T saveAndFlushReturnValue)
     {
-        return null;
+        this.saveAndFlushReturnValue = saveAndFlushReturnValue;
+    }
+
+    private T saveAndFlushCalledWithParameter = null;
+    public T getSaveAndFlushCalledWithParameter()
+    {
+        return this.saveAndFlushCalledWithParameter;
+    }
+
+    @NotNull
+    @Override
+    public <S extends T> S saveAndFlush(@NotNull S s)
+    {
+        this.saveAndFlushCalledWithParameter = s;
+        try{
+            return (S) this.saveAndFlushReturnValue;
+        }
+        catch (ClassCastException  e)
+        {
+            throw new AssertionError();
+        }
+    }
+
+    private Iterable<T> deleteInBatchCalledWithParameter = null;
+
+    public Iterable<T> getDeleteInBatchCalledWithParameter()
+    {
+        return this.deleteInBatchCalledWithParameter;
     }
 
     @Override
-    public void deleteInBatch(Iterable<T> iterable)
+    public void deleteInBatch(@NotNull Iterable<T> iterable)
     {
-
+        this.deleteInBatchCalledWithParameter = iterable;
     }
 
     @Override
@@ -199,45 +295,195 @@ public class MockJPARepository<T, D> implements JpaRepository<T, D>
 
     }
 
-    @Override
-    public T getOne(D d)
+    private T getOneReturnValue = null;
+
+    public void setGetOneReturnValue(T getOneReturnValue)
     {
-        return null;
+        this.getOneReturnValue = getOneReturnValue;
+    }
+
+    private D getOneCalledWithParameter = null;
+
+    public D getGetOneCalledWithParameter()
+    {
+        return this.getOneCalledWithParameter;
+    }
+
+    @NotNull
+    @Override
+    public T getOne(@NotNull D d)
+    {
+        this.getOneCalledWithParameter = d;
+        return this.getOneReturnValue;
+    }
+
+    private T findOneReturnValue = null;
+
+    public void setFindOneReturnValue(T findOneReturnValue)
+    {
+        this.findOneReturnValue = findOneReturnValue;
+    }
+
+    private Example<T> findOneCalledWithParameter = null;
+
+    public Example<T> getFindOneCalledWithParameter()
+    {
+        return this.findOneCalledWithParameter;
+    }
+
+    @NotNull
+    @Override
+    public <S extends T> Optional<S> findOne(@NotNull Example<S> example)
+    {
+        this.findOneCalledWithParameter = Example.of((T)example.getProbe());
+        return Optional.of((S) this.findOneReturnValue);
+    }
+
+
+    private List<T> findAllWithExampleReturnValue = null;
+
+    public void setFindAllReturnValueWithExample(List<T> findAllWithExampleReturnValue)
+    {
+        this.findAllWithExampleReturnValue = findAllWithExampleReturnValue;
+    }
+
+    private Example<T> findAllWithExampleCalledWithParameter = null;
+
+    public Example<T> getFindAllWithExampleCalledWithParameter()
+    {
+        return this.findAllWithExampleCalledWithParameter;
+    }
+
+    @NotNull
+    @Override
+    public <S extends T> List<S> findAll(@NotNull Example<S> example)
+    {
+        this.findAllWithExampleCalledWithParameter = Example.of((T)example.getProbe());
+        List<S> returnList = new ArrayList<>();
+        for(T item: this.saveAllReturnValue)
+        {
+            try
+            {
+                returnList.add((S) item);
+            }
+            catch (ClassCastException e)
+            {
+                returnList.add(null);
+            }
+
+        }
+        return returnList;
+    }
+
+    private List<T> findAllWithExampleAndSortReturnValue = null;
+
+    public void setFindAllWithExampleAndSortReturnValue(List<T> findAllWithExampleAndSortReturnValue)
+    {
+        this.findAllWithExampleAndSortReturnValue = findAllWithExampleAndSortReturnValue;
+    }
+
+    private Pair<Example<T>, Sort> findAllWithExampleAndSortCalledWithParameter = null;
+
+    public Pair<Example<T>, Sort> getFindAllWithExampleAndSortCalledWithParameter()
+    {
+        return this.findAllWithExampleAndSortCalledWithParameter;
+    }
+
+    @NotNull
+    @Override
+    public <S extends T> List<S> findAll(@NotNull Example<S> example, @NotNull Sort sort)
+    {
+        this.findAllWithExampleAndSortCalledWithParameter = Pair.with(Example.of((T) example.getProbe()), sort);
+        List<S> returnList = new ArrayList<>();
+        for(T item: this.saveAllReturnValue)
+        {
+            try
+            {
+                returnList.add((S) item);
+            }
+            catch (ClassCastException e)
+            {
+                returnList.add(null);
+            }
+
+        }
+        return returnList;
+    }
+
+    private Page<T> findAllWithExampleAndPageableReturnValue = null;
+
+    public void setFindAllWithExampleAndPageableReturnValue(Page<T> findAllWithExampleAndPageableReturnValue)
+    {
+        this.findAllWithExampleAndPageableReturnValue = findAllWithExampleAndPageableReturnValue;
+    }
+
+    private Pair<Example<T>, Pageable> findAllWithExampleAndPageableCalledWithParameter = null;
+
+    public Pair<Example<T>, Pageable> getFindAllWithExampleAndPageableCalledWithParameter()
+    {
+        return this.findAllWithExampleAndPageableCalledWithParameter;
+    }
+
+    @NotNull
+    @Override
+    public <S extends T> Page<S> findAll(@NotNull Example<S> example, @NotNull Pageable pageable)
+    {
+        this.findAllWithExampleAndPageableCalledWithParameter = Pair.with(Example.of((T) example.getProbe()), pageable);
+        List<S> convertedItems = new ArrayList<>();
+        List<T> items = this.findAllWithExampleAndPageableReturnValue.getContent();
+        for(T item: items)
+        {
+            try
+            {
+                convertedItems.add((S) item);
+            }
+            catch (ClassCastException e)
+            {
+                convertedItems.add(null);
+            }
+        }
+        return new PageImpl<>(convertedItems);
+    }
+
+    private long countWithExampleReturnValue = -1;
+
+    public void setCountWithExampleReturnValue(long countWithExampleReturnValue)
+    {
+        this.countWithExampleReturnValue = countWithExampleReturnValue;
+    }
+
+    private Example<T> countWithExampleCalledWithParameter = null;
+
+    public Example<T> getCountWithExampleCalledWithParameter()
+    {
+        return this.countWithExampleCalledWithParameter;
     }
 
     @Override
-    public <S extends T> Optional<S> findOne(Example<S> example)
+    public <S extends T> long count(@NotNull Example<S> example)
     {
-        return Optional.empty();
+        this.countWithExampleCalledWithParameter = Example.of((T) example.getProbe());
+        return this.countWithExampleReturnValue;
+    }
+
+    private boolean existsReturnValue = false;
+
+    public void setExistsReturnValue(boolean existsReturnValue)
+    {
+        this.existsReturnValue = existsReturnValue;
+    }
+
+    private Example<T> existsCalledWithParameter = null;
+
+    public Example<T> getExistsCalledWithParameter()
+    {
+        return existsCalledWithParameter;
     }
 
     @Override
-    public <S extends T> List<S> findAll(Example<S> example)
+    public <S extends T> boolean exists(@NotNull Example<S> example)
     {
-        return null;
-    }
-
-    @Override
-    public <S extends T> List<S> findAll(Example<S> example, Sort sort)
-    {
-        return null;
-    }
-
-    @Override
-    public <S extends T> Page<S> findAll(Example<S> example, Pageable pageable)
-    {
-        return null;
-    }
-
-    @Override
-    public <S extends T> long count(Example<S> example)
-    {
-        return 0;
-    }
-
-    @Override
-    public <S extends T> boolean exists(Example<S> example)
-    {
-        return false;
+        this.existsCalledWithParameter = Example.of((T) example.getProbe());
+        return this.existsReturnValue;
     }
 }
