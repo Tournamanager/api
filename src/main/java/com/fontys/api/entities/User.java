@@ -14,6 +14,4 @@ public class User
 {
     @GeneratedValue @Id
     private Integer id;
-
-    public User() {}
 }

@@ -28,13 +28,4 @@ public class Tournament
         this.user = user;
         this.numberOfTeams = numberOfTeams;
     }
-
-    public Tournament(Integer id, String name, String description, User user, int numberOfTeams)
-    {
-        this.id = id;
-        this.name = name;
-        this.description = description;
-        this.user = user;
-        this.numberOfTeams = numberOfTeams;
-    }
 }
