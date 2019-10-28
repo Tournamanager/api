@@ -18,7 +18,7 @@ public class TeamQuery implements GraphQLQueryResolver {
         this.teamService = teamService;
     }
 
-    public List<Team> teams(int count) {
+    public List<Team> teams() {
         return this.teamService.getAllTeams();
     }
 
