@@ -4,7 +4,7 @@ type Team {
 }
 
 type Query {
-    teams:[Team]
+    teams(count: Int):[Team]
     team(id: ID!):Team
 }
 

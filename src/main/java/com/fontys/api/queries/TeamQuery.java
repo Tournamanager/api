@@ -5,6 +5,7 @@ import com.fontys.api.entities.Team;
 import com.fontys.api.service.TeamService;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Optional;
 
@@ -18,7 +19,8 @@ public class TeamQuery implements GraphQLQueryResolver {
         this.teamService = teamService;
     }
 
-    public List<Team> teams() {
+
+    public List<Team> teams(@Nullable Integer count) {
         return this.teamService.getAllTeams();
     }
 
