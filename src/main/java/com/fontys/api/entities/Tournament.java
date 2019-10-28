@@ -9,7 +9,7 @@ import javax.persistence.*;
 public class Tournament
 {
     @GeneratedValue @Id
-    private Long id;
+    private Integer id;
     private String name;
     private String description;
     @OneToOne
@@ -26,7 +26,7 @@ public class Tournament
         this.numberOfTeams = numberOfTeams;
     }
 
-    public Tournament(long id, String name, String description, User user, int numberOfTeams)
+    public Tournament(Integer id, String name, String description, User user, int numberOfTeams)
     {
         this.id = id;
         this.name = name;

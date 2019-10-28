@@ -25,5 +25,5 @@ public class UserService
     public List<User> getAllUsers() { return userRepository.findAll(); }
 
     @Transactional(readOnly = true)
-    public Optional<User> getUser(Long id) { return userRepository.findById(id); }
+    public Optional<User> getUser(Integer id) { return userRepository.findById(id); }
 }

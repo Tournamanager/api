@@ -18,5 +18,5 @@ public class UserQuery implements GraphQLQueryResolver
 
     public List<User> users(int count) { return this.userService.getAllUsers(); }
 
-    public Optional<User> user(Long id) { return this.userService.getUser(id); }
+    public Optional<User> user(Integer id) { return this.userService.getUser(id); }
 }

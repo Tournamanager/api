@@ -29,5 +29,5 @@ public class TournamentService
     public List<Tournament> tournaments() { return tournamentRepository.findAll(); }
 
     @Transactional(readOnly = true)
-    public Optional<Tournament> tournament(long id) { return tournamentRepository.findById(id); }
+    public Optional<Tournament> tournament(Integer id) { return tournamentRepository.findById(id); }
 }

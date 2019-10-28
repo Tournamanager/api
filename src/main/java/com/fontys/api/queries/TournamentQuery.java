@@ -21,5 +21,5 @@ public class TournamentQuery implements GraphQLQueryResolver
 
     public List<Tournament> tournaments() { return tournamentService.tournaments(); }
 
-    public Optional<Tournament> tournament(long id) { return tournamentService.tournament(id); }
+    public Optional<Tournament> tournament(Integer id) { return tournamentService.tournament(id); }
 }

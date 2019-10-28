@@ -11,7 +11,7 @@ import javax.persistence.Id;
 public class User
 {
     @GeneratedValue @Id
-    private Long id;
+    private Integer id;
 
     public User() {}
 }
