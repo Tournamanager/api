@@ -3,7 +3,7 @@ type User {
 }
 
 type Query {
-    users(count: Int):[User]
+    users:[User]
     user(id: ID!):User
 }
 
