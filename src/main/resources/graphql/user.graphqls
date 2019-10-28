@@ -4,9 +4,9 @@ type User {
 
 type Query {
     users(count: Int):[User]
-    user(id: ID):User
+    user(id: ID!):User
 }
 
 type Mutation {
-    createUser(id: ID):User
+    createUser(id: ID!):User
 }

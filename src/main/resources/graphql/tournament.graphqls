@@ -8,9 +8,9 @@ type Tournament {
 
 type Query {
     tournaments(count: Int):[Tournament]
-    tournament(id: ID):Tournament
+    tournament(id: ID!):Tournament
 }
 
 type Mutation {
-    createTournament(id: ID, name:String!, description:String, owner: User, numberOfTeams: Int):Tournament
+    createTournament(id: ID!, name:String!, description:String, owner: User, numberOfTeams: Int):Tournament
 }
