@@ -1,6 +1,7 @@
 package com.fontys.api.entities;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -8,10 +9,9 @@ import javax.persistence.Id;
 
 @Data
 @Entity
-public class User {
-
+@NoArgsConstructor
+public class User
+{
     @GeneratedValue @Id
-    Integer id;
-
-    User() {}
+    private Integer id;
 }
