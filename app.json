@@ -1,0 +1,17 @@
+{
+  "name": "api",
+  "scripts": {},
+  "env": {},
+  "formation": {
+    "web": {
+      "quantity": 1
+    }
+  },
+  "addons": [],
+  "buildpacks": [
+    {
+      "url": "heroku/java"
+    }
+  ],
+  "stack": "heroku-18"
+}
