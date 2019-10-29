@@ -12,7 +12,7 @@ import javax.persistence.*;
 @AllArgsConstructor
 public class Tournament
 {
-    @GeneratedValue @Id
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private String name;
     private String description;

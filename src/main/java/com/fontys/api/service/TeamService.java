@@ -39,16 +39,26 @@ public class TeamService {
     @Transactional
     public String deleteTeam(Integer id) {
         Optional<Team> team = teamRepository.findById(id);
-        team.ifPresent(teamRepository::delete);
-        return "Team " + team.get().getName() + " deleted";
+        if (team.isPresent()) {
+            teamRepository.delete(team.get());
+            return "Team " + team.get().getName() + " deleted";
+        } else {
+            return "Team does not exist";
+        }
     }
 
     @Transactional
     public String addUserToTeam(Integer teamId, Integer userId) {
-        User user = userRepository.findById(userId).get();
-        Team team = teamRepository.findById(teamId).get();
-        team.getUsers().add(user);
-        teamRepository.save(team);
-        return "User " + user.getId() + " added to team " + team.getName();
+        Optional<User> user = userRepository.findById(userId);
+        Optional<Team> team = teamRepository.findById(teamId);
+        if (user.isPresent() && team.isPresent()) {
+            User u = user.get();
+            Team t = team.get();
+            t.getUsers().add(u);
+            teamRepository.save(t);
+            return "User " + u.getId() + " added to team " + t.getName();
+        } else {
+            return "User or team does not exist";
+        }
     }
 }
