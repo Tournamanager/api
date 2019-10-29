@@ -1,5 +1,6 @@
 package com.fontys.api.entities;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -10,6 +11,7 @@ import javax.persistence.Id;
 @Data
 @Entity
 @NoArgsConstructor
+@AllArgsConstructor
 public class User
 {
     @GeneratedValue @Id

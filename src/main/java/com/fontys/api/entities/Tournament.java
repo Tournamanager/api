@@ -17,15 +17,15 @@ public class Tournament
     private String name;
     private String description;
     @OneToOne
-    private User user;
+    private User owner;
     private int numberOfTeams;
 
 
-    public Tournament(String name, String description, User user, int numberOfTeams)
+    public Tournament(String name, String description, User owner, Integer numberOfTeams)
     {
         this.name = name;
         this.description = description;
-        this.user = user;
+        this.owner = owner;
         this.numberOfTeams = numberOfTeams;
     }
 }

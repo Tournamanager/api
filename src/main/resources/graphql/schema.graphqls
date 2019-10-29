@@ -1,0 +1,22 @@
+type Query {
+    #user
+    users:[User]
+    user(id:ID!):User
+    #team
+    teams(count: Int):[Team]
+    team(id:ID!):Team
+    #tournament
+    tournaments:[Tournament]
+    tournament(id:ID!):Tournament
+}
+
+type Mutation {
+    #user
+    createUser(id: ID!):User
+    #team
+    createTeam(name:String!):Team
+    deleteTeam(id:Int!):String
+    addUserToTeam(teamId:Int!, userId:Int!):String
+    #tournament
+    createTournament(name:String!, description:String, owner:Int, numberOfTeams:Int):Tournament
+}

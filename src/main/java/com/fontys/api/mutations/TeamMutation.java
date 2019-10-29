@@ -23,7 +23,7 @@ public class TeamMutation implements GraphQLMutationResolver {
         return teamService.deleteTeam(id);
     }
 
-    public String addUserToTeam(Integer id) {
-        return teamService.addUserToTeam(id);
+    public String addUserToTeam(Integer teamId, Integer userId) {
+        return teamService.addUserToTeam(teamId, userId);
     }
 }
