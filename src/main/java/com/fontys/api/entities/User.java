@@ -17,4 +17,10 @@ public class User
 {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+
+    private String UUID;
+
+    public User(String UUID) {
+        this.UUID = UUID;
+    }
 }

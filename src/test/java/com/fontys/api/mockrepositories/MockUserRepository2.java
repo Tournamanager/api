@@ -67,9 +67,9 @@ public class MockUserRepository2 implements UserRepository {
 
     @Override
     public <S extends User> S save(S s) {
-        User t = new User(users.size());
-        users.add(t);
-        return (S) t;
+        User u = new User(users.size(), s.getUUID());
+        users.add(u);
+        return (S) users.get(u.getId());
     }
 
     @Override
