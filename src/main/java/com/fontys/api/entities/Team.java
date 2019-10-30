@@ -1,28 +1,35 @@
 package com.fontys.api.entities;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @Entity
+@NoArgsConstructor
+@AllArgsConstructor
 public class Team {
 
-    @GeneratedValue @Id
-    private Long id;
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
 
     private String name;
 
-    public Team() {}
+    @OneToMany(fetch = FetchType.EAGER)
+    private List<User> users;
 
     public Team(String name) {
         this.name = name;
+        this.users = new ArrayList<>();
     }
 
-    public Team(Long id, String name) {
+    public Team(Integer id, String name) {
         this.id = id;
         this.name = name;
+        this.users = new ArrayList<>();
     }
 }

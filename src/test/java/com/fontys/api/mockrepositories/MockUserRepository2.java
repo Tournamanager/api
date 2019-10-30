@@ -1,7 +1,7 @@
 package com.fontys.api.mockrepositories;
 
-import com.fontys.api.entities.Team;
-import com.fontys.api.repositories.TeamRepository;
+import com.fontys.api.entities.User;
+import com.fontys.api.repositories.UserRepository;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
@@ -12,31 +12,31 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class MockTeamRepository implements TeamRepository {
+public class MockUserRepository2 implements UserRepository {
 
-    private List<Team> teams;
+    private List<User> users;
 
-    public MockTeamRepository() {
-        teams = new ArrayList<>();
+    public MockUserRepository2() {
+        users = new ArrayList<>();
     }
 
     @Override
-    public List<Team> findAll() {
-        return teams;
+    public List<User> findAll() {
+        return users;
     }
 
     @Override
-    public List<Team> findAll(Sort sort) {
+    public List<User> findAll(Sort sort) {
         return null;
     }
 
     @Override
-    public Page<Team> findAll(Pageable pageable) {
+    public Page<User> findAll(Pageable pageable) {
         return null;
     }
 
     @Override
-    public List<Team> findAllById(Iterable<Integer> iterable) {
+    public List<User> findAllById(Iterable<Integer> iterable) {
         return null;
     }
 
@@ -51,12 +51,12 @@ public class MockTeamRepository implements TeamRepository {
     }
 
     @Override
-    public void delete(Team team) {
-        teams.remove(team);
+    public void delete(User user) {
+        users.remove(user);
     }
 
     @Override
-    public void deleteAll(Iterable<? extends Team> iterable) {
+    public void deleteAll(Iterable<? extends User> iterable) {
 
     }
 
@@ -66,20 +66,20 @@ public class MockTeamRepository implements TeamRepository {
     }
 
     @Override
-    public <S extends Team> S save(S s) {
-        Team t = new Team(teams.size(), s.getName());
-        teams.add(t);
+    public <S extends User> S save(S s) {
+        User t = new User(users.size());
+        users.add(t);
         return (S) t;
     }
 
     @Override
-    public <S extends Team> List<S> saveAll(Iterable<S> iterable) {
+    public <S extends User> List<S> saveAll(Iterable<S> iterable) {
         return null;
     }
 
     @Override
-    public Optional<Team> findById(Integer integer) {
-        for (Team t: teams) {
+    public Optional<User> findById(Integer integer) {
+        for (User t: users) {
             if (t.getId().equals(integer)) {
                 return Optional.of(t);
             }
@@ -98,12 +98,12 @@ public class MockTeamRepository implements TeamRepository {
     }
 
     @Override
-    public <S extends Team> S saveAndFlush(S s) {
+    public <S extends User> S saveAndFlush(S s) {
         return null;
     }
 
     @Override
-    public void deleteInBatch(Iterable<Team> iterable) {
+    public void deleteInBatch(Iterable<User> iterable) {
 
     }
 
@@ -113,37 +113,37 @@ public class MockTeamRepository implements TeamRepository {
     }
 
     @Override
-    public Team getOne(Integer integer) {
+    public User getOne(Integer integer) {
         return null;
     }
 
     @Override
-    public <S extends Team> Optional<S> findOne(Example<S> example) {
+    public <S extends User> Optional<S> findOne(Example<S> example) {
         return Optional.empty();
     }
 
     @Override
-    public <S extends Team> List<S> findAll(Example<S> example) {
+    public <S extends User> List<S> findAll(Example<S> example) {
         return null;
     }
 
     @Override
-    public <S extends Team> List<S> findAll(Example<S> example, Sort sort) {
+    public <S extends User> List<S> findAll(Example<S> example, Sort sort) {
         return null;
     }
 
     @Override
-    public <S extends Team> Page<S> findAll(@NotNull Example<S> example, Pageable pageable) {
+    public <S extends User> Page<S> findAll(@NotNull Example<S> example, Pageable pageable) {
         return null;
     }
 
     @Override
-    public <S extends Team> long count(Example<S> example) {
+    public <S extends User> long count(Example<S> example) {
         return 0;
     }
 
     @Override
-    public <S extends Team> boolean exists(Example<S> example) {
+    public <S extends User> boolean exists(Example<S> example) {
         return false;
     }
 }
