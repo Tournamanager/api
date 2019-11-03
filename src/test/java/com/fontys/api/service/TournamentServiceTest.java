@@ -6,7 +6,10 @@ import com.fontys.api.mockrepositories.MockTournamentRepository;
 import org.junit.Before;
 import org.junit.Test;
 
+import javax.naming.directory.InvalidAttributeValueException;
+
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 public class TournamentServiceTest
 {
@@ -21,53 +24,62 @@ public class TournamentServiceTest
     }
 
     @Test
-    public void createTournamentTest()
+    public void createTournamentTests()
     {
-        System.out.println(this.tournamentService);
-        Integer tournament1Id = 1;
-        String tournament1Name = "testTournament1";
-        String tournament1Description = "tournament for testing 1";
-        User tournament1user1 = new User();
-        int tournament1NumberOfTeams = 4;
+        User user = new User();
+        createTournamentTestValid(1, "testTournament1", "Tournament for testing 1", user, 4);
+        createTournamentTestValid(2, "testTournament2", "Tournament for testing 2", user, 8);
+        createTournamentTestInvalid(3, "testTournament3", "Tournament for testing 3", user, -1,
+                "A tournament must be created for at least 2 teams. Number of teams provided was -1." +
+                " Please change the value and try again.");
+        createTournamentTestInvalid(4, "testTournament4", "Tournament for testing 4", null, 16,
+                                    "Something went wrong while creating the tournament. Please try again.");
+        createTournamentTestInvalid(5, "", "Tournament for testing 5", user, 16,
+                                    "The tournament name can't be empty. Please give your tournament a name and try again.");
+        createTournamentTestInvalid(6, " ", "Tournament for testing 5", user, 16,
+                                    "The tournament name can't be empty. Please give your tournament a name and try again.");
+    }
 
-        Integer tournament2Id = 2;
-        String tournament2Name = "testTournament1";
-        String tournament2Description = "tournament for testing 1";
-        int tournament2NumberOfTeams = 4;
+    private void createTournamentTestValid(Integer id, String name, String description, User user, int numberOfTeams)
+    {
+        Tournament tournamentIn = new Tournament(name, description, user, numberOfTeams);
+        Tournament tournamentOut = new Tournament(id, name, description, user, numberOfTeams);
 
-        Tournament tournament1In = new Tournament(tournament1Name, tournament1Description,
-                                                   tournament1user1, tournament1NumberOfTeams);
-        Tournament tournament2In = new Tournament(tournament2Name, tournament2Description, tournament1user1,
-                                                  tournament2NumberOfTeams);
+        this.tournamentRepository.setSaveReturnValue(tournamentOut);
+        Tournament actualTournamentOut = null;
+        try
+        {
+            actualTournamentOut = this.tournamentService.createTournament(
+                    name, description, user, numberOfTeams);
+        }
+        catch (InvalidAttributeValueException e)
+        {
+            fail();
+            return;
+        }
+        assertEquals(tournamentOut, actualTournamentOut);
 
-        Tournament tournament1out = new Tournament(tournament1Id, tournament1Name, tournament1Description,
-                                               tournament1user1, tournament1NumberOfTeams);
-        Tournament tournament2out = new Tournament(tournament2Id, tournament2Name, tournament2Description,
-                                                   tournament1user1, tournament2NumberOfTeams);
+        Tournament actualTournamentIn = this.tournamentRepository.getSaveCalledWithParameters();
+        assertEquals(tournamentIn, actualTournamentIn);
+    }
 
+    private void createTournamentTestInvalid(Integer id, String name, String description, User user, int numberOfTeams,
+                                             String errorMessage)
+    {
+        Tournament tournamentIn = new Tournament(name, description, user, numberOfTeams);
+        Tournament tournamentOut = new Tournament(id, name, description, user, numberOfTeams);
 
-        this.tournamentRepository.setSaveReturnValue(tournament1out);
-
-        Tournament actualTournament1Out = this.tournamentService.createTournament(tournament1Name, tournament1Description, tournament1user1,
-                                                tournament1NumberOfTeams);
-        assertEquals(tournament1out, actualTournament1Out);
-
-        Tournament actualTournament1In = this.tournamentRepository.getSaveCalledWithParameters();
-
-        assertEquals(tournament1In, actualTournament1In);
-
-
-
-        this.tournamentRepository.setSaveReturnValue(tournament2out);
-
-        Tournament actualTournament2 = this.tournamentService.createTournament(tournament2Name, tournament2Description,
-                                                                               tournament1user1,
-                                                                               tournament2NumberOfTeams);
-
-        assertEquals(tournament2out, actualTournament2);
-
-        Tournament actualTournament2In = this.tournamentRepository.getSaveCalledWithParameters();
-
-        assertEquals(tournament2In, actualTournament2In);
+        this.tournamentRepository.setSaveReturnValue(tournamentOut);
+        Tournament actualTournamentOut = null;
+        try
+        {
+            actualTournamentOut = this.tournamentService.createTournament(
+                    name, description, user, numberOfTeams);
+            fail();
+        }
+        catch (InvalidAttributeValueException e)
+        {
+            assertEquals(errorMessage, e.getMessage());
+        }
     }
 }
