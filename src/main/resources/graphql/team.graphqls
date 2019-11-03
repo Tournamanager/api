@@ -1,13 +1,5 @@
 type Team {
     id: ID!,
-    name: String
-}
-
-type Query {
-    teams(count: Int):[Team]
-    team(id: ID!):Team
-}
-
-type Mutation {
-    createTeam(name:String!):Team
+    name: String,
+    users: [User]
 }

@@ -1,46 +1,64 @@
 package com.fontys.api.service;
 
 import com.fontys.api.entities.Team;
+import com.fontys.api.entities.User;
 import com.fontys.api.mockrepositories.MockTeamRepository;
+import com.fontys.api.mockrepositories.MockUserRepository2;
+import com.fontys.api.repositories.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class TeamServiceTest {
 
     private TeamService teamService;
+    private UserService userService;
+    private UserRepository mockUserRepository;
 
     @BeforeEach
     void setUp() {
-        List<Team> teamList = new ArrayList<>();
-        teamList.add(new Team((long) 0,"Team One"));
-        teamList.add(new Team((long) 1,"Team Two"));
-        teamService = new TeamService(new MockTeamRepository(teamList));
+        mockUserRepository = new MockUserRepository2();
+        teamService = new TeamService(new MockTeamRepository(), mockUserRepository);
+        userService = new UserService(mockUserRepository);
     }
 
     @Test
-    void getAllTeamsShouldReturnTwoTeams() {
-        assertEquals(2, teamService.getAllTeams().size());
+    void createTeamShouldReturnTeamOne() {
+        assertEquals("Team One",teamService.createTeam("Team One").getName());
     }
 
     @Test
-    void getTeamShouldReturnTeamTwo() {
-        assertEquals("Team Two", teamService.getTeam((long) 1).get().getName());
+    void getAllTeamsShouldReturnOneTeam() {
+        teamService.createTeam("Team One");
+        assertEquals(1, teamService.getAllTeams().size());
     }
 
     @Test
-    void createTeamShouldReturnATeam() {
-        teamService.createTeam("Team Three");
-        assertEquals(3,teamService.getAllTeams().size());
+    void getTeamShouldReturnTeamOne() {
+        Team t = teamService.createTeam("Team One");
+        assertEquals("Team One", teamService.getTeam(t.getId()).get().getName());
     }
 
     @Test
-    void deleteTeamShouldReturnOneTeam() {
-        teamService.deleteTeam((long) 1);
-        assertEquals(1,teamService.getAllTeams().size());
+    void deleteTeamShouldReturnNoTeams() {
+        Team t = teamService.createTeam("Team One");
+        teamService.deleteTeam(t.getId());
+        assertEquals(0,teamService.getAllTeams().size());
+    }
+
+    @Test
+    void addUserToTeamShouldReturnUserString() {
+        User u = userService.createUser();
+        Team t = teamService.createTeam("Team One");
+        assertEquals("User " + u.getId() + " added to team " + t.getName(), teamService.addUserToTeam(t.getId(), u.getId()));
+    }
+
+    @Test
+    void addUserToTeamShouldReturnOneUser() {
+        User u = userService.createUser();
+        Team t = teamService.createTeam("Team One");
+        teamService.addUserToTeam(t.getId(), u.getId());
+        assertEquals(1,teamService.getTeam(t.getId()).get().getUsers().size());
     }
 }
