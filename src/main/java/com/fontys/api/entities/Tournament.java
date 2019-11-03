@@ -29,12 +29,12 @@ public class Tournament
         this.numberOfTeams = numberOfTeams;
     }
 
-    public Tournament(Integer id, String name, String description, User user, int numberOfTeams)
+    public Tournament(Integer id, String name, String description, User owner, int numberOfTeams)
     {
         this.id = id;
         this.name = name;
         this.description = description;
-        this.user = user;
+        this.owner = owner;
         this.numberOfTeams = numberOfTeams;
     }
 }
