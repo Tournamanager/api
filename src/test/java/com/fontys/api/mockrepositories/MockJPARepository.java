@@ -360,7 +360,7 @@ public class MockJPARepository<T, D> implements JpaRepository<T, D>
     {
         this.findAllWithExampleCalledWithParameter = Example.of((T)example.getProbe());
         List<S> returnList = new ArrayList<>();
-        for(T item: this.saveAllReturnValue)
+        for(T item: this.findAllWithExampleReturnValue)
         {
             try
             {
@@ -395,7 +395,7 @@ public class MockJPARepository<T, D> implements JpaRepository<T, D>
     {
         this.findAllWithExampleAndSortCalledWithParameter = Pair.with(Example.of((T) example.getProbe()), sort);
         List<S> returnList = new ArrayList<>();
-        for(T item: this.saveAllReturnValue)
+        for(T item: this.findAllWithExampleAndSortReturnValue)
         {
             try
             {
