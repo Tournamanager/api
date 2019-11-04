@@ -27,7 +27,8 @@ public class UserService
             Optional<User> user = userRepository.findByUuid(uuid);
             if (user.isPresent()) {
                 user.get().setUuid("");
-                return "User " + user.get().getId() + " deleted";
+                User u = userRepository.save(user.get());
+                return "User " + u.getId() + " deleted";
             }
         }
         return "User does not exist";
