@@ -19,4 +19,8 @@ public class TournamentMutation implements GraphQLMutationResolver
     {
         return tournamentService.createTournament(name, description, ownerId, numberOfTeams);
     }
+
+    public String deleteTournament(Integer id) {
+        return tournamentService.deleteTournament(id);
+    }
 }
