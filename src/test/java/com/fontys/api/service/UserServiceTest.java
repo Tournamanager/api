@@ -16,7 +16,8 @@ class UserServiceTest {
     private UserRepository userRepositoryMock;
 
     @BeforeEach
-    void setUp() {
+    void setUp()
+    {
         userRepositoryMock = mock(UserRepository.class);
         userService = new UserService(userRepositoryMock);
     }

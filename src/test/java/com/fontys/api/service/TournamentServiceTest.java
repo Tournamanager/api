@@ -4,80 +4,101 @@ import com.fontys.api.entities.Tournament;
 import com.fontys.api.entities.User;
 import com.fontys.api.repositories.TournamentRepository;
 import com.fontys.api.repositories.UserRepository;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.BeforeEach;
 import org.mockito.Mockito;
 
 import javax.naming.directory.InvalidAttributeValueException;
-
 import java.util.Optional;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 import static org.mockito.Mockito.*;
 
-public class TournamentServiceTest
+class TournamentServiceTest
 {
-    private TournamentRepository tournamentRepository;
-    private UserRepository userRepository;
+    private TournamentRepository tournamentRepositoryMock;
+    private UserRepository userRepositoryMock;
     private TournamentService tournamentService;
 
-    @Before
-    public void setUp()
+    @BeforeEach
+    void setUp()
     {
-        tournamentRepository = mock(TournamentRepository.class);
-        userRepository = mock(UserRepository.class);
-        tournamentService = new TournamentService(tournamentRepository, userRepository);
+        tournamentRepositoryMock = mock(TournamentRepository.class);
+        userRepositoryMock = mock(UserRepository.class);
+        tournamentService = new TournamentService(tournamentRepositoryMock, userRepositoryMock);
     }
 
     @Test
-    public void createTournamentValid()
+    void deleteTournamentShouldReturnDeletedString()
     {
-        createTournamentTestValid("testTournament1", "Tournament for testing 1", 1, 4);
+        Tournament t = new Tournament(1,"testTournament",null,new User("uuid"),2);
+        Mockito.when(tournamentRepositoryMock.findById(Mockito.any(Integer.class))).thenReturn(Optional.of(t));
+        assertEquals("Tournament " + t.getName() + " deleted",tournamentService.deleteTournament(t.getId()));
+        Mockito.verify(tournamentRepositoryMock, Mockito.times(1)).findById(t.getId());
+        Mockito.verify(tournamentRepositoryMock, Mockito.times(1)).delete(t);
     }
 
     @Test
-    public void createTournamentNumberOfTeamsInvalid()
+    void deleteTournamentShouldReturnErrorString()
     {
-        createTournamentTestInvalid("testTournament2", "Tournament for testing 2", 2, -1,
+        assertEquals("Tournament does not exist",tournamentService.deleteTournament(1));
+    }
+
+    @Test
+    void createTournamentValid()
+    {
+        createTournamentTestValid("Tournament for testing 1", 1, 4);
+    }
+
+    @Test
+    void createTournamentValidWithoutDescription()
+    {
+        createTournamentTestValid("", 2, 2);
+    }
+
+    @Test
+    void createTournamentNumberOfTournamentsInvalid()
+    {
+        createTournamentTestInvalid("testTournament", "Tournament for testing 3", 2, -1,
                                     "A tournament must be created for at least 2 teams. Number of teams provided was -1." +
                                     " Please change the value and try again.");
     }
 
     @Test
-    public void createTournamentUserIdInvalid()
+    void createTournamentUserIdInvalid()
     {
-        createTournamentTestInvalid("testTournament3", "Tournament for testing 3", -1, 16,
+        createTournamentTestInvalid("testTournament", "Tournament for testing 4", -1, 16,
                                     "Something went wrong while creating the tournament. Please try again.");
     }
 
     @Test
-    public void createTournamentNameEmptyStringInvalid()
+    void createTournamentNameEmptyStringInvalid()
     {
-        createTournamentTestInvalid("", "Tournament for testing 4", 1, 16,
+        createTournamentTestInvalid("", "Tournament for testing 5", 1, 16,
                                     "The tournament name can't be empty. Please give your tournament a name and try again.");
     }
 
     @Test
-    public void createTournamentNameBlankStringInvalid()
+    void createTournamentNameBlankStringInvalid()
     {
-        createTournamentTestInvalid(" ", "Tournament for testing 5", 1, 16,
+        createTournamentTestInvalid(" ", "Tournament for testing 6", 1, 16,
                                     "The tournament name can't be empty. Please give your tournament a name and try again.");
     }
 
-    private void createTournamentTestValid(String name, String description, Integer ownerId, int numberOfTeams)
+    private void createTournamentTestValid(String description, Integer ownerId, int numberOfTournaments)
     {
         User user = new User(ownerId, "test");
-        Tournament tournament = new Tournament(name, description, user, numberOfTeams);
+        Tournament tournament = new Tournament("testTournament", description, user, numberOfTournaments);
 
-        when(userRepository.findById(Mockito.any(Integer.class))).thenReturn(Optional.of(user));
-        when(tournamentRepository.save(Mockito.any(Tournament.class))).thenReturn(tournament);
-        Tournament actualTournamentOut = null;
+        when(userRepositoryMock.findById(Mockito.any(Integer.class))).thenReturn(Optional.of(user));
+        when(tournamentRepositoryMock.save(Mockito.any(Tournament.class))).thenReturn(tournament);
+        Tournament actualTournamentOut;
 
         try
         {
             actualTournamentOut = this.tournamentService.createTournament(
-                    name, description, user.getId(), numberOfTeams);
+                    "testTournament", description, user.getId(), numberOfTournaments);
         }
         catch (InvalidAttributeValueException e)
         {
@@ -86,22 +107,21 @@ public class TournamentServiceTest
         }
 
         assertEquals(tournament, actualTournamentOut);
-        Mockito.verify(userRepository, times(1)).findById(user.getId());
-        Mockito.verify(tournamentRepository, times(1)).save(tournament);
+        Mockito.verify(userRepositoryMock, times(1)).findById(user.getId());
+        Mockito.verify(tournamentRepositoryMock, times(1)).save(tournament);
     }
 
-    private void createTournamentTestInvalid(String name, String description, Integer ownerId, int numberOfTeams, String errorMessage)
+    private void createTournamentTestInvalid(String name, String description, Integer ownerId, int numberOfTournaments, String errorMessage)
     {
         User user = new User(ownerId, "test");
-        Tournament tournament = new Tournament(name, description, user, numberOfTeams);
+        Tournament tournament = new Tournament(name, description, user, numberOfTournaments);
 
-        when(userRepository.findById(Mockito.any(Integer.class))).thenReturn(Optional.of(user));
-        when(tournamentRepository.save(Mockito.any(Tournament.class))).thenReturn(tournament);
-        Tournament actualTournamentOut = null;
+        when(userRepositoryMock.findById(Mockito.any(Integer.class))).thenReturn(Optional.of(user));
+        when(tournamentRepositoryMock.save(Mockito.any(Tournament.class))).thenReturn(tournament);
+        
         try
         {
-            actualTournamentOut = this.tournamentService.createTournament(
-                    name, description, user.getId(), numberOfTeams);
+            this.tournamentService.createTournament(name, description, user.getId(), numberOfTournaments);
             fail();
         }
         catch (InvalidAttributeValueException e)
