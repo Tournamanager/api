@@ -2,7 +2,6 @@ package com.fontys.api.mutations;
 
 import com.coxautodev.graphql.tools.GraphQLMutationResolver;
 import com.fontys.api.entities.Tournament;
-import com.fontys.api.entities.User;
 import com.fontys.api.service.TournamentService;
 import org.springframework.stereotype.Component;
 

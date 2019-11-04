@@ -1,7 +1,6 @@
 package com.fontys.api.queries;
 
 import com.coxautodev.graphql.tools.GraphQLQueryResolver;
-import com.coxautodev.graphql.tools.GraphQLResolver;
 import com.fontys.api.entities.Tournament;
 import com.fontys.api.service.TournamentService;
 import org.springframework.stereotype.Component;
