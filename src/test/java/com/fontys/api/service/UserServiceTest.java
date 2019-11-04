@@ -1,28 +1,27 @@
 package com.fontys.api.service;
 
-import com.fontys.api.entities.User;
-import com.fontys.api.repositories.UserRepository;
+import com.fontys.api.mockrepositories.MockUserRepository2;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.*;
 
 class UserServiceTest {
     private UserService userService;
-    private UserRepository userRepositoryMock;
 
     @BeforeEach
     void setUp() {
-        userRepositoryMock = mock(UserRepository.class);
-        userService = new UserService(userRepositoryMock);
+        userService = new UserService(new MockUserRepository2());
     }
 
     @Test
-    void createUserShouldReturnUser() {
-        User u = new User("UUID1");
-        when(userRepositoryMock.save(any(User.class))).thenReturn(u);
-        assertEquals(u,userService.createUser("UUID1"));
-        verify(userRepositoryMock, times(1)).save(u);
+    void createUserShouldReturnUserUUID() {
+        assertEquals("unique",userService.createUser("unique").getUUID());
+    }
+
+    @Test
+    void createUserShouldReturnOneUser() {
+        userService.createUser("unique");
+        assertEquals(1,userService.getAllUsers().size());
     }
 }
