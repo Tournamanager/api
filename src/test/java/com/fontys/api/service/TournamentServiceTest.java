@@ -9,9 +9,6 @@ import org.junit.Test;
 
 import javax.naming.directory.InvalidAttributeValueException;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
@@ -64,9 +61,9 @@ public class TournamentServiceTest
                                     "The tournament name can't be empty. Please give your tournament a name and try again.");
     }
 
-    private void createTournamentTestValid(Integer id, String name, String description, Integer userId, int numberOfTeams)
+    private void createTournamentTestValid(Integer id, String name, String description, String UUID, int numberOfTeams)
     {
-        User user = new User(userId);
+        User user = new User(UUID);
         Tournament tournamentIn = new Tournament(name, description, user, numberOfTeams);
         Tournament tournamentOut = new Tournament(id, name, description, user, numberOfTeams);
 
@@ -92,10 +89,10 @@ public class TournamentServiceTest
         assertEquals(user.getId(), actualUserId);
     }
 
-    private void createTournamentTestInvalid(Integer id, String name, String description, Integer userId, int numberOfTeams,
+    private void createTournamentTestInvalid(Integer id, String name, String description, String UUID, int numberOfTeams,
                                              String errorMessage)
     {
-        User user = new User(userId);
+        User user = new User(UUID);
         Tournament tournamentIn = new Tournament(name, description, user, numberOfTeams);
         Tournament tournamentOut = new Tournament(id, name, description, user, numberOfTeams);
 
