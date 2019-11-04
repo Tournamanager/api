@@ -21,7 +21,6 @@ public class Tournament
     private User owner;
     private int numberOfTeams;
 
-
     public Tournament(String name, String description, User owner, Integer numberOfTeams)
     {
         this.name = name;
