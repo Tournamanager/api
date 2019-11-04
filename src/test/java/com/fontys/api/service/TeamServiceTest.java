@@ -14,11 +14,10 @@ class TeamServiceTest {
 
     private TeamService teamService;
     private UserService userService;
-    private UserRepository mockUserRepository;
 
     @BeforeEach
     void setUp() {
-        mockUserRepository = new MockUserRepository2();
+        UserRepository mockUserRepository = new MockUserRepository2();
         teamService = new TeamService(new MockTeamRepository(), mockUserRepository);
         userService = new UserService(mockUserRepository);
     }
@@ -48,17 +47,33 @@ class TeamServiceTest {
     }
 
     @Test
+    void deleteTeamShouldReturnDeletedString() {
+        Team t = teamService.createTeam("Team One");
+        assertEquals("Team " + t.getName() + " deleted",teamService.deleteTeam(t.getId()));
+    }
+
+    @Test
+    void deleteTeamShouldReturnErrorString() {
+        assertEquals("Team does not exist",teamService.deleteTeam(1));
+    }
+
+    @Test
     void addUserToTeamShouldReturnUserString() {
-        User u = userService.createUser();
+        User u = userService.createUser("UUID1");
         Team t = teamService.createTeam("Team One");
         assertEquals("User " + u.getId() + " added to team " + t.getName(), teamService.addUserToTeam(t.getId(), u.getId()));
     }
 
     @Test
     void addUserToTeamShouldReturnOneUser() {
-        User u = userService.createUser();
+        User u = userService.createUser("UUID1");
         Team t = teamService.createTeam("Team One");
         teamService.addUserToTeam(t.getId(), u.getId());
         assertEquals(1,teamService.getTeam(t.getId()).get().getUsers().size());
+    }
+
+    @Test
+    void addUserToTeamShouldReturnErrorString() {
+        assertEquals("User or team does not exist", teamService.addUserToTeam(1,1));
     }
 }

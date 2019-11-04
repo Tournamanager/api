@@ -12,5 +12,5 @@ public class UserMutation implements GraphQLMutationResolver
 
     public UserMutation(UserService userService) { this.userService = userService; }
 
-    public User createUser(Integer id) { return userService.createUser(); }
+    public User createUser(String UUID) { return userService.createUser(UUID); }
 }
