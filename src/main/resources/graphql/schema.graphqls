@@ -10,7 +10,7 @@ type Query {
 }
 
 type Mutation {
-    createUser(id: ID!):User
+    createUser(UUID:String!):User
 
     createTeam(name:String!):Team
     deleteTeam(id:Int!):String

@@ -2,63 +2,80 @@ package com.fontys.api.service;
 
 import com.fontys.api.entities.Team;
 import com.fontys.api.entities.User;
-import com.fontys.api.mockrepositories.MockTeamRepository;
-import com.fontys.api.mockrepositories.MockUserRepository2;
+import com.fontys.api.repositories.TeamRepository;
 import com.fontys.api.repositories.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class TeamServiceTest {
 
     private TeamService teamService;
-    private UserService userService;
-    private UserRepository mockUserRepository;
+
+    private UserRepository userRepositoryMock;
+    private TeamRepository teamRepositoryMock;
 
     @BeforeEach
     void setUp() {
-        mockUserRepository = new MockUserRepository2();
-        teamService = new TeamService(new MockTeamRepository(), mockUserRepository);
-        userService = new UserService(mockUserRepository);
+        userRepositoryMock = Mockito.mock(UserRepository.class);
+        teamRepositoryMock = Mockito.mock(TeamRepository.class);
+        teamService = new TeamService(teamRepositoryMock, userRepositoryMock);
     }
 
     @Test
-    void createTeamShouldReturnTeamOne() {
-        assertEquals("Team One",teamService.createTeam("Team One").getName());
+    void createTeamShouldReturnTeam() {
+        Team t = new Team("Team One");
+        Mockito.when(teamRepositoryMock.save(Mockito.any(Team.class))).thenReturn(t);
+
+        assertEquals(t,teamService.createTeam("Team One"));
+        Mockito.verify(teamRepositoryMock, Mockito.times(1)).save(t);
     }
 
     @Test
-    void getAllTeamsShouldReturnOneTeam() {
-        teamService.createTeam("Team One");
-        assertEquals(1, teamService.getAllTeams().size());
+    void getAllTeamsShouldReturnTeamList() {
+        List<Team> teamList = new ArrayList<>();
+        teamList.add(new Team("Team One"));
+        teamList.add(new Team("Team Two"));
+        Mockito.when(teamRepositoryMock.findAll()).thenReturn(teamList);
+        assertEquals(teamList, teamService.getAllTeams());
+        Mockito.verify(teamRepositoryMock, Mockito.times(1)).findAll();
     }
 
     @Test
-    void getTeamShouldReturnTeamOne() {
-        Team t = teamService.createTeam("Team One");
-        assertEquals("Team One", teamService.getTeam(t.getId(), null).get().getName());
-    }
-
-    @Test
-    void deleteTeamShouldReturnNoTeams() {
-        Team t = teamService.createTeam("Team One");
+    void deleteTeamShouldReturnDeletedString() {
+        Team t = new Team(1, "Team One");
+        Mockito.when(teamRepositoryMock.findById(Mockito.any(Integer.class))).thenReturn(Optional.of(t));
         teamService.deleteTeam(t.getId());
-        assertEquals(0,teamService.getAllTeams().size());
+        Mockito.verify(teamRepositoryMock, Mockito.times(1)).findById(t.getId());
+        Mockito.verify(teamRepositoryMock, Mockito.times(1)).delete(t);
+    }
+
+    @Test
+    void deleteTeamShouldReturnErrorString() {
+        assertEquals("Team does not exist",teamService.deleteTeam(1));
     }
 
     @Test
     void addUserToTeamShouldReturnUserString() {
-        User u = userService.createUser();
-        Team t = teamService.createTeam("Team One");
+        User u = new User(1,"UUID1");
+        Mockito.when(userRepositoryMock.findById(Mockito.any(Integer.class))).thenReturn(Optional.of(u));
+        Team t = new Team(1,"Team One");
+        Mockito.when(teamRepositoryMock.findById(Mockito.any(Integer.class))).thenReturn(Optional.of(t));
         assertEquals("User " + u.getId() + " added to team " + t.getName(), teamService.addUserToTeam(t.getId(), u.getId()));
+        t.getUsers().add(u);
+        Mockito.verify(userRepositoryMock, Mockito.times(1)).findById(u.getId());
+        Mockito.verify(teamRepositoryMock, Mockito.times(1)).findById(t.getId());
+        Mockito.verify(teamRepositoryMock, Mockito.times(1)).save(t);
     }
 
     @Test
-    void addUserToTeamShouldReturnOneUser() {
-        User u = userService.createUser();
-        Team t = teamService.createTeam("Team One");
-        teamService.addUserToTeam(t.getId(), u.getId());
-        assertEquals(1,teamService.getTeam(t.getId(), null).get().getUsers().size());
+    void addUserToTeamShouldReturnErrorString() {
+        assertEquals("User or team does not exist", teamService.addUserToTeam(1,1));
     }
 }
