@@ -37,7 +37,7 @@ class TeamServiceTest {
     @Test
     void getTeamShouldReturnTeamOne() {
         Team t = teamService.createTeam("Team One");
-        assertEquals("Team One", teamService.getTeam(t.getId()).get().getName());
+        assertEquals("Team One", teamService.getTeam(t.getId(), null).get().getName());
     }
 
     @Test
@@ -59,6 +59,6 @@ class TeamServiceTest {
         User u = userService.createUser();
         Team t = teamService.createTeam("Team One");
         teamService.addUserToTeam(t.getId(), u.getId());
-        assertEquals(1,teamService.getTeam(t.getId()).get().getUsers().size());
+        assertEquals(1,teamService.getTeam(t.getId(), null).get().getUsers().size());
     }
 }

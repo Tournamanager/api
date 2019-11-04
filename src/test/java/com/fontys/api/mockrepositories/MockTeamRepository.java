@@ -146,4 +146,13 @@ public class MockTeamRepository implements TeamRepository {
     public <S extends Team> boolean exists(Example<S> example) {
         return false;
     }
+
+    @Override
+    public Optional<Team> findByName(String name) {
+        for (Team t: teams) {
+            if (t.getName().equals(name)) {
+                return Optional.of(t);
+            }
+        }
+        return Optional.empty();    }
 }

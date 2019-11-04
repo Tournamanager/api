@@ -32,8 +32,12 @@ public class TeamService {
     }
 
     @Transactional(readOnly = true)
-    public Optional<Team> getTeam(Integer id) {
-        return teamRepository.findById(id);
+    public Optional<Team> getTeam(Integer id, String name) {
+        if (id != null)
+            return teamRepository.findById(id);
+        if (name != null)
+            return teamRepository.findByName(name);
+        return Optional.empty();
     }
 
     @Transactional

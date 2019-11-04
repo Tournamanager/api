@@ -3,7 +3,7 @@ type Query {
     user(id:ID!):User
 
     teams(count: Int):[Team]
-    team(id:ID!):Team
+    team(id:ID, name: String):Team
 
     tournaments:[Tournament]
     tournament(id:ID!):Tournament
