@@ -146,4 +146,10 @@ public class MockUserRepository2 implements UserRepository {
     public <S extends User> boolean exists(Example<S> example) {
         return false;
     }
+
+    @Override
+    public User getUserByUUID(String UUID)
+    {
+        return null;
+    }
 }

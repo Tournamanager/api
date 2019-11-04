@@ -24,7 +24,7 @@ public class TournamentService
     }
 
     @Transactional
-    public Tournament createTournament(String name, String description, Integer ownerId, int numberOfTeams)
+    public Tournament createTournament(String name, String description, String ownerId, int numberOfTeams)
     throws InvalidAttributeValueException
     {
         if (numberOfTeams <= 1)
@@ -38,12 +38,12 @@ public class TournamentService
             throw new InvalidAttributeValueException(
                     "The tournament name can't be empty. Please give your tournament a name and try again.");
         }
-        if (ownerId == null || ownerId < 1)
+        if (ownerId == null || ownerId.isBlank())
         {
             throw new InvalidAttributeValueException(
                     "Something went wrong while creating the tournament. Please try again.");
         }
-        User user = userRepository.findById(ownerId).orElse(null);
+        User user = userRepository.getUserByUUID(ownerId);
         return tournamentRepository.save(new Tournament(name, description, user, numberOfTeams));
     }
 
