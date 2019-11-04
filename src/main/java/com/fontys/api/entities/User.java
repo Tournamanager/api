@@ -11,19 +11,10 @@ import javax.persistence.Id;
 
 @Data
 @Entity
+@AllArgsConstructor
 @NoArgsConstructor
 public class User
 {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-
-    public User(Integer id)
-    {
-        this.id = id;
-    }
-
-    public Integer getId()
-    {
-        return id;
-    }
 }

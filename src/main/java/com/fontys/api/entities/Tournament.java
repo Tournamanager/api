@@ -1,6 +1,5 @@
 package com.fontys.api.entities;
 
-import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -9,6 +8,7 @@ import javax.persistence.*;
 
 @Data
 @Entity
+@AllArgsConstructor
 @NoArgsConstructor
 public class Tournament
 {
@@ -23,15 +23,6 @@ public class Tournament
 
     public Tournament(String name, String description, User owner, Integer numberOfTeams)
     {
-        this.name = name;
-        this.description = description;
-        this.owner = owner;
-        this.numberOfTeams = numberOfTeams;
-    }
-
-    public Tournament(Integer id, String name, String description, User owner, int numberOfTeams)
-    {
-        this.id = id;
         this.name = name;
         this.description = description;
         this.owner = owner;
