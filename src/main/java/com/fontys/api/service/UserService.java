@@ -19,7 +19,7 @@ public class UserService
     }
 
     @Transactional
-    public User createUser() { return userRepository.save(new User()); }
+    public User createUser(String UUID) { return userRepository.save(new User(UUID)); }
 
     @Transactional(readOnly = true)
     public List<User> getAllUsers() { return userRepository.findAll(); }
