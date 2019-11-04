@@ -33,5 +33,11 @@ public class TournamentService
     public List<Tournament> tournaments() { return tournamentRepository.findAll(); }
 
     @Transactional(readOnly = true)
-    public Optional<Tournament> tournament(Integer id) { return tournamentRepository.findById(id); }
+    public Optional<Tournament> tournament(Integer id, String name) {
+        if (id != null)
+            return tournamentRepository.findById(id);
+        if (name != null)
+            return tournamentRepository.findByName(name);
+        return Optional.empty();
+    }
 }

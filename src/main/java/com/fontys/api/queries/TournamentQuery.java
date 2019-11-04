@@ -6,6 +6,7 @@ import com.fontys.api.entities.Tournament;
 import com.fontys.api.service.TournamentService;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Optional;
 
@@ -19,7 +20,7 @@ public class TournamentQuery implements GraphQLQueryResolver
         this.tournamentService = tournamentService;
     }
 
-    public List<Tournament> tournaments() { return tournamentService.tournaments(); }
+    public List<Tournament> tournaments(@Nullable Integer idOfOwner) { return tournamentService.tournaments(); }
 
-    public Optional<Tournament> tournament(Integer id) { return tournamentService.tournament(id); }
+    public Optional<Tournament> tournament(@Nullable Integer id, @Nullable String name) { return tournamentService.tournament(id, name); }
 }

@@ -5,8 +5,8 @@ type Query {
     teams(count: Int):[Team]
     team(id:ID, name: String):Team
 
-    tournaments:[Tournament]
-    tournament(id:ID!):Tournament
+    tournaments(idOfOwner: Int):[Tournament]
+    tournament(id:ID, name: String):Tournament
 }
 
 type Mutation {
