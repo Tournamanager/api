@@ -11,6 +11,6 @@ class WebConfig implements WebMvcConfigurer {
 
     @Override
     public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/**");
+        registry.addMapping("https://tournamanager-spa.herokuapp.com/");
     }
 }
