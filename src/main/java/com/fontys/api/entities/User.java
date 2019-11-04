@@ -16,9 +16,9 @@ public class User
     private Integer id;
 
     @Column(unique = true)
-    private String UUID;
+    private String uuid;
 
     public User(String UUID) {
-        this.UUID = UUID;
+        this.uuid = UUID;
     }
 }

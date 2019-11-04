@@ -49,15 +49,21 @@ public class TournamentService
     }
 
     @Transactional(readOnly = true)
-    public List<Tournament> tournaments()
+    public List<Tournament> tournaments(Integer idOfOwner)
     {
+        if (idOfOwner != null)
+            return tournamentRepository.findByOwner(userRepository.findById(idOfOwner).get());
         return tournamentRepository.findAll();
     }
 
     @Transactional(readOnly = true)
-    public Optional<Tournament> tournament(Integer id)
+    public Optional<Tournament> tournament(Integer id, String name)
     {
-        return tournamentRepository.findById(id);
+        if (id != null)
+            return tournamentRepository.findById(id);
+        if (name != null)
+            return tournamentRepository.findByName(name);
+        return Optional.empty();
     }
 
     private void validateTournamentName(String name) throws InvalidAttributeValueException
