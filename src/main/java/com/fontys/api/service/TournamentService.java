@@ -37,6 +37,17 @@ public class TournamentService
         return tournamentRepository.save(new Tournament(name, description, user, numberOfTeams));
     }
 
+    @Transactional
+    public String deleteTournament(Integer id) {
+        Optional<Tournament> tournament = tournamentRepository.findById(id);
+        if (tournament.isPresent()) {
+            tournamentRepository.delete(tournament.get());
+            return "Tournament " + tournament.get().getName() + " deleted";
+        } else {
+            return "Tournament does not exist";
+        }
+    }
+
     @Transactional(readOnly = true)
     public List<Tournament> tournaments()
     {
