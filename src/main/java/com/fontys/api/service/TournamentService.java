@@ -37,16 +37,33 @@ public class TournamentService
         return tournamentRepository.save(new Tournament(name, description, user, numberOfTeams));
     }
 
+    @Transactional
+    public String deleteTournament(Integer id) {
+        Optional<Tournament> tournament = tournamentRepository.findById(id);
+        if (tournament.isPresent()) {
+            tournamentRepository.delete(tournament.get());
+            return "Tournament " + tournament.get().getName() + " deleted";
+        } else {
+            return "Tournament does not exist";
+        }
+    }
+
     @Transactional(readOnly = true)
-    public List<Tournament> tournaments()
+    public List<Tournament> tournaments(Integer idOfOwner)
     {
+        if (idOfOwner != null)
+            return tournamentRepository.findByOwner(userRepository.findById(idOfOwner).get());
         return tournamentRepository.findAll();
     }
 
     @Transactional(readOnly = true)
-    public Optional<Tournament> tournament(Integer id)
+    public Optional<Tournament> tournament(Integer id, String name)
     {
-        return tournamentRepository.findById(id);
+        if (id != null)
+            return tournamentRepository.findById(id);
+        if (name != null)
+            return tournamentRepository.findByName(name);
+        return Optional.empty();
     }
 
     private void validateTournamentName(String name) throws InvalidAttributeValueException

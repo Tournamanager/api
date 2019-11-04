@@ -3,10 +3,10 @@ type Query {
     user(id:ID!):User
 
     teams(count: Int):[Team]
-    team(id:ID!):Team
+    team(id:ID, name: String):Team
 
-    tournaments:[Tournament]
-    tournament(id:ID!):Tournament
+    tournaments(idOfOwner: Int):[Tournament]
+    tournament(id:ID, name: String):Tournament
 }
 
 type Mutation {
@@ -18,4 +18,5 @@ type Mutation {
     addUserToTeam(teamId:Int!, userId:Int!):String
 
     createTournament(name:String!, description:String, owner:Int, numberOfTeams:Int):Tournament
+    deleteTournament(id:Int!):String
 }
