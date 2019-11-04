@@ -30,19 +30,37 @@ public class TournamentServiceTest
     }
 
     @Test
-    public void createTournamentTests()
+    public void createTournamentValid()
     {
-        User user = new User(1);
         createTournamentTestValid(1, "testTournament1", "Tournament for testing 1", 1, 4);
-        createTournamentTestValid(2, "testTournament2", "Tournament for testing 2", 2, 8);
-        createTournamentTestInvalid(3, "testTournament3", "Tournament for testing 3", 1, -1,
-                "A tournament must be created for at least 2 teams. Number of teams provided was -1." +
-                " Please change the value and try again.");
-        createTournamentTestInvalid(4, "testTournament4", "Tournament for testing 4", -1, 16,
+    }
+
+    @Test
+    public void createTournamentNumberOfTeamsInvalid()
+    {
+        createTournamentTestInvalid(2, "testTournament2", "Tournament for testing 2", 1, -1,
+                                    "A tournament must be created for at least 2 teams. Number of teams provided was -1." +
+                                    " Please change the value and try again.");
+    }
+
+    @Test
+    public void createTournamentUserIdInvalid()
+    {
+        createTournamentTestInvalid(3, "testTournament3", "Tournament for testing 3", -1, 16,
                                     "Something went wrong while creating the tournament. Please try again.");
-        createTournamentTestInvalid(5, "", "Tournament for testing 5", 1, 16,
+    }
+
+    @Test
+    public void createTournamentNameEmptyStringInvalid()
+    {
+        createTournamentTestInvalid(4, "", "Tournament for testing 4", 1, 16,
                                     "The tournament name can't be empty. Please give your tournament a name and try again.");
-        createTournamentTestInvalid(6, " ", "Tournament for testing 5", 1, 16,
+    }
+
+    @Test
+    public void createTournamentNameBlankStringInvalid()
+    {
+        createTournamentTestInvalid(5, " ", "Tournament for testing 5", 1, 16,
                                     "The tournament name can't be empty. Please give your tournament a name and try again.");
     }
 
