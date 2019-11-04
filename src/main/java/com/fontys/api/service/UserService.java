@@ -27,11 +27,4 @@ public class UserService
 
     @Transactional(readOnly = true)
     public Optional<User> getUser(Integer id) { return userRepository.findById(id); }
-
-    @Transactional(readOnly = true)
-    public Optional<User> getUserByUUID(String UUID)
-    {
-        //ToDo: Write option to get user by UUID
-        return Optional.empty();
-    }
 }
