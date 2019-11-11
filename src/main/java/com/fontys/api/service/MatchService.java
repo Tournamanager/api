@@ -35,7 +35,7 @@ public class MatchService
 
         Match match = new Match(teamHome, teamAway, date1);
 
-        matchRepository.save(match);
+        return matchRepository.save(match);
     }
 
     private void validateTeam(Team team) throws InvalidAttributeValueException
