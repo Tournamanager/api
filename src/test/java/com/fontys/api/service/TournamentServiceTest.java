@@ -26,6 +26,7 @@ public class TournamentServiceTest
 
     private User user1;
     private User user2;
+    private User user3;
 
     private Tournament tournament1;
     private Tournament tournament2;
@@ -43,6 +44,7 @@ public class TournamentServiceTest
 
         user1 = new User(1, "TEST");
         user2 = new User(2, "TEST");
+        user3 = new User(3, "Test");
         tournament1 = new Tournament("Tournament 1", "Tournament For Testing", user1, 4);
         tournament2 = new Tournament("Tournament 2", "Tournament For Testing", user1, 8);
         tournament3 = new Tournament("Tournament 3", "Tournament For Testing", user1, 64);
@@ -144,11 +146,44 @@ public class TournamentServiceTest
 
         when(tournamentRepository.findAll()).thenReturn(expectedTournaments);
 
-        List<Tournament> actualTournaments = tournamentService.tournaments(null);
+        List<Tournament> actualTournaments = null;
+        try
+        {
+            actualTournaments = tournamentService.tournaments(null);
+        }
+        catch (InvalidAttributeValueException e)
+        {
+            fail();
+        }
 
         assertEquals(expectedTournaments, actualTournaments);
         Mockito.verify(tournamentRepository, times(1)).findAll();
     }
 
-    
+    @Test
+    public void getAllTournamentsByOwnerId()
+    {
+        List<Tournament> expectedTournaments = new ArrayList<>();
+        expectedTournaments.add(tournament1);
+        expectedTournaments.add(tournament2);
+        expectedTournaments.add(tournament3);
+
+        when(userRepository.findById(Mockito.anyInt())).thenReturn(Optional.of(user1));
+        when(tournamentRepository.findByOwner(Mockito.any(User.class))).thenReturn(expectedTournaments);
+
+        List<Tournament> actualTournaments = null;
+
+        try
+        {
+            actualTournaments = tournamentService.tournaments(user1.getId());
+        }
+        catch (InvalidAttributeValueException e)
+        {
+            fail();
+        }
+
+        assertEquals(expectedTournaments, actualTournaments);
+        verify(tournamentRepository, times(1)).findByOwner(user1);
+        verify(userRepository, times(1)).findById(user1.getId());
+    }
 }
