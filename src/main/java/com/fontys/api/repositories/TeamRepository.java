@@ -10,6 +10,6 @@ import java.util.Optional;
 
 public interface TeamRepository extends JpaRepository<Team, Integer> {
     Optional<Team> findByName(String name);
-    List<Team> findAllByName(String name);
-    Page<Team> findAllByName(String name, Pageable pageable);
+    List<Team> findAllByNameContains(String name);
+    Page<Team> findAllByNameContains(String name, Pageable pageable);
 }

@@ -37,7 +37,7 @@ public class TeamService {
             return teamRepository.findAll();
         }
         if (count == null) {
-            return teamRepository.findAllByName(name);
+            return teamRepository.findAllByNameContains(name);
         }
         if (name == null) {
             Pageable pageable = PageRequest.of(0, count);
@@ -45,7 +45,7 @@ public class TeamService {
             return teams.getContent();
         }
         Pageable pageable = PageRequest.of(0, count);
-        Page<Team> teams = teamRepository.findAllByName(name, pageable);
+        Page<Team> teams = teamRepository.findAllByNameContains(name, pageable);
         return teams.getContent();
     }
 
