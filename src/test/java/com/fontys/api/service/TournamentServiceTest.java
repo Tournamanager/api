@@ -186,4 +186,28 @@ public class TournamentServiceTest
         verify(tournamentRepository, times(1)).findByOwner(user1);
         verify(userRepository, times(1)).findById(user1.getId());
     }
+
+    @Test
+    public void getAllTournamentsByOwnerIdNoTournaments()
+    {
+        List<Tournament> expectedTournaments = new ArrayList<>();
+
+        when(userRepository.findById(Mockito.anyInt())).thenReturn(Optional.of(user3));
+        when(tournamentRepository.findByOwner(Mockito.any(User.class))).thenReturn(expectedTournaments);
+
+        List<Tournament> actualTournaments = null;
+
+        try
+        {
+            actualTournaments = tournamentService.tournaments(user3.getId());
+        }
+        catch (InvalidAttributeValueException e)
+        {
+            fail();
+        }
+
+        assertEquals(expectedTournaments, actualTournaments);
+        verify(tournamentRepository, times(1)).findByOwner(user3);
+        verify(userRepository, times(1)).findById(user3.getId());
+    }
 }
