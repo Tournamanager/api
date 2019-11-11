@@ -4,6 +4,9 @@ import com.fontys.api.entities.Team;
 import com.fontys.api.entities.User;
 import com.fontys.api.repositories.TeamRepository;
 import com.fontys.api.repositories.UserRepository;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,8 +30,19 @@ public class TeamService {
     }
 
     @Transactional(readOnly = true)
-    public List<Team> getAllTeams() {
-        return teamRepository.findAll();
+    public List<Team> getAllTeams(Integer count, String name) {
+        if (count == null && name == null) {
+            return teamRepository.findAll();
+        }
+        if (count == null) {
+            return teamRepository.findAllByName(name);
+        }
+        if (name == null) {
+            Pageable pageable = new PageRequest(0, count, Sort.Direction.DESC);
+            return teamRepository.findAll(pageable).getContent();
+        }
+        Pageable pageable = new PageRequest(0, count, Sort.Direction.DESC);
+        return teamRepository.findAllByName(name, pageable).getContent();
     }
 
     @Transactional(readOnly = true)
