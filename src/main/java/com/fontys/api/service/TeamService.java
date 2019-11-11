@@ -4,6 +4,7 @@ import com.fontys.api.entities.Team;
 import com.fontys.api.entities.User;
 import com.fontys.api.repositories.TeamRepository;
 import com.fontys.api.repositories.UserRepository;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -39,11 +40,13 @@ public class TeamService {
             return teamRepository.findAllByName(name);
         }
         if (name == null) {
-            Pageable pageable = new PageRequest(0, count, Sort.Direction.DESC);
-            return teamRepository.findAll(pageable).getContent();
+            Pageable pageable = PageRequest.of(0, count);
+            Page<Team> teams = teamRepository.findAll(pageable);
+            return teams.getContent();
         }
-        Pageable pageable = new PageRequest(0, count, Sort.Direction.DESC);
-        return teamRepository.findAllByName(name, pageable).getContent();
+        Pageable pageable = PageRequest.of(0, count);
+        Page<Team> teams = teamRepository.findAllByName(name, pageable);
+        return teams.getContent();
     }
 
     @Transactional(readOnly = true)

@@ -7,6 +7,7 @@ import com.fontys.api.repositories.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+import org.springframework.data.domain.Pageable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,6 +49,22 @@ class TeamServiceTest {
         Mockito.when(teamRepositoryMock.findAll()).thenReturn(teamList);
         assertEquals(teamList, teamService.getAllTeams(null, null));
         Mockito.verify(teamRepositoryMock, Mockito.times(1)).findAll();
+    }
+
+    @Test
+    void getAllTeamsShouldReturnByName()
+    {
+        List<Team> teamList = new ArrayList<>();
+        teamList.add(new Team("Team One"));
+        teamList.add(new Team("Team Two"));
+        Mockito.when(teamRepositoryMock.findAll()).thenReturn(teamList);
+        Mockito.when(teamRepositoryMock.findAllByName("Team One")).thenReturn(teamList.subList(0,1));
+        Mockito.when(teamRepositoryMock.findAllByName("Team Two")).thenReturn(teamList.subList(1,2));
+        assertEquals(1, teamService.getAllTeams(null, "Team One").size());
+        assertEquals("Team Two", teamService.getAllTeams(null, "Team Two").get(0).getName());
+        Mockito.verify(teamRepositoryMock, Mockito.times(0)).findAll();
+        Mockito.verify(teamRepositoryMock, Mockito.times(1)).findAllByName("Team One");
+        Mockito.verify(teamRepositoryMock, Mockito.times(1)).findAllByName("Team Two");
     }
 
     @Test
