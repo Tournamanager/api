@@ -144,7 +144,7 @@ class TournamentServiceTest {
 
         assertEquals(result, updatedTournamentOut);
         Mockito.verify(userRepositoryMock, times(1)).findById(user.getId());
-        Mockito.verify(tournamentRepositoryMock, times(1)).save(tournament);
+        Mockito.verify(tournamentRepositoryMock, times(1)).save(result);
     }
 
     private void updateTournamentTestInValid(String errorMessage) {
