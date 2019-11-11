@@ -40,11 +40,11 @@ public class TeamService {
             return teamRepository.findAllByNameContains(name);
         }
         if (name == null) {
-            Pageable pageable = PageRequest.of(0, count);
+            Pageable pageable = PageRequest.of(0, count, Sort.by("id").descending());
             Page<Team> teams = teamRepository.findAll(pageable);
             return teams.getContent();
         }
-        Pageable pageable = PageRequest.of(0, count);
+        Pageable pageable = PageRequest.of(0, count, Sort.by("id").descending());
         Page<Team> teams = teamRepository.findAllByNameContains(name, pageable);
         return teams.getContent();
     }
