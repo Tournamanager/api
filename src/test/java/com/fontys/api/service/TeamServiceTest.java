@@ -46,7 +46,7 @@ class TeamServiceTest {
         teamList.add(new Team("Team One"));
         teamList.add(new Team("Team Two"));
         Mockito.when(teamRepositoryMock.findAll()).thenReturn(teamList);
-        assertEquals(teamList, teamService.getAllTeams());
+        assertEquals(teamList, teamService.getAllTeams(null, null));
         Mockito.verify(teamRepositoryMock, Mockito.times(1)).findAll();
     }
 

@@ -10,6 +10,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Optional;
 
@@ -30,7 +31,7 @@ public class TeamService {
     }
 
     @Transactional(readOnly = true)
-    public List<Team> getAllTeams(Integer count, String name) {
+    public List<Team> getAllTeams(@Nullable Integer count, @Nullable String name) {
         if (count == null && name == null) {
             return teamRepository.findAll();
         }
