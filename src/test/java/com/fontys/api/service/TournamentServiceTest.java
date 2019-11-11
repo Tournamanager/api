@@ -66,6 +66,14 @@ class TournamentServiceTest
     }
 
     @Test
+    void createTournamentNumberOfTournamentsIs1Invalid()
+    {
+        createTournamentTestInvalid("testTournament", "Tournament for testing 3", 2, 1,
+                                    "A tournament must be created for at least 2 teams. Number of teams provided was 1." +
+                                    " Please change the value and try again.");
+    }
+
+    @Test
     void createTournamentUserIdInvalid()
     {
         createTournamentTestInvalid("testTournament", "Tournament for testing 4", -1, 16,
