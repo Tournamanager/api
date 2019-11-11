@@ -1,20 +1,22 @@
 package com.fontys.api.service;
 
-import com.fontys.api.entities.Tournament;
-import com.fontys.api.entities.User;
-import com.fontys.api.repositories.TournamentRepository;
-import com.fontys.api.repositories.UserRepository;
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.Mockito;
+        import com.fontys.api.entities.Tournament;
+        import com.fontys.api.entities.User;
+        import com.fontys.api.repositories.TournamentRepository;
+        import com.fontys.api.repositories.UserRepository;
+        import org.junit.Before;
+        import org.junit.Test;
+        import org.mockito.Mockito;
 
-import javax.naming.directory.InvalidAttributeValueException;
+        import javax.naming.directory.InvalidAttributeValueException;
 
-import java.util.Optional;
+        import java.util.ArrayList;
+        import java.util.List;
+        import java.util.Optional;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
-import static org.mockito.Mockito.*;
+        import static org.junit.Assert.assertEquals;
+        import static org.junit.Assert.fail;
+        import static org.mockito.Mockito.*;
 
 public class TournamentServiceTest
 {
@@ -22,12 +24,31 @@ public class TournamentServiceTest
     private UserRepository userRepository;
     private TournamentService tournamentService;
 
+    private User user1;
+    private User user2;
+
+    private Tournament tournament1;
+    private Tournament tournament2;
+    private Tournament tournament3;
+    private Tournament tournament4;
+    private Tournament tournament5;
+    private Tournament tournament6;
+
     @Before
     public void setUp()
     {
         tournamentRepository = mock(TournamentRepository.class);
         userRepository = mock(UserRepository.class);
         tournamentService = new TournamentService(tournamentRepository, userRepository);
+
+        user1 = new User(1, "TEST");
+        user2 = new User(2, "TEST");
+        tournament1 = new Tournament("Tournament 1", "Tournament For Testing", user1, 4);
+        tournament2 = new Tournament("Tournament 2", "Tournament For Testing", user1, 8);
+        tournament3 = new Tournament("Tournament 3", "Tournament For Testing", user1, 64);
+        tournament4 = new Tournament("Tournament 4", "Tournament For Testing", user2, 4);
+        tournament5 = new Tournament("Tournament 5", "Tournament For Testing", user2, 8);
+        tournament6 = new Tournament("Tournament 6", "Tournament For Testing", user2, 64);
     }
 
     @Test
@@ -109,4 +130,25 @@ public class TournamentServiceTest
             assertEquals(errorMessage, e.getMessage());
         }
     }
+
+    @Test
+    public void getAllTournaments()
+    {
+        List<Tournament> expectedTournaments = new ArrayList<>();
+        expectedTournaments.add(tournament1);
+        expectedTournaments.add(tournament2);
+        expectedTournaments.add(tournament3);
+        expectedTournaments.add(tournament4);
+        expectedTournaments.add(tournament5);
+        expectedTournaments.add(tournament6);
+
+        when(tournamentRepository.findAll()).thenReturn(expectedTournaments);
+
+        List<Tournament> actualTournaments = tournamentService.tournaments(null);
+
+        assertEquals(expectedTournaments, actualTournaments);
+        Mockito.verify(tournamentRepository, times(1)).findAll();
+    }
+
+    
 }
