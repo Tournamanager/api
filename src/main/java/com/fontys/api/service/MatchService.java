@@ -21,19 +21,20 @@ public class MatchService
         this.teamRepository = teamRepository;
     }
 
-    public Match createMatch(Integer teamHomeId, Integer teamAwayId, String date)
+    public Match createMatch(Integer teamHomeId, Integer teamAwayId, String dateString)
     throws ParseException, InvalidAttributeValueException
     {
         Team teamHome = teamRepository.findById(teamHomeId).orElse(null);
         Team teamAway = teamRepository.findById(teamAwayId).orElse(null);
         SimpleDateFormat dateFormatter = new SimpleDateFormat("dd/MM/yyyy");
-        Date date1 = dateFormatter.parse(date);
+        Date date = dateFormatter.parse(dateString);
 
         validateTeam(teamHome);
         validateTeam(teamAway);
         validateTeams(teamHome, teamAway);
+        validateDate(date);
 
-        Match match = new Match(teamHome, teamAway, date1);
+        Match match = new Match(teamHome, teamAway, date);
 
         return matchRepository.save(match);
     }
@@ -51,6 +52,14 @@ public class MatchService
         if(team1.equals(team2))
         {
             throw new InvalidAttributeValueException("An error occured while creating the match. Tried to create a match with the same team. Please change one of the teams and try again.");
+        }
+    }
+
+    private void validateDate(Date date) throws InvalidAttributeValueException
+    {
+        if(date.compareTo(new Date()) < 0)
+        {
+            throw new InvalidAttributeValueException("You cannot create a match in the Past. Change the date and try again.");
         }
     }
 }
