@@ -210,4 +210,27 @@ public class TournamentServiceTest
         verify(tournamentRepository, times(1)).findByOwner(user3);
         verify(userRepository, times(1)).findById(user3.getId());
     }
+
+    @Test
+    public void getAllTournamentsWithInvallidUserId()
+    {
+        List<Tournament> expectedTournaments = new ArrayList<>();
+
+        when(userRepository.findById(Mockito.anyInt())).thenReturn(Optional.empty());
+        when(tournamentRepository.findByOwner(Mockito.any(User.class))).thenReturn(expectedTournaments);
+
+        List<Tournament> actualTournaments = null;
+
+        String errorMessage = "An error occurred while loading the tournament. The user was not found! Please try again.";
+
+        try
+        {
+            actualTournaments = tournamentService.tournaments(4);
+            fail();
+        }
+        catch (InvalidAttributeValueException e)
+        {
+            assertEquals(errorMessage, e.getMessage());
+        }
+    }
 }

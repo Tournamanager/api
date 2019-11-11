@@ -32,7 +32,7 @@ public class TournamentService
         validateNumberOfTeams(numberOfTeams);
 
         User user = userRepository.findById(ownerId).orElse(null);
-        validateOwner(user);
+        validateOwner(user, "An error occurred while creating the tournament. The user was not found! Please try again.");
 
         return tournamentRepository.save(new Tournament(name, description, user, numberOfTeams));
     }
@@ -43,7 +43,7 @@ public class TournamentService
         if (idOfOwner != null)
         {
             User owner = userRepository.findById(idOfOwner).orElse(null);
-            validateOwner(owner);
+            validateOwner(owner, "An error occurred while loading the tournament. The user was not found! Please try again.");
             return tournamentRepository.findByOwner(owner);
         }
         return tournamentRepository.findAll();
@@ -87,11 +87,11 @@ public class TournamentService
         }
     }
 
-    private void validateOwner(User owner) throws InvalidAttributeValueException
+    private void validateOwner(User owner, String errorMessage) throws InvalidAttributeValueException
     {
         if (owner == null)
         {
-            throw new InvalidAttributeValueException("An error occurred while creating the tournament. The user was not found! Please try again.");
+            throw new InvalidAttributeValueException(errorMessage);
         }
     }
 }
