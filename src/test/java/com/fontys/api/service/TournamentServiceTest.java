@@ -129,7 +129,6 @@ class TournamentServiceTest {
         Tournament result = new Tournament(1, "testTournamentNew", "descriptionNew", user, 4);
 
         when(userRepositoryMock.findById(Mockito.any(Integer.class))).thenReturn(Optional.of(user));
-        when(tournamentRepositoryMock.findById(Mockito.any(Integer.class))).thenReturn(Optional.of(tournament));
         when(tournamentRepositoryMock.save(Mockito.any(Tournament.class))).thenReturn(result);
         Tournament updatedTournamentOut;
 
