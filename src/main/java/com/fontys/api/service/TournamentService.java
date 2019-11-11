@@ -38,10 +38,14 @@ public class TournamentService
     }
 
     @Transactional(readOnly = true)
-    public List<Tournament> tournaments(Integer idOfOwner)
+    public List<Tournament> tournaments(Integer idOfOwner) throws InvalidAttributeValueException
     {
         if (idOfOwner != null)
-            return tournamentRepository.findByOwner(userRepository.findById(idOfOwner).get());
+        {
+            User owner = userRepository.findById(idOfOwner).orElse(null);
+            validateOwner(owner);
+            return tournamentRepository.findByOwner(owner);
+        }
         return tournamentRepository.findAll();
     }
 
