@@ -13,13 +13,15 @@ class UserServiceTest {
     private UserRepository userRepositoryMock;
 
     @BeforeEach
-    void setUp() {
+    void setUp()
+    {
         userRepositoryMock = mock(UserRepository.class);
         userService = new UserService(userRepositoryMock);
     }
 
     @Test
-    void createUserShouldReturnUser() {
+    void createUserShouldReturnUser()
+    {
         User u = new User("UUID1");
         when(userRepositoryMock.save(any(User.class))).thenReturn(u);
         assertEquals(u,userService.createUser("UUID1"));

@@ -22,14 +22,16 @@ class TeamServiceTest {
     private TeamRepository teamRepositoryMock;
 
     @BeforeEach
-    void setUp() {
+    void setUp()
+    {
         userRepositoryMock = Mockito.mock(UserRepository.class);
         teamRepositoryMock = Mockito.mock(TeamRepository.class);
         teamService = new TeamService(teamRepositoryMock, userRepositoryMock);
     }
 
     @Test
-    void createTeamShouldReturnTeam() {
+    void createTeamShouldReturnTeam()
+    {
         Team t = new Team("Team One");
         Mockito.when(teamRepositoryMock.save(Mockito.any(Team.class))).thenReturn(t);
 
@@ -38,7 +40,8 @@ class TeamServiceTest {
     }
 
     @Test
-    void getAllTeamsShouldReturnTeamList() {
+    void getAllTeamsShouldReturnTeamList()
+    {
         List<Team> teamList = new ArrayList<>();
         teamList.add(new Team("Team One"));
         teamList.add(new Team("Team Two"));
@@ -48,7 +51,8 @@ class TeamServiceTest {
     }
 
     @Test
-    void deleteTeamShouldReturnDeletedString() {
+    void deleteTeamShouldReturnDeletedString()
+    {
         Team t = new Team(1, "Team One");
         Mockito.when(teamRepositoryMock.findById(Mockito.any(Integer.class))).thenReturn(Optional.of(t));
         teamService.deleteTeam(t.getId());
@@ -57,12 +61,14 @@ class TeamServiceTest {
     }
 
     @Test
-    void deleteTeamShouldReturnErrorString() {
+    void deleteTeamShouldReturnErrorString()
+    {
         assertEquals("Team does not exist",teamService.deleteTeam(1));
     }
 
     @Test
-    void addUserToTeamShouldReturnUserString() {
+    void addUserToTeamShouldReturnUserString()
+    {
         User u = new User(1,"UUID1");
         Mockito.when(userRepositoryMock.findById(Mockito.any(Integer.class))).thenReturn(Optional.of(u));
         Team t = new Team(1,"Team One");
@@ -75,7 +81,8 @@ class TeamServiceTest {
     }
 
     @Test
-    void addUserToTeamShouldReturnErrorString() {
+    void addUserToTeamShouldReturnErrorString()
+    {
         assertEquals("User or team does not exist", teamService.addUserToTeam(1,1));
     }
 }
