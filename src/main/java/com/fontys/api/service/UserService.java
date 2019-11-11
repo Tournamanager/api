@@ -2,7 +2,6 @@ package com.fontys.api.service;
 
 import com.fontys.api.entities.User;
 import com.fontys.api.repositories.UserRepository;
-import org.checkerframework.checker.nullness.Opt;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,13 +13,26 @@ public class UserService
 {
     private final UserRepository userRepository;
 
-    public UserService(UserRepository userRepository)
+    UserService(UserRepository userRepository)
     {
         this.userRepository = userRepository;
     }
 
     @Transactional
-    public User createUser(String UUID) { return userRepository.save(new User(UUID)); }
+    public User createUser(String uuid) { return userRepository.save(new User(uuid)); }
+
+    @Transactional
+    public String deleteUser(String uuid) {
+        if(!uuid.equals("")) {
+            Optional<User> user = userRepository.findByUuid(uuid);
+            if (user.isPresent()) {
+                user.get().setUuid("");
+                User u = userRepository.save(user.get());
+                return "User " + u.getId() + " deleted";
+            }
+        }
+        return "User does not exist";
+    }
 
     @Transactional(readOnly = true)
     public List<User> getAllUsers() { return userRepository.findAll(); }
@@ -29,9 +41,8 @@ public class UserService
     public Optional<User> getUser(Integer id) { return userRepository.findById(id); }
 
     @Transactional(readOnly = true)
-    public Optional<User> getUserByUUID(String UUID)
+    public Optional<User> getUserByUuid(String uuid)
     {
-        //ToDo: Write option to get user by UUID
-        return Optional.empty();
+        return userRepository.findByUuid(uuid);
     }
 }
