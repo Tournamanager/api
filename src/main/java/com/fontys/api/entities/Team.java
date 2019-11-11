@@ -32,4 +32,33 @@ public class Team {
         this.name = name;
         this.users = new ArrayList<>();
     }
+
+    @Override
+    public boolean equals(Object o)
+    {
+        if (this == o)
+        {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass())
+        {
+            return false;
+        }
+
+        Team team = (Team) o;
+
+        if (!id.equals(team.id))
+        {
+            return false;
+        }
+        return name.equals(team.name);
+    }
+
+    @Override
+    public int hashCode()
+    {
+        int result = id.hashCode();
+        result = 31 * result + name.hashCode();
+        return result;
+    }
 }
