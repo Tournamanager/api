@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Nullable;
+import javax.naming.directory.InvalidAttributeValueException;
 import java.util.List;
 import java.util.Optional;
 
@@ -59,6 +60,13 @@ public class TeamService {
     }
 
     @Transactional
+    public Team updateTeam(Integer id, String name) throws InvalidAttributeValueException {
+        validateTeamName(name);
+        validateTeam(id);
+        return teamRepository.save(new Team(id, name));
+    }
+
+    @Transactional
     public String deleteTeam(Integer id) {
         Optional<Team> team = teamRepository.findById(id);
         if (team.isPresent()) {
@@ -83,4 +91,19 @@ public class TeamService {
             return "User or team does not exist";
         }
     }
+
+    private void validateTeam(Integer id) throws InvalidAttributeValueException {
+        if (teamRepository.findById(id).isEmpty())
+            throw new InvalidAttributeValueException(
+                    "Team doesn't exist. Please add a valid team."
+            );
+    }
+
+    private void validateTeamName(String name) throws InvalidAttributeValueException {
+        if (name == null || name.isBlank()) {
+            throw new InvalidAttributeValueException(
+                    "The tournament name can't be empty. Please give your tournament a name and try again.");
+        }
+    }
+
 }
