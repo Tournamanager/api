@@ -43,7 +43,7 @@ public class MatchService
     {
         if(team == null)
         {
-            throw new InvalidAttributeValueException("An error occured while creating the match. A team was not found in the database. Please try again.");
+            throw new InvalidAttributeValueException("An error occurred while creating the match. A team was not found in the database. Please try again.");
         }
     }
 
