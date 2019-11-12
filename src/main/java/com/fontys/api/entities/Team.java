@@ -47,10 +47,6 @@ public class Team {
 
         Team team = (Team) o;
 
-        if (!id.equals(team.id))
-        {
-            return false;
-        }
         return name.equals(team.name);
     }
 

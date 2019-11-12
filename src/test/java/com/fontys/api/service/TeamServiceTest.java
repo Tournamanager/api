@@ -33,11 +33,12 @@ class TeamServiceTest {
     @Test
     void createTeamShouldReturnTeam()
     {
-        Team t = new Team("Team One");
-        Mockito.when(teamRepositoryMock.save(Mockito.any(Team.class))).thenReturn(t);
+        Team teamExpected = new Team(1,"Team One");
+        Team team = new Team("Team One");
+        Mockito.when(teamRepositoryMock.save(Mockito.any(Team.class))).thenReturn(teamExpected);
 
-        assertEquals(t,teamService.createTeam("Team One"));
-        Mockito.verify(teamRepositoryMock, Mockito.times(1)).save(t);
+        assertEquals(teamExpected,teamService.createTeam("Team One"));
+        Mockito.verify(teamRepositoryMock, Mockito.times(1)).save(team);
     }
 
     @Test

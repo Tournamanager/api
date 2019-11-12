@@ -206,7 +206,7 @@ public class MatchServiceTest
         }
         catch (ParseException | InvalidAttributeValueException e)
         {
-            assertEquals("An error occured while creating the match. Tried to create a match with the same team. Please change one of the teams and try again.", e.getMessage());
+            assertEquals("An error occurred while creating the match. Tried to create a match with the same team. Please change one of the teams and try again.", e.getMessage());
         }
     }
 }
