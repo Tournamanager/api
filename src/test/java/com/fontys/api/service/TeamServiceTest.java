@@ -7,6 +7,7 @@ import com.fontys.api.repositories.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+import org.springframework.data.domain.Pageable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,14 +23,16 @@ class TeamServiceTest {
     private TeamRepository teamRepositoryMock;
 
     @BeforeEach
-    void setUp() {
+    void setUp()
+    {
         userRepositoryMock = Mockito.mock(UserRepository.class);
         teamRepositoryMock = Mockito.mock(TeamRepository.class);
         teamService = new TeamService(teamRepositoryMock, userRepositoryMock);
     }
 
     @Test
-    void createTeamShouldReturnTeam() {
+    void createTeamShouldReturnTeam()
+    {
         Team t = new Team("Team One");
         Mockito.when(teamRepositoryMock.save(Mockito.any(Team.class))).thenReturn(t);
 
@@ -38,17 +41,35 @@ class TeamServiceTest {
     }
 
     @Test
-    void getAllTeamsShouldReturnTeamList() {
+    void getAllTeamsShouldReturnTeamList()
+    {
         List<Team> teamList = new ArrayList<>();
         teamList.add(new Team("Team One"));
         teamList.add(new Team("Team Two"));
         Mockito.when(teamRepositoryMock.findAll()).thenReturn(teamList);
-        assertEquals(teamList, teamService.getAllTeams());
+        assertEquals(teamList, teamService.getAllTeams(null, null));
         Mockito.verify(teamRepositoryMock, Mockito.times(1)).findAll();
     }
 
     @Test
-    void deleteTeamShouldReturnDeletedString() {
+    void getAllTeamsShouldReturnByName()
+    {
+        List<Team> teamList = new ArrayList<>();
+        teamList.add(new Team("Team One"));
+        teamList.add(new Team("Team Two"));
+        Mockito.when(teamRepositoryMock.findAll()).thenReturn(teamList);
+        Mockito.when(teamRepositoryMock.findAllByNameContains("Team One")).thenReturn(teamList.subList(0,1));
+        Mockito.when(teamRepositoryMock.findAllByNameContains("Team Two")).thenReturn(teamList.subList(1,2));
+        assertEquals(1, teamService.getAllTeams(null, "Team One").size());
+        assertEquals("Team Two", teamService.getAllTeams(null, "Team Two").get(0).getName());
+        Mockito.verify(teamRepositoryMock, Mockito.times(0)).findAll();
+        Mockito.verify(teamRepositoryMock, Mockito.times(1)).findAllByNameContains("Team One");
+        Mockito.verify(teamRepositoryMock, Mockito.times(1)).findAllByNameContains("Team Two");
+    }
+
+    @Test
+    void deleteTeamShouldReturnDeletedString()
+    {
         Team t = new Team(1, "Team One");
         Mockito.when(teamRepositoryMock.findById(Mockito.any(Integer.class))).thenReturn(Optional.of(t));
         teamService.deleteTeam(t.getId());
@@ -57,12 +78,14 @@ class TeamServiceTest {
     }
 
     @Test
-    void deleteTeamShouldReturnErrorString() {
+    void deleteTeamShouldReturnErrorString()
+    {
         assertEquals("Team does not exist",teamService.deleteTeam(1));
     }
 
     @Test
-    void addUserToTeamShouldReturnUserString() {
+    void addUserToTeamShouldReturnUserString()
+    {
         User u = new User(1,"UUID1");
         Mockito.when(userRepositoryMock.findById(Mockito.any(Integer.class))).thenReturn(Optional.of(u));
         Team t = new Team(1,"Team One");
@@ -75,7 +98,8 @@ class TeamServiceTest {
     }
 
     @Test
-    void addUserToTeamShouldReturnErrorString() {
+    void addUserToTeamShouldReturnErrorString()
+    {
         assertEquals("User or team does not exist", teamService.addUserToTeam(1,1));
     }
 }
