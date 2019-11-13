@@ -109,4 +109,9 @@ public class TournamentService {
             throw new InvalidAttributeValueException("An error occurred while creating the tournament. The user was not found! Please try again.");
         }
     }
+
+    public Tournament generateMatches(Integer id)
+    {
+        return null;
+    }
 }
