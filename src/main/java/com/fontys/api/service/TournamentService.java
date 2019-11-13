@@ -37,7 +37,7 @@ public class TournamentService {
     @Transactional
     public Tournament updateTournament(Integer id, String name, String description, Integer ownerId, Integer numberOfTeams) throws InvalidAttributeValueException {
 
-        validateTournament(id);
+        Tournament tournamentOld = validateTournament(id);
         validateTournamentName(name);
         validateUserId(ownerId);
         validateNumberOfTeams(numberOfTeams);
@@ -45,7 +45,7 @@ public class TournamentService {
         User user = userRepository.findById(ownerId).orElse(null);
         validateOwner(user);
 
-        return tournamentRepository.save(new Tournament(id, name, description, user, numberOfTeams));
+        return tournamentRepository.save(new Tournament(id, name, description, user, numberOfTeams, tournamentOld.getTeams()));
     }
 
     @Transactional
@@ -62,7 +62,7 @@ public class TournamentService {
     @Transactional(readOnly = true)
     public List<Tournament> tournaments(Integer idOfOwner) {
         if (idOfOwner != null)
-            return tournamentRepository.findByOwner(userRepository.findById(idOfOwner).get());
+            return tournamentRepository.findByOwner(userRepository.findById(idOfOwner).orElse(null));
         return tournamentRepository.findAll();
     }
 
@@ -75,11 +75,18 @@ public class TournamentService {
         return Optional.empty();
     }
 
-    private void validateTournament(Integer id) throws InvalidAttributeValueException {
+    @Transactional
+    public String addTeamToTournament(Integer tournamentId, Integer teamId)
+    {
+        return null;
+    }
+
+    private Tournament validateTournament(Integer id) throws InvalidAttributeValueException {
         if (tournamentRepository.findById(id).isEmpty()) {
             throw new InvalidAttributeValueException(
                     "The tournament doesn't exist. Please select a tournament and try again.");
         }
+        return tournamentRepository.findById(id).get();
     }
 
     private void validateTournamentName(String name) throws InvalidAttributeValueException {
@@ -108,10 +115,5 @@ public class TournamentService {
         if (owner == null) {
             throw new InvalidAttributeValueException("An error occurred while creating the tournament. The user was not found! Please try again.");
         }
-    }
-
-    public String addTeamToTournament(Integer tournamentId, Integer teamId)
-    {
-        return null;
     }
 }
