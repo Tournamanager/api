@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Data
 @Entity
@@ -20,6 +21,9 @@ public class Tournament
     @OneToOne
     private User owner;
     private int numberOfTeams;
+
+    @ManyToMany
+    private List<Team> teams;
 
     public Tournament(String name, String description, User owner, Integer numberOfTeams)
     {
