@@ -5,6 +5,8 @@ import com.fontys.api.entities.Team;
 import com.fontys.api.service.TeamService;
 import org.springframework.stereotype.Component;
 
+import javax.naming.directory.InvalidAttributeValueException;
+
 @Component
 public class TeamMutation implements GraphQLMutationResolver {
 
@@ -17,6 +19,10 @@ public class TeamMutation implements GraphQLMutationResolver {
 
     public Team createTeam(String name) {
         return teamService.createTeam(name);
+    }
+
+    public Team updateTeam(Integer id, String name) throws InvalidAttributeValueException {
+        return teamService.updateTeam(id, name);
     }
 
     public String deleteTeam(Integer id) {
