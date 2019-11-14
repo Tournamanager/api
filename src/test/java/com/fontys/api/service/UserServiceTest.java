@@ -6,9 +6,11 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
+import javax.naming.directory.InvalidAttributeValueException;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.Mockito.*;
 
 class UserServiceTest {
@@ -44,5 +46,51 @@ class UserServiceTest {
     @Test
     void deleteTeamShouldReturnErrorString() {
         assertEquals("User does not exist",userService.deleteUser(""));
+    }
+
+    @Test
+    void updateUserValid() {
+        User userOld = new User(1, "U1");
+        User userNew = new User(1, "User1");
+
+        when(userRepositoryMock.findById(anyInt())).thenReturn(Optional.of(userOld));
+        when(userRepositoryMock.save(any(User.class))).thenReturn(userNew);
+
+        User newUserActual = null;
+        try
+        {
+            newUserActual = this.userService.updateUser(userOld.getId(), userNew.getUuid());
+        }
+        catch (InvalidAttributeValueException e)
+        {
+            fail();
+        }
+
+        assertEquals(userNew, newUserActual);
+        Mockito.verify(userRepositoryMock, times(1)).findById(userOld.getId());
+        Mockito.verify(userRepositoryMock, times(1)).save(userNew);
+    }
+
+    @Test
+    void updateUserInValidUserId() {
+        User userOld = new User(1, "U1");
+        User userNew = new User(1, "User1");
+
+        when(userRepositoryMock.findById(anyInt())).thenReturn(Optional.empty());
+        when(userRepositoryMock.save(any(User.class))).thenReturn(userNew);
+
+        User newUserActual = null;
+        try
+        {
+            newUserActual = this.userService.updateUser(2, userNew.getUuid());
+            fail();
+        }
+        catch (InvalidAttributeValueException e)
+        {
+            assertEquals("The user wasn't found!", e.getMessage());
+        }
+
+        Mockito.verify(userRepositoryMock, times(1)).findById(2);
+        Mockito.verify(userRepositoryMock, times(0)).save(userNew);
     }
 }
