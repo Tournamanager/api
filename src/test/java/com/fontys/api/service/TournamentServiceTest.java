@@ -15,8 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 class TournamentServiceTest {
@@ -304,5 +303,58 @@ class TournamentServiceTest {
         Mockito.verify(teamRepositoryMock, times(1)).findById(team5.getId());
         Mockito.verify(tournamentRepositoryMock, times(1)).findById(tournament.getId());
         Mockito.verify(tournamentRepositoryMock, times(0)).save(tournament);
+    }
+
+    @Test
+    public void generateMatchesValid()
+    {
+        assertEquals(4, Math.ceil(Math.log(16)/Math.log(2)),0);
+        assertEquals(7, Math.ceil(Math.log(128)/Math.log(2)),0);
+        assertEquals(7, Math.ceil(Math.log(127)/Math.log(2)),0);
+        assertEquals(7, Math.ceil(Math.log(65)/Math.log(2)),0);
+        assertNotEquals(7, Math.ceil(Math.log(64)/Math.log(2)),0);
+        assertNotEquals(7, Math.ceil(Math.log(63)/Math.log(2)),0);
+
+        assertEquals(1, (int) Math.pow(2, 0));
+
+        int numberOfTeams = 4;
+        int numberOfRounds = (int) Math.ceil(Math.log(numberOfTeams)/Math.log(2));
+        int numberOfMatches = 0;
+        for(int i = 0; i < numberOfRounds - 1; i++)
+        {
+            numberOfMatches += (int) Math.pow(2, i);
+        }
+        numberOfMatches += Math.floorDiv(numberOfTeams, 2);
+        assertEquals(3, numberOfMatches);
+
+        numberOfTeams = 8;
+        numberOfRounds = (int) Math.ceil(Math.log(numberOfTeams)/Math.log(2));
+        numberOfMatches = 0;
+        for(int i = 0; i < numberOfRounds - 1; i++)
+        {
+            numberOfMatches += (int) Math.pow(2, i);
+        }
+        numberOfMatches += Math.floorDiv(numberOfTeams, 2);
+        assertEquals(7, numberOfMatches);
+
+        numberOfTeams = 7;
+        numberOfRounds = (int) Math.ceil(Math.log(numberOfTeams)/Math.log(2));
+        numberOfMatches = 0;
+        for(int i = 0; i < numberOfRounds - 1; i++)
+        {
+            numberOfMatches += (int) Math.pow(2, i);
+        }
+        numberOfMatches += Math.floorDiv(numberOfTeams, 2);
+        assertEquals(6, numberOfMatches);
+
+        numberOfTeams = 5;
+        numberOfRounds = (int) Math.ceil(Math.log(numberOfTeams)/Math.log(2));
+        numberOfMatches = 0;
+        for(int i = 0; i < numberOfRounds - 1; i++)
+        {
+            numberOfMatches += (int) Math.pow(2, i);
+        }
+        numberOfMatches += Math.floorDiv(numberOfTeams, 2);
+        assertEquals(4, numberOfMatches);
     }
 }

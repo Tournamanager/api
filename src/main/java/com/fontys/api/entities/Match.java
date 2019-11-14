@@ -16,6 +16,8 @@ public class Match
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    private String name;
+
     @OneToMany(fetch = FetchType.EAGER)
     private Team teamHome;
 
@@ -26,6 +28,11 @@ public class Match
     private Team winner;
 
     private Date date;
+
+    public Match(String name)
+    {
+        this.name = name;
+    }
 
     public Match(Team teamHome, Team teamAway, Date date)
     {

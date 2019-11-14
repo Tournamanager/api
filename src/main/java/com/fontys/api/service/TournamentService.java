@@ -1,5 +1,6 @@
 package com.fontys.api.service;
 
+import com.fontys.api.entities.Match;
 import com.fontys.api.entities.Team;
 import com.fontys.api.entities.Tournament;
 import com.fontys.api.entities.User;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.naming.directory.InvalidAttributeValueException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -110,12 +112,34 @@ public class TournamentService {
         }
     }
 
+    public Tournament generateMatches(Integer id) throws InvalidAttributeValueException
+    {
+        Tournament tournament = validateTournament(id);
+        int numberOfTeams = tournament.getTeams().size();
+        if(numberOfTeams < 2)
+        {
+            throw new InvalidAttributeValueException("The tournament must at least have 2 teams to generate a tournament!");
+        }
+        int numberOfRounds = (int) Math.ceil(Math.log(numberOfTeams)/Math.log(2));
+        int numberOfMatches = numberOfTeams - 1;
+        List<Match> matches = new ArrayList<>();
+        for(int i = 0; i < numberOfRounds - 1; i++)
+        {
+            for(int j = 0; j < (int) Math.pow(2, i); j++)
+            {
+                matches.add(new Match(String.format("Round %d Match %d", i, j)));
+            }
+        }
+        return null;
+    }
+
     private Tournament validateTournament(Integer id) throws InvalidAttributeValueException {
-        if (tournamentRepository.findById(id).isEmpty()) {
+        Optional<Tournament> tournament = tournamentRepository.findById(id);
+        if (tournament.isEmpty()) {
             throw new InvalidAttributeValueException(
                     "The tournament doesn't exist. Please select a tournament and try again.");
         }
-        return tournamentRepository.findById(id).get();
+        return tournament.get();
     }
 
     private void validateTournamentName(String name) throws InvalidAttributeValueException {
@@ -144,10 +168,5 @@ public class TournamentService {
         if (owner == null) {
             throw new InvalidAttributeValueException("An error occurred while creating the tournament. The user was not found! Please try again.");
         }
-    }
-
-    public Tournament generateMatches(Integer id)
-    {
-        return null;
     }
 }
