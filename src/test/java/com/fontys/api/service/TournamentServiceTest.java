@@ -264,19 +264,45 @@ class TournamentServiceTest {
         teams.add(team);
 
         Tournament tournament = new Tournament(1, "Tournament1", "Tournament 1", user, 4, teams);
-        Tournament tournamentOut = new Tournament(1, "Tournament1", "Tournament 1", user, 4, teams);
 
         when(tournamentRepositoryMock.findById(Mockito.anyInt())).thenReturn(Optional.of(tournament));
         when(teamRepositoryMock.findById(Mockito.anyInt())).thenReturn(Optional.of(team));
 
-        String response;
-        try {
-            response = this.tournamentService.addTeamToTournament(2, team.getId());
-            fail();
-        }
-        catch (IllegalArgumentException e)
-        {
-            assertEquals("The team already joined the tournament!", e.getMessage());
-        }
+        String response = this.tournamentService.addTeamToTournament(tournament.getId(), team.getId());
+
+        assertEquals("The team already joined the tournament!", response);
+        Mockito.verify(teamRepositoryMock, times(1)).findById(team.getId());
+        Mockito.verify(tournamentRepositoryMock, times(1)).findById(tournament.getId());
+        Mockito.verify(tournamentRepositoryMock, times(0)).save(tournament);
+    }
+
+    @Test
+    public void addTeamToTournamentInvalidTeamLimitReached()
+    {
+        User user = new User(1, "User 1");
+        Team team1 = new Team(1, "The A Team");
+        Team team2 = new Team(2, "The B Team");
+        Team team3 = new Team(3, "The C Team");
+        Team team4 = new Team(4, "The D Team");
+        Team team5 = new Team(5, "The E Team");
+
+
+        List<Team> teams = new ArrayList<>();
+        teams.add(team1);
+        teams.add(team2);
+        teams.add(team3);
+        teams.add(team4);
+
+        Tournament tournament = new Tournament(1, "Tournament1", "Tournament 1", user, 4, teams);
+
+        when(tournamentRepositoryMock.findById(Mockito.anyInt())).thenReturn(Optional.of(tournament));
+        when(teamRepositoryMock.findById(Mockito.anyInt())).thenReturn(Optional.of(team5));
+
+        String response = this.tournamentService.addTeamToTournament(tournament.getId(), team5.getId());
+
+        assertEquals("The tournament is currently filled with teams!", response);
+        Mockito.verify(teamRepositoryMock, times(1)).findById(team5.getId());
+        Mockito.verify(tournamentRepositoryMock, times(1)).findById(tournament.getId());
+        Mockito.verify(tournamentRepositoryMock, times(0)).save(tournament);
     }
 }
