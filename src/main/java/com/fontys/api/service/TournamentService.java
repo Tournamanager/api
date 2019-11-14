@@ -1,7 +1,9 @@
 package com.fontys.api.service;
 
+import com.fontys.api.entities.Match;
 import com.fontys.api.entities.Tournament;
 import com.fontys.api.entities.User;
+import com.fontys.api.repositories.MatchRepository;
 import com.fontys.api.repositories.TournamentRepository;
 import com.fontys.api.repositories.UserRepository;
 import org.springframework.stereotype.Service;
@@ -16,10 +18,13 @@ import java.util.Optional;
 public class TournamentService {
     private final TournamentRepository tournamentRepository;
     private final UserRepository userRepository;
+    private final MatchRepository matchRepository;
 
-    public TournamentService(TournamentRepository tournamentRepository, UserRepository userRepository) {
+
+    public TournamentService(TournamentRepository tournamentRepository, UserRepository userRepository, MatchRepository matchRepository) {
         this.tournamentRepository = tournamentRepository;
         this.userRepository = userRepository;
+        this.matchRepository = matchRepository;
     }
 
     @Transactional
@@ -79,7 +84,27 @@ public class TournamentService {
     @Transactional
     public String addMatchToTournament(Integer tournamentId, Integer matchId)
     {
-        return null;
+        Optional<Tournament> tournament = tournamentRepository.findById(tournamentId);
+        Optional<Match> match = matchRepository.findById(matchId);
+
+        if(tournament.isEmpty())
+        {
+            return "The tournament does not exist";
+        }
+        if(match.isEmpty())
+        {
+            return "The match does not exist";
+        }
+        Tournament tournament1 = tournament.get();
+        Match match1 = match.get();
+
+        if(tournament1.getMatches().contains(match1))
+        {
+            return "The match is already added to the tournament!";
+        }
+        tournament1.getMatches().add(match1);
+        tournamentRepository.save(tournament1);
+        return "The match was successfully added to the tournament.";
     }
 
 
