@@ -32,4 +32,8 @@ public class TournamentMutation implements GraphQLMutationResolver {
     public Tournament generateMatches(Integer id) {
         return tournamentService.generateMatches(id);
     }
+
+    public String addTeamToTournament(Integer tournamentId, Integer teamId) {
+        return tournamentService.addTeamToTournament(tournamentId, teamId);
+    }
 }
