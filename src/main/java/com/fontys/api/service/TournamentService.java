@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.naming.directory.InvalidAttributeValueException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -37,7 +38,7 @@ public class TournamentService {
     @Transactional
     public Tournament updateTournament(Integer id, String name, String description, Integer ownerId, Integer numberOfTeams) throws InvalidAttributeValueException {
 
-        validateTournament(id);
+        Tournament oldTournament = validateTournament(id);
         validateTournamentName(name);
         validateUserId(ownerId);
         validateNumberOfTeams(numberOfTeams);
@@ -45,7 +46,7 @@ public class TournamentService {
         User user = userRepository.findById(ownerId).orElse(null);
         validateOwner(user);
 
-        return tournamentRepository.save(new Tournament(id, name, description, user, numberOfTeams));
+        return tournamentRepository.save(new Tournament(id, name, description, user, numberOfTeams, oldTournament.getMatches()));
     }
 
     @Transactional
@@ -75,11 +76,13 @@ public class TournamentService {
         return Optional.empty();
     }
 
-    private void validateTournament(Integer id) throws InvalidAttributeValueException {
-        if (tournamentRepository.findById(id).isEmpty()) {
+    private Tournament validateTournament(Integer id) throws InvalidAttributeValueException {
+        Optional<Tournament> tournament = tournamentRepository.findById(id);
+        if (tournament.isEmpty()) {
             throw new InvalidAttributeValueException(
                     "The tournament doesn't exist. Please select a tournament and try again.");
         }
+        return tournament.get();
     }
 
     private void validateTournamentName(String name) throws InvalidAttributeValueException {

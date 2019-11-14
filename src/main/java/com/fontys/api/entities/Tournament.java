@@ -5,6 +5,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @Entity
@@ -21,11 +23,15 @@ public class Tournament
     private User owner;
     private int numberOfTeams;
 
+    @OneToMany
+    private List<Match> matches;
+
     public Tournament(String name, String description, User owner, Integer numberOfTeams)
     {
         this.name = name;
         this.description = description;
         this.owner = owner;
         this.numberOfTeams = numberOfTeams;
+        this.matches = new ArrayList<>();
     }
 }

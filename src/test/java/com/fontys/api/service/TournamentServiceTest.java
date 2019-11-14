@@ -9,6 +9,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.mockito.Mockito;
 
 import javax.naming.directory.InvalidAttributeValueException;
+import java.util.ArrayList;
 import java.util.Optional;
 
 import static org.junit.Assert.assertEquals;
@@ -29,7 +30,7 @@ class TournamentServiceTest {
 
     @Test
     void deleteTournamentShouldReturnDeletedString() {
-        Tournament t = new Tournament(1, "testTournament", null, new User("uuid"), 2);
+        Tournament t = new Tournament(1, "testTournament", null, new User("uuid"), 2, new ArrayList<>());
         Mockito.when(tournamentRepositoryMock.findById(Mockito.any(Integer.class))).thenReturn(Optional.of(t));
         assertEquals("Tournament " + t.getName() + " deleted", tournamentService.deleteTournament(t.getId()));
         Mockito.verify(tournamentRepositoryMock, Mockito.times(1)).findById(t.getId());
@@ -133,8 +134,8 @@ class TournamentServiceTest {
 
     private void updateTournamentTestValid() {
         User user = new User(1, "testOwner");
-        Tournament tournament = new Tournament(1, "testTournament", "description", user, 2);
-        Tournament result = new Tournament(1, "testTournamentNew", "descriptionNew", user, 4);
+        Tournament tournament = new Tournament(1, "testTournament", "description", user, 2, new ArrayList<>());
+        Tournament result = new Tournament(1, "testTournamentNew", "descriptionNew", user, 4, new ArrayList<>());
 
         when(userRepositoryMock.findById(Mockito.any(Integer.class))).thenReturn(Optional.of(user));
         when(tournamentRepositoryMock.findById(Mockito.any(Integer.class))).thenReturn(Optional.of(tournament));
@@ -159,8 +160,8 @@ class TournamentServiceTest {
         User user = new User(1, "testOwner");
         User user1 = new User(2, "testOwnerNew");
 
-        Tournament tournament = new Tournament(1, "testTournament", "description", user, 2);
-        Tournament result = new Tournament(1, "testTournamentNew", "descriptionNew", user1, 4);
+        Tournament tournament = new Tournament(1, "testTournament", "description", user, 2, new ArrayList<>());
+        Tournament result = new Tournament(1, "testTournamentNew", "descriptionNew", user1, 4, new ArrayList<>());
 
         when(userRepositoryMock.findById(Mockito.any(Integer.class))).thenReturn(Optional.of(user));
         when(tournamentRepositoryMock.save(Mockito.any(Tournament.class))).thenReturn(tournament);
