@@ -32,4 +32,6 @@ public class TeamMutation implements GraphQLMutationResolver {
     public String addUserToTeam(Integer teamId, Integer userId) {
         return teamService.addUserToTeam(teamId, userId);
     }
+
+    public String removeUserFromTeam(Integer teamId, Integer userId) { return teamService.removeUserFromTeam(teamId, userId); }
 }

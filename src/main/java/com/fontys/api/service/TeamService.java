@@ -106,4 +106,8 @@ public class TeamService {
         }
     }
 
+    public String removeUserFromTeam(Integer teamId, Integer userId)
+    {
+        return null;
+    }
 }
