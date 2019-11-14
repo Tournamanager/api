@@ -22,7 +22,6 @@ public class Tournament
     @OneToOne
     private User owner;
     private int numberOfTeams;
-
     @ManyToMany
     private List<Team> teams;
 
