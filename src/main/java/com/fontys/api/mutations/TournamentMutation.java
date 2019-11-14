@@ -28,4 +28,6 @@ public class TournamentMutation implements GraphQLMutationResolver {
     public String deleteTournament(Integer id) {
         return tournamentService.deleteTournament(id);
     }
+
+    public String addMatchToTournament(Integer tournamentId, Integer matchId) { return tournamentService.addMatchToTournament(tournamentId, matchId); }
 }

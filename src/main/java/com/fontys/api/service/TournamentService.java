@@ -76,6 +76,14 @@ public class TournamentService {
         return Optional.empty();
     }
 
+    @Transactional
+    public String addMatchToTournament(Integer tournamentId, Integer matchId)
+    {
+        return null;
+    }
+
+
+
     private Tournament validateTournament(Integer id) throws InvalidAttributeValueException {
         Optional<Tournament> tournament = tournamentRepository.findById(id);
         if (tournament.isEmpty()) {

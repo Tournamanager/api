@@ -19,6 +19,7 @@ type Mutation {
 
     createTournament(name:String!, description:String, owner:Int, numberOfTeams:Int):Tournament
     deleteTournament(id:Int!):String
+    addMatchToTournament(tournamentId: Int!, matchId: Int!):String
 
     createMatch(teamHomeId:Int!, teamAwayId:Int!, date:Date):Match
 }
