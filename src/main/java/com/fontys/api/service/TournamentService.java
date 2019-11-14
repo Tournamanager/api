@@ -98,7 +98,11 @@ public class TournamentService {
             Team team1 = team.get();
             if(tournament1.getTeams().contains(team1))
             {
-                throw new IllegalArgumentException("The team already joined the tournament!");
+                return "The team already joined the tournament!";
+            }
+            if(tournament1.getNumberOfTeams() == tournament1.getTeams().size())
+            {
+                return "The tournament is currently filled with teams!";
             }
             tournament1.getTeams().add(team1);
             tournamentRepository.save(tournament1);
