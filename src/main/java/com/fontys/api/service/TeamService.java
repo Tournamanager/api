@@ -84,6 +84,10 @@ public class TeamService {
         if (user.isPresent() && team.isPresent()) {
             User u = user.get();
             Team t = team.get();
+            if(t.getUsers().contains(u))
+            {
+                return "User is already added to the team!";
+            }
             t.getUsers().add(u);
             teamRepository.save(t);
             return "User " + u.getId() + " added to team " + t.getName();

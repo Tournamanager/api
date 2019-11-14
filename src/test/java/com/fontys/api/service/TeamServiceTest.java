@@ -101,6 +101,25 @@ class TeamServiceTest {
     }
 
     @Test
+    void addUserToTeamInvalidUserAlreadyInTeam() {
+        User user = new User(1, "User 1");
+        List<User> players = new ArrayList<>();
+        players.add(user);
+
+        Team team = new Team(1, "The A Team", players);
+
+        when(userRepositoryMock.findById(Mockito.anyInt())).thenReturn(Optional.of(user));
+        when(teamRepositoryMock.findById(Mockito.anyInt())).thenReturn(Optional.of(team));
+
+        String message = this.teamService.addUserToTeam(team.getId(), user.getId());
+
+        assertEquals("User is already added to the team!", message);
+        Mockito.verify(userRepositoryMock, times(1)).findById(1);
+        Mockito.verify(teamRepositoryMock, times(1)).findById(1);
+        Mockito.verify(teamRepositoryMock, times(0)).save(team);
+    }
+
+    @Test
     void updateTeamValid() {
         Team team = new Team(1, "testTeam");
         Team result = new Team(1, "testTeamNew");
