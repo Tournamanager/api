@@ -45,4 +45,10 @@ public class UserService
     {
         return userRepository.findByUuid(uuid);
     }
+
+    @Transactional
+    public User updateUser(Integer id, String uuid)
+    {
+        return null;
+    }
 }

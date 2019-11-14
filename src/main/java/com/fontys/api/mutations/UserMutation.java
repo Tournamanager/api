@@ -17,4 +17,6 @@ public class UserMutation implements GraphQLMutationResolver
     public String deleteUser(String uuid) {
         return userService.deleteUser(uuid);
     }
+
+    public User updateUser(Integer id, String uuid) { return userService.updateUser(id, uuid); }
 }
