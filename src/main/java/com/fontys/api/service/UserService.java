@@ -5,6 +5,7 @@ import com.fontys.api.repositories.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.naming.directory.InvalidAttributeValueException;
 import java.util.List;
 import java.util.Optional;
 
@@ -47,8 +48,14 @@ public class UserService
     }
 
     @Transactional
-    public User updateUser(Integer id, String uuid)
+    public User updateUser(Integer id, String uuid) throws InvalidAttributeValueException
     {
-        return null;
+        User user = this.userRepository.findById(id).orElse(null);
+        if(user == null)
+        {
+            throw new InvalidAttributeValueException("The user wasn't found!");
+        }
+        user.setUuid(uuid);
+        return this.userRepository.save(user);
     }
 }

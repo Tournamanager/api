@@ -5,6 +5,8 @@ import com.fontys.api.entities.User;
 import com.fontys.api.service.UserService;
 import org.springframework.stereotype.Component;
 
+import javax.naming.directory.InvalidAttributeValueException;
+
 @Component
 public class UserMutation implements GraphQLMutationResolver
 {
@@ -18,5 +20,6 @@ public class UserMutation implements GraphQLMutationResolver
         return userService.deleteUser(uuid);
     }
 
-    public User updateUser(Integer id, String uuid) { return userService.updateUser(id, uuid); }
+    public User updateUser(Integer id, String uuid) throws InvalidAttributeValueException
+    { return userService.updateUser(id, uuid); }
 }
