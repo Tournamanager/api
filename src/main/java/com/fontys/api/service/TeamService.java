@@ -109,13 +109,13 @@ public class TeamService {
         {
             User user1 = user.get();
             Team team1 = team.get();
-            if(team1.getUsers().contains(user1))
+            if(!team1.getUsers().contains(user1))
             {
                 return "User is not added to the team!";
             }
             team1.getUsers().remove(user1);
             teamRepository.save(team1);
-            return "User " + user1.getId() + " removed from team " + team1.getName();
+            return "User " + user1.getId() + " is removed from team " + team1.getName();
         }
     }
 
