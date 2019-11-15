@@ -5,6 +5,7 @@ import com.fontys.api.entities.Team;
 import com.fontys.api.entities.Tournament;
 import com.fontys.api.entities.User;
 import com.fontys.api.repositories.TeamRepository;
+import com.fontys.api.repositories.MatchRepository;
 import com.fontys.api.repositories.TournamentRepository;
 import com.fontys.api.repositories.UserRepository;
 import org.springframework.stereotype.Service;
@@ -19,12 +20,14 @@ import java.util.Optional;
 public class TournamentService {
     private final TournamentRepository tournamentRepository;
     private final UserRepository userRepository;
+    private final MatchRepository matchRepository;
     private final TeamRepository teamRepository;
 
-    public TournamentService(TournamentRepository tournamentRepository, UserRepository userRepository, TeamRepository teamRepository) {
+    public TournamentService(TournamentRepository tournamentRepository, UserRepository userRepository, TeamRepository teamRepository, MatchRepository matchRepository) {
         this.tournamentRepository = tournamentRepository;
         this.userRepository = userRepository;
         this.teamRepository = teamRepository;
+        this.matchRepository = matchRepository;
     }
 
     @Transactional
@@ -43,6 +46,7 @@ public class TournamentService {
     @Transactional
     public Tournament updateTournament(Integer id, String name, String description, Integer ownerId, Integer numberOfTeams) throws InvalidAttributeValueException {
 
+
         Tournament tournamentOld = validateTournament(id);
         validateTournamentName(name);
         validateUserId(ownerId);
@@ -51,7 +55,7 @@ public class TournamentService {
         User user = userRepository.findById(ownerId).orElse(null);
         validateOwner(user);
 
-        return tournamentRepository.save(new Tournament(id, name, description, user, numberOfTeams, tournamentOld.getTeams()));
+        return tournamentRepository.save(new Tournament(id, name, description, user, numberOfTeams, tournamentOld.getTeams(), tournamentOld.getMatches()));
     }
 
     @Transactional
@@ -94,22 +98,20 @@ public class TournamentService {
         {
             return "The team does not exist";
         }
-        else
+        Tournament tournament1 = tournament.get();
+        Team team1 = team.get();
+        if(tournament1.getTeams().contains(team1))
         {
-            Tournament tournament1 = tournament.get();
-            Team team1 = team.get();
-            if(tournament1.getTeams().contains(team1))
-            {
-                return "The team already joined the tournament!";
-            }
-            if(tournament1.getNumberOfTeams() == tournament1.getTeams().size())
-            {
-                return "The tournament is currently filled with teams!";
-            }
-            tournament1.getTeams().add(team1);
-            tournamentRepository.save(tournament1);
-            return "Team " + team1.getName() + " added to tournament " + tournament1.getName();
+            return "The team already joined the tournament!";
         }
+        if(tournament1.getNumberOfTeams() == tournament1.getTeams().size())
+        {
+            return "The tournament is currently filled with teams!";
+        }
+        tournament1.getTeams().add(team1);
+        tournamentRepository.save(tournament1);
+        return "Team " + team1.getName() + " added to tournament " + tournament1.getName();
+
     }
 
     public Tournament generateMatches(Integer id) throws InvalidAttributeValueException
@@ -131,6 +133,31 @@ public class TournamentService {
             }
         }
         return null;
+    }
+
+    public String addMatchToTournament(Integer tournamentId, Integer matchId)
+    {
+        Optional<Tournament> tournament = tournamentRepository.findById(tournamentId);
+        Optional<Match> match = matchRepository.findById(matchId);
+
+        if(tournament.isEmpty())
+        {
+            return "The tournament does not exist";
+        }
+        if(match.isEmpty())
+        {
+            return "The match does not exist";
+        }
+        Tournament tournament1 = tournament.get();
+        Match match1 = match.get();
+
+        if(tournament1.getMatches().contains(match1))
+        {
+            return "The match is already added to the tournament!";
+        }
+        tournament1.getMatches().add(match1);
+        tournamentRepository.save(tournament1);
+        return "The match was successfully added to the tournament.";
     }
 
     private Tournament validateTournament(Integer id) throws InvalidAttributeValueException {
