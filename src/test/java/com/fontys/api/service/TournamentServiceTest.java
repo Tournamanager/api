@@ -52,6 +52,74 @@ class TournamentServiceTest {
     }
 
     @Test
+    void getTournamentTestValidId() {
+        User user = new User(1, "User 1");
+        Tournament tournament = new Tournament(1, "Tournament1", "Tournament number 1", user, 4);
+
+        when(tournamentRepositoryMock.findById(Mockito.anyInt())).thenReturn(Optional.of(tournament));
+
+        Optional<Tournament> tournamentActual = this.tournamentService.tournament(tournament.getId(), null);
+
+        assertEquals(Optional.of(tournament), tournamentActual);
+        Mockito.verify(tournamentRepositoryMock, times(0)).findByName(Mockito.anyString());
+        Mockito.verify(tournamentRepositoryMock, times(1)).findById(tournament.getId());
+    }
+
+    @Test
+    void getTournamentTestValidName() {
+        User user = new User(1, "User 1");
+        Tournament tournament = new Tournament(1, "Tournament1", "Tournament number 1", user, 4);
+
+        when(tournamentRepositoryMock.findByName(Mockito.anyString())).thenReturn(Optional.of(tournament));
+
+        Optional<Tournament> tournamentActual = this.tournamentService.tournament(null, tournament.getName());
+
+        assertEquals(Optional.of(tournament), tournamentActual);
+        Mockito.verify(tournamentRepositoryMock, times(1)).findByName(tournament.getName());
+        Mockito.verify(tournamentRepositoryMock, times(0)).findById(Mockito.anyInt());
+    }
+
+    @Test
+    void getTournamentTestInvalidParametersNull() {
+        User user = new User(1, "User 1");
+        Tournament tournament = new Tournament(1, "Tournament1", "Tournament number 1", user, 4);
+
+        Optional<Tournament> tournamentActual = this.tournamentService.tournament(null, null);
+
+        assertEquals(Optional.empty(), tournamentActual);
+        Mockito.verify(tournamentRepositoryMock, times(0)).findByName(Mockito.anyString());
+        Mockito.verify(tournamentRepositoryMock, times(0)).findById(Mockito.anyInt());
+    }
+
+    @Test
+    void getTournamentTestInvalidId() {
+        User user = new User(1, "User 1");
+        Tournament tournament = new Tournament(1, "Tournament1", "Tournament number 1", user, 4);
+
+        when(tournamentRepositoryMock.findById(Mockito.anyInt())).thenReturn(Optional.empty());
+
+        Optional<Tournament> tournamentActual = this.tournamentService.tournament(2, null);
+
+        assertEquals(Optional.empty(), tournamentActual);
+        Mockito.verify(tournamentRepositoryMock, times(0)).findByName(Mockito.anyString());
+        Mockito.verify(tournamentRepositoryMock, times(1)).findById(2);
+    }
+
+    @Test
+    void getTournamentTestInvalidName() {
+        User user = new User(1, "User 1");
+        Tournament tournament = new Tournament(1, "Tournament1", "Tournament number 1", user, 4);
+
+        when(tournamentRepositoryMock.findByName(Mockito.anyString())).thenReturn(Optional.empty());
+
+        Optional<Tournament> tournamentActual = this.tournamentService.tournament(null, "Tournament2");
+
+        assertEquals(Optional.empty(), tournamentActual);
+        Mockito.verify(tournamentRepositoryMock, times(1)).findByName("Tournament2");
+        Mockito.verify(tournamentRepositoryMock, times(0)).findById(Mockito.anyInt());
+    }
+
+    @Test
     void deleteTournamentShouldReturnDeletedString() {
         Tournament t = new Tournament(1, "testTournament", null, new User("uuid"), 2);
         Mockito.when(tournamentRepositoryMock.findById(Mockito.any(Integer.class))).thenReturn(Optional.of(t));
