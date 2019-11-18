@@ -35,7 +35,7 @@ public class TournamentService {
         validateNumberOfTeams(numberOfTeams);
 
         User user = userRepository.findById(ownerId).orElse(null);
-        validateOwner(user);
+        validateOwner(user, "An error occurred while creating the tournament. The user was not found! Please try again.");
 
         return tournamentRepository.save(new Tournament(name, description, user, numberOfTeams));
     }
@@ -49,7 +49,7 @@ public class TournamentService {
         validateNumberOfTeams(numberOfTeams);
 
         User user = userRepository.findById(ownerId).orElse(null);
-        validateOwner(user);
+        validateOwner(user, "An error occurred while updating the tournament. The user was not found! Please try again.");
 
         return tournamentRepository.save(new Tournament(id, name, description, user, numberOfTeams, oldTournament.getMatches()));
     }
@@ -66,9 +66,14 @@ public class TournamentService {
     }
 
     @Transactional(readOnly = true)
-    public List<Tournament> tournaments(Integer idOfOwner) {
+    public List<Tournament> tournaments(Integer idOfOwner) throws InvalidAttributeValueException
+    {
         if (idOfOwner != null)
-            return tournamentRepository.findByOwner(userRepository.findById(idOfOwner).get());
+        {
+            User owner = userRepository.findById(idOfOwner).orElse(null);
+            validateOwner(owner, "An error occurred while loading the tournament. The user was not found! Please try again.");
+            return tournamentRepository.findByOwner(owner);
+        }
         return tournamentRepository.findAll();
     }
 
@@ -140,9 +145,11 @@ public class TournamentService {
         }
     }
 
-    private void validateOwner(User owner) throws InvalidAttributeValueException {
-        if (owner == null) {
-            throw new InvalidAttributeValueException("An error occurred while creating the tournament. The user was not found! Please try again.");
+    private void validateOwner(User owner, String errorMessage) throws InvalidAttributeValueException
+    {
+        if (owner == null)
+        {
+            throw new InvalidAttributeValueException(errorMessage);
         }
     }
 }
