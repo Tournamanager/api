@@ -6,6 +6,7 @@ import com.fontys.api.service.TournamentService;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Nullable;
+import javax.naming.directory.InvalidAttributeValueException;
 import java.util.List;
 import java.util.Optional;
 
@@ -19,7 +20,8 @@ public class TournamentQuery implements GraphQLQueryResolver
         this.tournamentService = tournamentService;
     }
 
-    public List<Tournament> tournaments(@Nullable Integer idOfOwner) { return tournamentService.tournaments(idOfOwner); }
+    public List<Tournament> tournaments(@Nullable Integer idOfOwner) throws InvalidAttributeValueException
+    { return tournamentService.tournaments(idOfOwner); }
 
     public Optional<Tournament> tournament(@Nullable Integer id, @Nullable String name) { return tournamentService.tournament(id, name); }
 }
