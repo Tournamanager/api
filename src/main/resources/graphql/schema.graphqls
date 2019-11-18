@@ -17,6 +17,7 @@ type Mutation {
     deleteTeam(id:Int!) : String
     updateTeam(id:Int!, name:String!) : Team
     addUserToTeam(teamId:Int!, userId:Int!) : String
+    removeUserFromTeam(teamId: Int!, userId:Int!) : String
 
     createTournament(name:String!, description:String!, owner:Int!, numberOfTeams:Int!) : Tournament
     deleteTournament(id:Int!) : String    
