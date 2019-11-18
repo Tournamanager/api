@@ -1,0 +1,9 @@
+scalar Date
+
+type Match{
+    id: ID!,
+    teamHome: Team!,
+    teamAway: Team!,
+    winner: Team,
+    date: Date,
+}
