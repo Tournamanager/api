@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.naming.directory.InvalidAttributeValueException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 
@@ -131,6 +132,20 @@ public class TournamentService {
             {
                 matches.add(new Match(String.format("Round %d Match %d", i, j)));
             }
+        }
+        List<Team> teams = new ArrayList<>(tournament.getTeams());
+        Iterator<Team> teamsIterator = teams.iterator();
+        int matchNumber = 1;
+        while(teamsIterator.hasNext())
+        {
+            Team teamHome = teamsIterator.next();
+            if(!teamsIterator.hasNext())
+            {
+
+            }
+            Team teamAway = teamsIterator.next();
+            matches.add(new Match(String.format("Round %d Match %d", numberOfRounds, matchNumber), teamHome, teamAway));
+            matchNumber += 1;
         }
         return null;
     }
