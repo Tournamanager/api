@@ -34,6 +34,13 @@ public class Match
         this.name = name;
     }
 
+    public Match(String name, Team teamHome, Team teamAway)
+    {
+        this.name = name;
+        this.teamHome = teamHome;
+        this.teamAway = teamAway;
+    }
+
     public Match(Team teamHome, Team teamAway, Date date)
     {
         this.teamHome = teamHome;
