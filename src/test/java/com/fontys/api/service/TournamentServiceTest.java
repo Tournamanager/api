@@ -1,7 +1,9 @@
 package com.fontys.api.service;
 
+import com.fontys.api.entities.Team;
 import com.fontys.api.entities.Tournament;
 import com.fontys.api.entities.User;
+import com.fontys.api.repositories.TeamRepository;
 import com.fontys.api.repositories.TournamentRepository;
 import com.fontys.api.repositories.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -20,6 +22,8 @@ import static org.mockito.Mockito.*;
 class TournamentServiceTest {
     private TournamentRepository tournamentRepositoryMock;
     private UserRepository userRepositoryMock;
+    private TeamRepository teamRepositoryMock;
+
     private TournamentService tournamentService;
 
     private User user1;
@@ -38,7 +42,9 @@ class TournamentServiceTest {
     {
         tournamentRepositoryMock = mock(TournamentRepository.class);
         userRepositoryMock = mock(UserRepository.class);
-        tournamentService = new TournamentService(tournamentRepositoryMock, userRepositoryMock);
+        teamRepositoryMock = mock(TeamRepository.class);
+
+        tournamentService = new TournamentService(tournamentRepositoryMock, userRepositoryMock, teamRepositoryMock);
 
         user1 = new User(1, "TEST");
         user2 = new User(2, "TEST");
@@ -270,6 +276,124 @@ class TournamentServiceTest {
         } catch (InvalidAttributeValueException e) {
             assertEquals(errorMessage, e.getMessage());
         }
+    }
+
+    @Test
+    public void addTeamToTournamentValid()
+    {
+        User user = new User(1, "User 1");
+        Team team = new Team(1, "The A Team");
+        Tournament tournament = new Tournament(1, "Tournament1", "Tournament 1", user, 4);
+
+        List<Team> teams = new ArrayList<>();
+        teams.add(team);
+        Tournament tournamentOut = new Tournament(1, "Tournament1", "Tournament 1", user, 4, teams);
+
+        when(tournamentRepositoryMock.findById(Mockito.anyInt())).thenReturn(Optional.of(tournament));
+        when(teamRepositoryMock.findById(Mockito.anyInt())).thenReturn(Optional.of(team));
+
+        String response = this.tournamentService.addTeamToTournament(tournament.getId(), team.getId());
+
+        assertEquals("Team The A Team added to tournament Tournament1", response);
+        Mockito.verify(teamRepositoryMock, times(1)).findById(1);
+        Mockito.verify(tournamentRepositoryMock, times(1)).findById(1);
+        Mockito.verify(tournamentRepositoryMock, times(1)).save(tournamentOut);
+    }
+
+    @Test
+    public void addTeamToTournamentInvalidTeamId()
+    {
+        User user = new User(1, "User 1");
+        Team team = new Team(1, "The A Team");
+        Tournament tournament = new Tournament(1, "Tournament1", "Tournament 1", user, 4);
+
+        List<Team> teams = new ArrayList<>();
+        teams.add(team);
+        Tournament tournamentOut = new Tournament(1, "Tournament1", "Tournament 1", user, 4, teams);
+
+        when(tournamentRepositoryMock.findById(Mockito.anyInt())).thenReturn(Optional.of(tournament));
+        when(teamRepositoryMock.findById(Mockito.anyInt())).thenReturn(Optional.empty());
+
+        String response = this.tournamentService.addTeamToTournament(tournament.getId(), 2);
+
+        assertEquals("The team does not exist", response);
+        Mockito.verify(teamRepositoryMock, times(1)).findById(2);
+        Mockito.verify(tournamentRepositoryMock, times(1)).findById(1);
+        Mockito.verify(tournamentRepositoryMock, times(0)).save(tournamentOut);
+    }
+
+    @Test
+    public void addTeamToTournamentInvalidTournamentId()
+    {
+        User user = new User(1, "User 1");
+        Team team = new Team(1, "The A Team");
+        Tournament tournament = new Tournament(1, "Tournament1", "Tournament 1", user, 4);
+
+        List<Team> teams = new ArrayList<>();
+        teams.add(team);
+        Tournament tournamentOut = new Tournament(1, "Tournament1", "Tournament 1", user, 4, teams);
+
+        when(tournamentRepositoryMock.findById(Mockito.anyInt())).thenReturn(Optional.empty());
+        when(teamRepositoryMock.findById(Mockito.anyInt())).thenReturn(Optional.of(team));
+
+        String response = this.tournamentService.addTeamToTournament(2, team.getId());
+
+        assertEquals("The tournament does not exist", response);
+        Mockito.verify(teamRepositoryMock, times(1)).findById(1);
+        Mockito.verify(tournamentRepositoryMock, times(1)).findById(2);
+        Mockito.verify(tournamentRepositoryMock, times(0)).save(tournamentOut);
+    }
+
+    @Test
+    public void addTeamToTournamentInvalidTeamAlreadyInTournament()
+    {
+        User user = new User(1, "User 1");
+        Team team = new Team(1, "The A Team");
+
+        List<Team> teams = new ArrayList<>();
+        teams.add(team);
+
+        Tournament tournament = new Tournament(1, "Tournament1", "Tournament 1", user, 4, teams);
+
+        when(tournamentRepositoryMock.findById(Mockito.anyInt())).thenReturn(Optional.of(tournament));
+        when(teamRepositoryMock.findById(Mockito.anyInt())).thenReturn(Optional.of(team));
+
+        String response = this.tournamentService.addTeamToTournament(tournament.getId(), team.getId());
+
+        assertEquals("The team already joined the tournament!", response);
+        Mockito.verify(teamRepositoryMock, times(1)).findById(team.getId());
+        Mockito.verify(tournamentRepositoryMock, times(1)).findById(tournament.getId());
+        Mockito.verify(tournamentRepositoryMock, times(0)).save(tournament);
+    }
+
+    @Test
+    public void addTeamToTournamentInvalidTeamLimitReached()
+    {
+        User user = new User(1, "User 1");
+        Team team1 = new Team(1, "The A Team");
+        Team team2 = new Team(2, "The B Team");
+        Team team3 = new Team(3, "The C Team");
+        Team team4 = new Team(4, "The D Team");
+        Team team5 = new Team(5, "The E Team");
+
+
+        List<Team> teams = new ArrayList<>();
+        teams.add(team1);
+        teams.add(team2);
+        teams.add(team3);
+        teams.add(team4);
+
+        Tournament tournament = new Tournament(1, "Tournament1", "Tournament 1", user, 4, teams);
+
+        when(tournamentRepositoryMock.findById(Mockito.anyInt())).thenReturn(Optional.of(tournament));
+        when(teamRepositoryMock.findById(Mockito.anyInt())).thenReturn(Optional.of(team5));
+
+        String response = this.tournamentService.addTeamToTournament(tournament.getId(), team5.getId());
+
+        assertEquals("The tournament has no empty slot for this team!", response);
+        Mockito.verify(teamRepositoryMock, times(1)).findById(team5.getId());
+        Mockito.verify(tournamentRepositoryMock, times(1)).findById(tournament.getId());
+        Mockito.verify(tournamentRepositoryMock, times(0)).save(tournament);
     }
 
     @Test
