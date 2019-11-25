@@ -16,13 +16,13 @@ public class Match
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @OneToMany(fetch = FetchType.EAGER)
+    @OneToOne
     private Team teamHome;
 
-    @OneToMany(fetch = FetchType.EAGER)
+    @OneToOne
     private Team teamAway;
 
-    @OneToMany(fetch = FetchType.EAGER)
+    @OneToOne
     private Team winner;
 
     private Date date;
