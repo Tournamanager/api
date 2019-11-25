@@ -5,4 +5,5 @@ type Tournament {
     owner: User,
     numberOfTeams: Int,
     matches: [Match!]!
+    teams: [Team!]!
 }
