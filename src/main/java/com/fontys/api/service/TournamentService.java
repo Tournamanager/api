@@ -41,7 +41,7 @@ public class TournamentService {
     @Transactional
     public Tournament updateTournament(Integer id, String name, String description, Integer ownerId, Integer numberOfTeams) throws InvalidAttributeValueException {
 
-        Tournament tournamentOld = validateTournament(id);
+        Tournament tournament = validateTournament(id);
         validateTournamentName(name);
         validateUserId(ownerId);
         validateNumberOfTeams(numberOfTeams);
@@ -49,7 +49,7 @@ public class TournamentService {
         User user = userRepository.findById(ownerId).orElse(null);
         validateOwner(user);
 
-        return tournamentRepository.save(new Tournament(id, name, description, user, numberOfTeams, tournamentOld.getTeams()));
+        return tournamentRepository.save(new Tournament(id, name, description, user, numberOfTeams, tournament.getTeams()));
     }
 
     @Transactional
@@ -102,7 +102,7 @@ public class TournamentService {
             }
             if(tournament1.getNumberOfTeams() == tournament1.getTeams().size())
             {
-                return "The tournament is currently filled with teams!";
+                return "The tournament has no empty slot for this team!";
             }
             tournament1.getTeams().add(team1);
             tournamentRepository.save(tournament1);

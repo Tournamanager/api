@@ -37,7 +37,7 @@ class TournamentServiceTest {
 
     @Test
     void deleteTournamentShouldReturnDeletedString() {
-        Tournament t = new Tournament(1, "testTournament", null, new User("uuid"), 2, new ArrayList<>());
+        Tournament t = new Tournament(1, "testTournament", null, new User("uuid"), 2);
         Mockito.when(tournamentRepositoryMock.findById(Mockito.any(Integer.class))).thenReturn(Optional.of(t));
         assertEquals("Tournament " + t.getName() + " deleted", tournamentService.deleteTournament(t.getId()));
         Mockito.verify(tournamentRepositoryMock, Mockito.times(1)).findById(t.getId());
@@ -141,8 +141,8 @@ class TournamentServiceTest {
 
     private void updateTournamentTestValid() {
         User user = new User(1, "testOwner");
-        Tournament tournament = new Tournament(1, "testTournament", "description", user, 2, new ArrayList<>());
-        Tournament result = new Tournament(1, "testTournamentNew", "descriptionNew", user, 4, new ArrayList<>());
+        Tournament tournament = new Tournament(1, "testTournament", "description", user, 2);
+        Tournament result = new Tournament(1, "testTournamentNew", "descriptionNew", user, 4);
 
         when(userRepositoryMock.findById(Mockito.any(Integer.class))).thenReturn(Optional.of(user));
         when(tournamentRepositoryMock.findById(Mockito.any(Integer.class))).thenReturn(Optional.of(tournament));
@@ -167,8 +167,8 @@ class TournamentServiceTest {
         User user = new User(1, "testOwner");
         User user1 = new User(2, "testOwnerNew");
 
-        Tournament tournament = new Tournament(1, "testTournament", "description", user, 2, new ArrayList<>());
-        Tournament result = new Tournament(1, "testTournamentNew", "descriptionNew", user1, 4, new ArrayList<>());
+        Tournament tournament = new Tournament(1, "testTournament", "description", user, 2);
+        Tournament result = new Tournament(1, "testTournamentNew", "descriptionNew", user1, 4);
 
         when(userRepositoryMock.findById(Mockito.any(Integer.class))).thenReturn(Optional.of(user));
         when(tournamentRepositoryMock.save(Mockito.any(Tournament.class))).thenReturn(tournament);
@@ -193,7 +193,7 @@ class TournamentServiceTest {
     {
         User user = new User(1, "User 1");
         Team team = new Team(1, "The A Team");
-        Tournament tournament = new Tournament(1, "Tournament1", "Tournament 1", user, 4, new ArrayList<>());
+        Tournament tournament = new Tournament(1, "Tournament1", "Tournament 1", user, 4);
 
         List<Team> teams = new ArrayList<>();
         teams.add(team);
@@ -215,7 +215,7 @@ class TournamentServiceTest {
     {
         User user = new User(1, "User 1");
         Team team = new Team(1, "The A Team");
-        Tournament tournament = new Tournament(1, "Tournament1", "Tournament 1", user, 4, new ArrayList<>());
+        Tournament tournament = new Tournament(1, "Tournament1", "Tournament 1", user, 4);
 
         List<Team> teams = new ArrayList<>();
         teams.add(team);
@@ -237,7 +237,7 @@ class TournamentServiceTest {
     {
         User user = new User(1, "User 1");
         Team team = new Team(1, "The A Team");
-        Tournament tournament = new Tournament(1, "Tournament1", "Tournament 1", user, 4, new ArrayList<>());
+        Tournament tournament = new Tournament(1, "Tournament1", "Tournament 1", user, 4);
 
         List<Team> teams = new ArrayList<>();
         teams.add(team);
@@ -300,7 +300,7 @@ class TournamentServiceTest {
 
         String response = this.tournamentService.addTeamToTournament(tournament.getId(), team5.getId());
 
-        assertEquals("The tournament is currently filled with teams!", response);
+        assertEquals("The tournament has no empty slot for this team!", response);
         Mockito.verify(teamRepositoryMock, times(1)).findById(team5.getId());
         Mockito.verify(tournamentRepositoryMock, times(1)).findById(tournament.getId());
         Mockito.verify(tournamentRepositoryMock, times(0)).save(tournament);
