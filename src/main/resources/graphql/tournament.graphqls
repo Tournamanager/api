@@ -4,5 +4,6 @@ type Tournament {
     description: String,
     owner: User,
     numberOfTeams: Int,
+    matches: [Match!]!
     teams: [Team!]!
 }

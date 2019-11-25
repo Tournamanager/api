@@ -25,12 +25,16 @@ public class Tournament
     @ManyToMany
     private List<Team> teams;
 
+    @OneToMany
+    private List<Match> matches;
+
     public Tournament(String name, String description, User owner, Integer numberOfTeams)
     {
         this.name = name;
         this.description = description;
         this.owner = owner;
         this.numberOfTeams = numberOfTeams;
+        this.matches = new ArrayList<>();
         this.teams = new ArrayList<>();
     }
 
@@ -42,5 +46,6 @@ public class Tournament
         this.owner = owner;
         this.numberOfTeams = numberOfTeams;
         this.teams = new ArrayList<>();
+        this.matches = new ArrayList<>();
     }
 }
