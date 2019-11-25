@@ -142,7 +142,15 @@ class TournamentServiceTest {
         when(tournamentRepositoryMock.findById(anyInt())).thenReturn(Optional.of(tournament));
         when(tournamentRepositoryMock.save(any(Tournament.class))).thenReturn(tournamentNew);
 
-        String message = this.tournamentService.addMatchToTournament(tournament.getId(), match.getId());
+        String message = null;
+        try
+        {
+            message = this.tournamentService.addMatchToTournament(tournament.getId(), match.getId());
+        }
+        catch (InvalidAttributeValueException e)
+        {
+            fail();
+        }
 
         assertEquals("The match was successfully added to the tournament.", message);
 
@@ -169,9 +177,16 @@ class TournamentServiceTest {
         when(tournamentRepositoryMock.findById(anyInt())).thenReturn(Optional.empty());
         when(tournamentRepositoryMock.save(any(Tournament.class))).thenReturn(tournamentNew);
 
-        String message = this.tournamentService.addMatchToTournament(2, match.getId());
-
-        assertEquals("The tournament does not exist", message);
+        String message = null;
+        try
+        {
+            message = this.tournamentService.addMatchToTournament(2, match.getId());
+            fail();
+        }
+        catch (InvalidAttributeValueException e)
+        {
+            assertEquals("The tournament doesn't exist. Please select a tournament and try again.", e.getMessage());
+        }
 
         verify(matchRepositoryMock, times(1)).findById(match.getId());
         verify(tournamentRepositoryMock, times(1)).findById(2);
@@ -179,7 +194,7 @@ class TournamentServiceTest {
     }
 
     @Test
-    void AddMatchToTournamentInvalidMatchId() {
+    void addMatchToTournamentInvalidMatchId() {
         Team team1 = new Team(1, "The A Team");
         Team team2 = new Team(2, "The B Team");
 
@@ -195,17 +210,24 @@ class TournamentServiceTest {
         when(tournamentRepositoryMock.findById(anyInt())).thenReturn(Optional.of(tournament));
         when(tournamentRepositoryMock.save(any(Tournament.class))).thenReturn(tournamentNew);
 
-        String message = this.tournamentService.addMatchToTournament(tournament.getId(), 2);
+        String message = null;
+        try
+        {
+            message = this.tournamentService.addMatchToTournament(tournament.getId(), 1);
+            fail();
+        }
+        catch (InvalidAttributeValueException e)
+        {
+            assertEquals("The Match doesn't exist. Please select a different match and try again.", e.getMessage());
+        }
 
-        assertEquals("The match does not exist", message);
-
-        verify(matchRepositoryMock, times(1)).findById(2);
-        verify(tournamentRepositoryMock, times(1)).findById(tournament.getId());
+        verify(matchRepositoryMock, times(1)).findById(1);
+        verify(tournamentRepositoryMock, times(0)).findById(tournament.getId());
         verify(tournamentRepositoryMock, times(0)).save(tournamentNew);
     }
 
     @Test
-    void AddMatchToTournamentInvalidMatchAlreadyAdded() {
+    void addMatchToTournamentInvalidMatchAlreadyAdded() {
         Team team1 = new Team(1, "The A Team");
         Team team2 = new Team(2, "The B Team");
 
@@ -216,13 +238,19 @@ class TournamentServiceTest {
         User user = new User(1, "User1");
         Tournament tournament = new Tournament(1, "Tournament1", "Tournament 1", user, 4, matches);
 
-        when(matchRepositoryMock.findById(anyInt())).thenReturn(Optional.empty());
+        when(matchRepositoryMock.findById(anyInt())).thenReturn(Optional.of(match));
         when(tournamentRepositoryMock.findById(anyInt())).thenReturn(Optional.of(tournament));
         when(tournamentRepositoryMock.save(any(Tournament.class))).thenReturn(tournament);
 
-        String message = this.tournamentService.addMatchToTournament(tournament.getId(), match.getId());
-
-        assertEquals("The match does not exist", message);
+        String message = null;
+        try
+        {
+            message = this.tournamentService.addMatchToTournament(tournament.getId(), match.getId());
+        }
+        catch (InvalidAttributeValueException e)
+        {
+            assertEquals("The match is already added to the tournament!", e.getMessage());
+        }
 
         verify(matchRepositoryMock, times(1)).findById(match.getId());
         verify(tournamentRepositoryMock, times(1)).findById(tournament.getId());

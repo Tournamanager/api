@@ -6,6 +6,7 @@ import com.fontys.api.entities.User;
 import com.fontys.api.repositories.MatchRepository;
 import com.fontys.api.repositories.TournamentRepository;
 import com.fontys.api.repositories.UserRepository;
+import org.checkerframework.checker.nullness.Opt;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -43,7 +44,7 @@ public class TournamentService {
     @Transactional
     public Tournament updateTournament(Integer id, String name, String description, Integer ownerId, Integer numberOfTeams) throws InvalidAttributeValueException {
 
-        Tournament oldTournament = validateTournament(id);
+        Tournament tournament = validateTournamentId(tournamentRepository.findById(id));
         validateTournamentName(name);
         validateUserId(ownerId);
         validateNumberOfTeams(numberOfTeams);
@@ -51,7 +52,7 @@ public class TournamentService {
         User user = userRepository.findById(ownerId).orElse(null);
         validateOwner(user, "An error occurred while updating the tournament. The user was not found! Please try again.");
 
-        return tournamentRepository.save(new Tournament(id, name, description, user, numberOfTeams, oldTournament.getMatches()));
+        return tournamentRepository.save(new Tournament(id, name, description, user, numberOfTeams, tournament.getMatches()));
     }
 
     @Transactional
@@ -87,35 +88,23 @@ public class TournamentService {
     }
 
     @Transactional
-    public String addMatchToTournament(Integer tournamentId, Integer matchId)
+    public String addMatchToTournament(Integer tournamentId, Integer matchId) throws InvalidAttributeValueException
     {
-        Optional<Tournament> tournament = tournamentRepository.findById(tournamentId);
-        Optional<Match> match = matchRepository.findById(matchId);
+        Match match = validateMatchId(matchRepository.findById(matchId));
+        Tournament tournament = validateTournamentId(tournamentRepository.findById(tournamentId));
 
-        if(tournament.isEmpty())
-        {
-            return "The tournament does not exist";
-        }
-        if(match.isEmpty())
-        {
-            return "The match does not exist";
-        }
-        Tournament tournament1 = tournament.get();
-        Match match1 = match.get();
+        System.out.println(tournament);
 
-        if(tournament1.getMatches().contains(match1))
-        {
-            return "The match is already added to the tournament!";
-        }
-        tournament1.getMatches().add(match1);
-        tournamentRepository.save(tournament1);
+        validateTournamentDoesNotAlreadyHaveMatch(tournament, match);
+
+        tournament.getMatches().add(match);
+        tournamentRepository.save(tournament);
         return "The match was successfully added to the tournament.";
     }
 
 
 
-    private Tournament validateTournament(Integer id) throws InvalidAttributeValueException {
-        Optional<Tournament> tournament = tournamentRepository.findById(id);
+    private Tournament validateTournamentId(Optional<Tournament> tournament) throws InvalidAttributeValueException {
         if (tournament.isEmpty()) {
             throw new InvalidAttributeValueException(
                     "The tournament doesn't exist. Please select a tournament and try again.");
@@ -150,6 +139,24 @@ public class TournamentService {
         if (owner == null)
         {
             throw new InvalidAttributeValueException(errorMessage);
+        }
+    }
+
+    private Match validateMatchId(Optional<Match> match) throws InvalidAttributeValueException
+    {
+        if(match.isEmpty())
+        {
+            throw new InvalidAttributeValueException("The Match doesn't exist. Please select a different match and try again.");
+        }
+        return match.get();
+    }
+
+    private void validateTournamentDoesNotAlreadyHaveMatch(Tournament tournament, Match match)
+    throws InvalidAttributeValueException
+    {
+        if(tournament.getMatches().contains(match))
+        {
+            throw new InvalidAttributeValueException("The match is already added to the tournament!");
         }
     }
 }
