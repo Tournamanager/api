@@ -4,12 +4,14 @@ import com.fontys.api.entities.Match;
 import com.fontys.api.entities.Team;
 import com.fontys.api.repositories.MatchRepository;
 import com.fontys.api.repositories.TeamRepository;
+import org.springframework.stereotype.Service;
 
 import javax.naming.directory.InvalidAttributeValueException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+@Service
 public class MatchService
 {
     private MatchRepository matchRepository;

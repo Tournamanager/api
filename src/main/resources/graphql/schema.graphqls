@@ -24,6 +24,5 @@ type Mutation {
     updateTournament(id:Int!, name : String!, description:String!, ownerId:Int!, numberOfTeams:Int!) : Tournament
     addTeamToTournament(tournamentId:Int!, teamId:Int!): String
 
-    createMatch(teamHomeId:Int!, teamAwayId:Int!, date:Date):Match
-
+    createMatch(teamHomeId:Int!, teamAwayId:Int!, date:String):Match
 }
