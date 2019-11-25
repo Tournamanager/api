@@ -35,12 +35,14 @@ class TeamServiceTest {
     }
 
     @Test
-    void createTeamShouldReturnTeam() {
-        Team t = new Team("Team One");
-        Mockito.when(teamRepositoryMock.save(Mockito.any(Team.class))).thenReturn(t);
+    void createTeamShouldReturnTeam()
+    {
+        Team teamExpected = new Team(1,"Team One");
+        Team team = new Team("Team One");
+        Mockito.when(teamRepositoryMock.save(Mockito.any(Team.class))).thenReturn(teamExpected);
 
-        assertEquals(t, teamService.createTeam("Team One"));
-        Mockito.verify(teamRepositoryMock, Mockito.times(1)).save(t);
+        assertEquals(teamExpected, teamService.createTeam("Team One"));
+        Mockito.verify(teamRepositoryMock, Mockito.times(1)).save(team);
     }
 
     @Test
@@ -101,6 +103,25 @@ class TeamServiceTest {
     }
 
     @Test
+    void addUserToTeamInvalidUserAlreadyInTeam() {
+        User user = new User(1, "User 1");
+        List<User> players = new ArrayList<>();
+        players.add(user);
+
+        Team team = new Team(1, "The A Team", players);
+
+        when(userRepositoryMock.findById(Mockito.anyInt())).thenReturn(Optional.of(user));
+        when(teamRepositoryMock.findById(Mockito.anyInt())).thenReturn(Optional.of(team));
+
+        String message = this.teamService.addUserToTeam(team.getId(), user.getId());
+
+        assertEquals("User is already added to the team!", message);
+        Mockito.verify(userRepositoryMock, times(1)).findById(1);
+        Mockito.verify(teamRepositoryMock, times(1)).findById(1);
+        Mockito.verify(teamRepositoryMock, times(0)).save(team);
+    }
+
+    @Test
     void updateTeamValid() {
         Team team = new Team(1, "testTeam");
         Team result = new Team(1, "testTeamNew");
@@ -139,5 +160,90 @@ class TeamServiceTest {
         } catch (InvalidAttributeValueException e) {
             Assert.assertEquals("Team doesn't exist. Please add a valid team.", e.getMessage());
         }
+    }
+
+    @Test
+    void removeUserFromTeamValid()
+    {
+        User user = new User(1, "User 1");
+        List<User> players = new ArrayList<>();
+        players.add(user);
+
+        Team team = new Team(1, "The A Team", players);
+        Team teamNew = new Team(1, "The A Team", new ArrayList<>());
+
+        when(userRepositoryMock.findById(Mockito.anyInt())).thenReturn(Optional.of(user));
+        when(teamRepositoryMock.findById(Mockito.anyInt())).thenReturn(Optional.of(team));
+
+        String message = this.teamService.removeUserFromTeam(team.getId(), user.getId());
+
+        assertEquals("User 1 is removed from team The A Team", message);
+        Mockito.verify(userRepositoryMock, times(1)).findById(1);
+        Mockito.verify(teamRepositoryMock, times(1)).findById(1);
+        Mockito.verify(teamRepositoryMock, times(1)).save(teamNew);
+    }
+
+    @Test
+    void removeUserFromTeamInvalidUserId()
+    {
+        User user = new User(1, "User 1");
+        List<User> players = new ArrayList<>();
+        players.add(user);
+
+        Team team = new Team(1, "The A Team", players);
+        Team teamNew = new Team(1, "The A Team", new ArrayList<>());
+
+        when(userRepositoryMock.findById(Mockito.anyInt())).thenReturn(Optional.empty());
+        when(teamRepositoryMock.findById(Mockito.anyInt())).thenReturn(Optional.of(team));
+
+        String message = this.teamService.removeUserFromTeam(team.getId(), 2);
+
+        assertEquals("User does not exist", message);
+        Mockito.verify(userRepositoryMock, times(1)).findById(2);
+        Mockito.verify(teamRepositoryMock, times(1)).findById(1);
+        Mockito.verify(teamRepositoryMock, times(0)).save(teamNew);
+    }
+
+    @Test
+    void removeUserFromTeamInvalidTeamId()
+    {
+        User user = new User(1, "User 1");
+        List<User> players = new ArrayList<>();
+        players.add(user);
+
+        Team team = new Team(1, "The A Team", players);
+        Team teamNew = new Team(1, "The A Team", new ArrayList<>());
+
+        when(userRepositoryMock.findById(Mockito.anyInt())).thenReturn(Optional.of(user));
+        when(teamRepositoryMock.findById(Mockito.anyInt())).thenReturn(Optional.empty());
+
+        String message = this.teamService.removeUserFromTeam(2, user.getId());
+
+        assertEquals("Team does not exist", message);
+        Mockito.verify(userRepositoryMock, times(1)).findById(1);
+        Mockito.verify(teamRepositoryMock, times(1)).findById(2);
+        Mockito.verify(teamRepositoryMock, times(0)).save(teamNew);
+    }
+
+    @Test
+    void removeUserFromTeamInvalidUserNotInTeam()
+    {
+        User user = new User(1, "User 1");
+        User user2 = new User(2, "User 2");
+        List<User> players = new ArrayList<>();
+        players.add(user);
+
+        Team team = new Team(1, "The A Team", players);
+        Team teamNew = new Team(1, "The A Team", new ArrayList<>());
+
+        when(userRepositoryMock.findById(Mockito.anyInt())).thenReturn(Optional.of(user2));
+        when(teamRepositoryMock.findById(Mockito.anyInt())).thenReturn(Optional.of(team));
+
+        String message = this.teamService.removeUserFromTeam(team.getId(), user2.getId());
+
+        assertEquals("User is not added to the team!", message);
+        Mockito.verify(userRepositoryMock, times(1)).findById(2);
+        Mockito.verify(teamRepositoryMock, times(1)).findById(1);
+        Mockito.verify(teamRepositoryMock, times(0)).save(teamNew);
     }
 }

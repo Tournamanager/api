@@ -1,23 +1,29 @@
 type Query {
-    users:[User]
-    user(id:ID!):User
+    users : [User]
+    user(id:ID!) : User
 
-    teams(count: Int, name: String):[Team]
-    team(id:ID, name: String):Team
+    teams(count: Int, name: String) : [Team]
+    team(id:ID, name: String) : Team
 
-    tournaments(idOfOwner: Int):[Tournament]
-    tournament(id:ID, name: String):Tournament
+    tournaments(idOfOwner: Int) : [Tournament]
+    tournament(id:ID, name: String) : Tournament
 }
 
 type Mutation {
-    createUser(uuid:String!):User
-    deleteUser(uuid:String!):String
+    createUser(uuid:String!) : User
+    deleteUser(uuid:String!) : String
 
-    createTeam(name:String!):Team
-    deleteTeam(id:Int!):String
-    addUserToTeam(teamId:Int!, userId:Int!):String
+    createTeam(name:String!) : Team
+    deleteTeam(id:Int!) : String
+    updateTeam(id:Int!, name:String!) : Team
+    addUserToTeam(teamId:Int!, userId:Int!) : String
+    removeUserFromTeam(teamId: Int!, userId:Int!) : String
 
-    createTournament(name:String!, description:String, owner:Int, numberOfTeams:Int):Tournament
-    deleteTournament(id:Int!):String
+    createTournament(name:String!, description:String!, owner:Int!, numberOfTeams:Int!) : Tournament
+    deleteTournament(id:Int!) : String    
+    updateTournament(id:Int!, name : String!, description:String!, ownerId:Int!, numberOfTeams:Int!) : Tournament
     addTeamToTournament(tournamentId:Int!, teamId:Int!): String
+
+    createMatch(teamHomeId:Int!, teamAwayId:Int!, date:Date):Match
+
 }

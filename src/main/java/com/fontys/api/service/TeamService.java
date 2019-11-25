@@ -84,11 +84,42 @@ public class TeamService {
         if (user.isPresent() && team.isPresent()) {
             User u = user.get();
             Team t = team.get();
+            if(t.getUsers().contains(u))
+            {
+                return "User is already added to the team!";
+            }
             t.getUsers().add(u);
             teamRepository.save(t);
             return "User " + u.getId() + " added to team " + t.getName();
         } else {
             return "User or team does not exist";
+        }
+    }
+
+    @Transactional
+    public String removeUserFromTeam(Integer teamId, Integer userId)
+    {
+        Optional<User> user = userRepository.findById(userId);
+        Optional<Team> team = teamRepository.findById(teamId);
+        if (user.isEmpty())
+        {
+            return "User does not exist";
+        }
+        else if (team.isEmpty())
+        {
+            return "Team does not exist";
+        }
+        else
+        {
+            User user1 = user.get();
+            Team team1 = team.get();
+            if(!team1.getUsers().contains(user1))
+            {
+                return "User is not added to the team!";
+            }
+            team1.getUsers().remove(user1);
+            teamRepository.save(team1);
+            return "User " + user1.getId() + " is removed from team " + team1.getName();
         }
     }
 
@@ -105,5 +136,4 @@ public class TeamService {
                     "The tournament name can't be empty. Please give your tournament a name and try again.");
         }
     }
-
 }
