@@ -16,13 +16,13 @@ public class Match
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @OneToOne
+    @ManyToOne
     private Team teamHome;
 
-    @OneToOne
+    @ManyToOne
     private Team teamAway;
 
-    @OneToOne
+    @ManyToOne
     private Team winner;
 
     private Date date;
