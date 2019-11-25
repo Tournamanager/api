@@ -20,8 +20,9 @@
 
 	<dependencies>
 		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-web</artifactId>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-webflux</artifactId>
+			<version>5.2.1.RELEASE</version>
 		</dependency>
 
 		<dependency>
@@ -74,12 +75,6 @@
             <version>RELEASE</version>
             <scope>test</scope>
         </dependency>
-
-		<dependency>
-			<groupId>org.javatuples</groupId>
-			<artifactId>javatuples</artifactId>
-			<version>1.2</version>
-		</dependency>
     </dependencies>
 
 	<build>
