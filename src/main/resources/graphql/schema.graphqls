@@ -1,6 +1,6 @@
 type Query {
     users : [User]
-    user(id:ID!) : User
+    user(id:ID, uuid:String) : User
 
     teams(count: Int, name: String) : [Team]
     team(id:ID, name: String) : Team

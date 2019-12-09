@@ -5,6 +5,8 @@ import com.fontys.api.entities.User;
 import com.fontys.api.service.UserService;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.Nullable;
+import javax.validation.constraints.Null;
 import java.util.List;
 import java.util.Optional;
 
@@ -17,5 +19,5 @@ public class UserQuery implements GraphQLQueryResolver
 
     public List<User> users() { return this.userService.getAllUsers(); }
 
-    public Optional<User> user(Integer id) { return this.userService.getUser(id); }
+    public Optional<User> user(@Nullable Integer id, @Nullable String uuid) { return this.userService.getUser(id, uuid); }
 }
