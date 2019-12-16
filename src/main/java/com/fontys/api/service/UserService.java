@@ -20,7 +20,12 @@ public class UserService
     }
 
     @Transactional
-    public User createUser(String uuid) { return userRepository.save(new User(uuid)); }
+    public User createUser(String uuid) {
+        if (userRepository.findByUuid(uuid).isEmpty()) {
+            return userRepository.save(new User(uuid));
+        }
+        return null;
+    }
 
     @Transactional
     public String deleteUser(String uuid) {
