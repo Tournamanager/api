@@ -19,7 +19,7 @@ public class Team {
     @Column(unique = true)
     private String name;
 
-    @OneToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.EAGER)
     private List<User> users;
 
     public Team(String name) {
