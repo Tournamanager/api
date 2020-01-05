@@ -18,9 +18,15 @@ public class MatchMutation implements GraphQLMutationResolver
         this.matchService = matchService;
     }
 
-    public Match createMatch(Integer teamHomeId, Integer teamAwayId, String date)
+    public Match createMatch(Integer teamHomeId, Integer teamAwayId, String date, Integer tournamentId)
     throws ParseException, InvalidAttributeValueException
     {
-        return matchService.createMatch(teamHomeId, teamAwayId, date);
+        return matchService.createMatch(teamHomeId, teamAwayId, date, tournamentId);
+    }
+
+    public Match updateMatch(Integer id, String date, Integer winnerId, Integer homeScore, Integer awayScore)
+            throws ParseException, InvalidAttributeValueException
+    {
+        return matchService.updateMatch(id, date, winnerId, homeScore, awayScore);
     }
 }

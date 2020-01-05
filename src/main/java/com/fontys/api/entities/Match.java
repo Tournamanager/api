@@ -27,10 +27,17 @@ public class Match
 
     private Date date;
 
-    public Match(Team teamHome, Team teamAway, Date date)
+    private Integer homeScore;
+    private Integer awayScore;
+
+    @ManyToOne
+    private Tournament tournament;
+
+    public Match(Team teamHome, Team teamAway, Date date, Tournament tournament)
     {
         this.teamHome = teamHome;
         this.teamAway = teamAway;
         this.date = date;
+        this.tournament = tournament;
     }
 }
