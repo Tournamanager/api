@@ -12,6 +12,7 @@ import java.util.List;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
+@DiscriminatorValue("Team")
 public class Team {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -67,5 +68,11 @@ public class Team {
         int result = id.hashCode();
         result = 31 * result + name.hashCode();
         return result;
+    }
+
+//    @Override
+    public Team getTeam()
+    {
+        return this;
     }
 }

@@ -59,7 +59,7 @@ public class MatchServiceTest
         SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
 
         Match match = new Match(team1, team2, calendar.getTime(), tournament);
-        Match expectedMatch = new Match(1, team1, team2, null, calendar.getTime(), 0, 0, tournament);
+        Match expectedMatch = new Match(1, team1, team2, null, calendar.getTime(), tournament);
 
         Mockito.when(teamRepositoryMock.findById(1)).thenReturn(Optional.of(team1));
         Mockito.when(teamRepositoryMock.findById(2)).thenReturn(Optional.of(team2));
@@ -102,7 +102,8 @@ public class MatchServiceTest
         SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
 
         Match match = new Match(team1, team2, calendar.getTime(), tournament);
-        Match expectedMatch = new Match(1, team1, team2, null, calendar.getTime(), 0, 0, tournament);
+        Match expectedMatch = new Match(1, team1, team2, null, calendar.getTime(), tournament);
+
 
         Mockito.when(teamRepositoryMock.findById(1)).thenReturn(Optional.of(team1));
         Mockito.when(teamRepositoryMock.findById(2)).thenReturn(Optional.of(team2));
@@ -139,7 +140,7 @@ public class MatchServiceTest
         SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
 
         Match match = new Match(team1, team2, calendar.getTime(), tournament);
-        Match expectedMatch = new Match(1, team1, team2, null, calendar.getTime(), 0, 0, tournament);
+        Match expectedMatch = new Match(1, team1, team2, null, calendar.getTime(), tournament);
 
         Mockito.when(teamRepositoryMock.findById(1)).thenReturn(Optional.of(team1));
         Mockito.when(teamRepositoryMock.findById(2)).thenReturn(Optional.of(team2));
@@ -176,7 +177,7 @@ public class MatchServiceTest
         SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
 
         Match match = new Match(team1, team2, calendar.getTime(), tournament);
-        Match expectedMatch = new Match(1, team1, team2, null, calendar.getTime(), 0, 0, tournament);
+        Match expectedMatch = new Match(1, team1, team2, null, calendar.getTime(), tournament);
 
         Mockito.when(teamRepositoryMock.findById(4)).thenReturn(Optional.empty());
 
@@ -211,7 +212,7 @@ public class MatchServiceTest
         SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
 
         Match match = new Match(team1, team1, calendar.getTime(), tournament);
-        Match expectedMatch = new Match(1, team1, team1, null, calendar.getTime(), 0, 0, tournament);
+        Match expectedMatch = new Match(1, team1, team1, null, calendar.getTime(), tournament);
 
         Mockito.when(teamRepositoryMock.findById(1)).thenReturn(Optional.of(team1));
 

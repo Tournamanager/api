@@ -4,7 +4,5 @@ type Match{
     teamAway: Team!,
     tournament: Tournament!,
     winner: Team,
-    date: String,
-    homeScore: Int,
-    awayScore: Int
+    date: String!,
 }

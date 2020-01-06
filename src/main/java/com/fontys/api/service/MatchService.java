@@ -67,7 +67,7 @@ public class MatchService
 
         validateDate(date);
 
-        return matchRepository.save(new Match(id, match.getTeamHome(), match.getTeamAway(), winner, date, homeScore, awayScore, match.getTournament()));
+        return matchRepository.save(new Match(id, match.getTeamHome(), match.getTeamAway(), winner, date, match.getTournament()));
     }
 
     @Transactional(readOnly = true)

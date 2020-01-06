@@ -28,6 +28,22 @@ public class Tournament
     @OneToMany
     private List<Match> matches;
 
+    @OneToOne
+    private CompetitionSchedule schedule;
+
+    private String method = "competition";
+
+    public Tournament(String name, String description, User owner, Integer numberOfTeams, List<Team> teams,
+                      List<Match> matches)
+    {
+        this.name = name;
+        this.description = description;
+        this.owner = owner;
+        this.numberOfTeams = numberOfTeams;
+        this.teams = teams;
+        this.matches = matches;
+    }
+
     public Tournament(String name, String description, User owner, Integer numberOfTeams)
     {
         this.name = name;
@@ -47,5 +63,17 @@ public class Tournament
         this.numberOfTeams = numberOfTeams;
         this.teams = new ArrayList<>();
         this.matches = new ArrayList<>();
+    }
+
+    public Tournament(Integer id, String name, String description, User owner, Integer numberOfTeams, List<Team> teams,
+                      List<Match> matches)
+    {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.owner = owner;
+        this.numberOfTeams = numberOfTeams;
+        this.teams = teams;
+        this.matches = matches;
     }
 }

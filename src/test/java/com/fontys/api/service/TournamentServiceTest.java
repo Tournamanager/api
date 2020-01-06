@@ -6,7 +6,6 @@ import com.fontys.api.entities.Tournament;
 import com.fontys.api.entities.User;
 import com.fontys.api.repositories.MatchRepository;
 import com.fontys.api.repositories.TeamRepository;
-
 import com.fontys.api.repositories.TournamentRepository;
 import com.fontys.api.repositories.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -19,8 +18,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 class TournamentServiceTest {
@@ -49,7 +47,8 @@ class TournamentServiceTest {
         userRepositoryMock = mock(UserRepository.class);
         teamRepositoryMock = mock(TeamRepository.class);
         matchRepositoryMock = mock(MatchRepository.class);
-        tournamentService = new TournamentService(tournamentRepositoryMock, userRepositoryMock, matchRepositoryMock, teamRepositoryMock);
+
+        tournamentService = new TournamentService(tournamentRepositoryMock, userRepositoryMock, teamRepositoryMock, matchRepositoryMock);
 
         user1 = new User(1, "TEST");
         user2 = new User(2, "TEST");
@@ -132,7 +131,7 @@ class TournamentServiceTest {
 
     @Test
     void deleteTournamentShouldReturnDeletedString() {
-        Tournament t = new Tournament(1, "testTournament", null, new User("uuid"), 2);
+        Tournament t = new Tournament(1, "testTournament", null, new User("uuid"), 2, new ArrayList<>(), new ArrayList<>());
         Mockito.when(tournamentRepositoryMock.findById(Mockito.any(Integer.class))).thenReturn(Optional.of(t));
         assertEquals("Tournament " + t.getName() + " deleted", tournamentService.deleteTournament(t.getId()));
         Mockito.verify(tournamentRepositoryMock, Mockito.times(1)).findById(t.getId());
@@ -203,12 +202,13 @@ class TournamentServiceTest {
         Team team1 = new Team(1, "The A Team");
         Team team2 = new Team(2, "The B Team");
 
-        Match match = new Match(1, team1, team2, null, new Date(), 0, 0, null);
+        Match match = new Match(1, team1, team2, null, new Date(), null);
         List<Match> matches = new ArrayList<>();
         matches.add(match);
 
         User user = new User(1, "User1");
-        Tournament tournament = new Tournament(1, "Tournament1", "Tournament 1", user, 4);
+
+        Tournament tournament = new Tournament(1, "Tournament1", "Tournament 1", user, 4, new ArrayList<>(), new ArrayList<>());
         Tournament tournamentNew = new Tournament(1, "Tournament1", "Tournament 1", user, 4, new ArrayList<>(), matches);
 
         when(matchRepositoryMock.findById(anyInt())).thenReturn(Optional.of(match));
@@ -216,14 +216,7 @@ class TournamentServiceTest {
         when(tournamentRepositoryMock.save(any(Tournament.class))).thenReturn(tournamentNew);
 
         String message = null;
-        try
-        {
-            message = this.tournamentService.addMatchToTournament(tournament.getId(), match.getId());
-        }
-        catch (InvalidAttributeValueException e)
-        {
-            fail();
-        }
+        message = this.tournamentService.addMatchToTournament(tournament.getId(), match.getId());
 
         assertEquals("The match was successfully added to the tournament.", message);
 
@@ -238,28 +231,22 @@ class TournamentServiceTest {
         Team team1 = new Team(1, "The A Team");
         Team team2 = new Team(2, "The B Team");
 
-        Match match = new Match(1, team1, team2, null, new Date(), 0, 0, null);
+        Match match = new Match(1, team1, team2, null, new Date(), null);
         List<Match> matches = new ArrayList<>();
         matches.add(match);
 
         User user = new User(1, "User1");
-        Tournament tournament = new Tournament(1, "Tournament1", "Tournament 1", user, 4);
+
+        Tournament tournament = new Tournament(1, "Tournament1", "Tournament 1", user, 4, new ArrayList<>(), new ArrayList<>());
         Tournament tournamentNew = new Tournament(1, "Tournament1", "Tournament 1", user, 4, new ArrayList<>(), matches);
 
         when(matchRepositoryMock.findById(anyInt())).thenReturn(Optional.of(match));
         when(tournamentRepositoryMock.findById(anyInt())).thenReturn(Optional.empty());
         when(tournamentRepositoryMock.save(any(Tournament.class))).thenReturn(tournamentNew);
 
-        String message = null;
-        try
-        {
-            message = this.tournamentService.addMatchToTournament(2, match.getId());
-            fail();
-        }
-        catch (InvalidAttributeValueException e)
-        {
-            assertEquals("The tournament doesn't exist. Please select a tournament and try again.", e.getMessage());
-        }
+        String message = this.tournamentService.addMatchToTournament(2, match.getId());
+
+        assertEquals("The tournament does not exist", message);
 
         verify(matchRepositoryMock, times(1)).findById(match.getId());
         verify(tournamentRepositoryMock, times(1)).findById(2);
@@ -267,63 +254,52 @@ class TournamentServiceTest {
     }
 
     @Test
-    void addMatchToTournamentInvalidMatchId() {
+
+    void AddMatchToTournamentInvalidMatchId() {
         Team team1 = new Team(1, "The A Team");
         Team team2 = new Team(2, "The B Team");
 
-        Match match = new Match(1, team1, team2, null, new Date(), 0, 0, null);
+        Match match = new Match(1, team1, team2, null, new Date(), null);
         List<Match> matches = new ArrayList<>();
         matches.add(match);
 
         User user = new User(1, "User1");
-        Tournament tournament = new Tournament(1, "Tournament1", "Tournament 1", user, 4);
+
+        Tournament tournament = new Tournament(1, "Tournament1", "Tournament 1", user, 4, new ArrayList<>(), new ArrayList<>());
         Tournament tournamentNew = new Tournament(1, "Tournament1", "Tournament 1", user, 4, new ArrayList<>(), matches);
 
         when(matchRepositoryMock.findById(anyInt())).thenReturn(Optional.empty());
         when(tournamentRepositoryMock.findById(anyInt())).thenReturn(Optional.of(tournament));
         when(tournamentRepositoryMock.save(any(Tournament.class))).thenReturn(tournamentNew);
 
-        String message = null;
-        try
-        {
-            message = this.tournamentService.addMatchToTournament(tournament.getId(), 1);
-            fail();
-        }
-        catch (InvalidAttributeValueException e)
-        {
-            assertEquals("The Match doesn't exist. Please select a different match and try again.", e.getMessage());
-        }
+        String message = this.tournamentService.addMatchToTournament(tournament.getId(), 2);
 
-        verify(matchRepositoryMock, times(1)).findById(1);
-        verify(tournamentRepositoryMock, times(0)).findById(tournament.getId());
+        assertEquals("The match does not exist", message);
+
+        verify(matchRepositoryMock, times(1)).findById(2);
+        verify(tournamentRepositoryMock, times(1)).findById(tournament.getId());
         verify(tournamentRepositoryMock, times(0)).save(tournamentNew);
     }
 
     @Test
-    void addMatchToTournamentInvalidMatchAlreadyAdded() {
+    void AddMatchToTournamentInvalidMatchAlreadyAdded() {
         Team team1 = new Team(1, "The A Team");
         Team team2 = new Team(2, "The B Team");
 
-        Match match = new Match(1, team1, team2, null, new Date(), 0, 0, null);
+        Match match = new Match(1, team1, team2, null, new Date(), null);
         List<Match> matches = new ArrayList<>();
         matches.add(match);
 
         User user = new User(1, "User1");
         Tournament tournament = new Tournament(1, "Tournament1", "Tournament 1", user, 4, new ArrayList<>(), matches);
 
-        when(matchRepositoryMock.findById(anyInt())).thenReturn(Optional.of(match));
+        when(matchRepositoryMock.findById(anyInt())).thenReturn(Optional.empty());
         when(tournamentRepositoryMock.findById(anyInt())).thenReturn(Optional.of(tournament));
         when(tournamentRepositoryMock.save(any(Tournament.class))).thenReturn(tournament);
 
-        String message = null;
-        try
-        {
-            message = this.tournamentService.addMatchToTournament(tournament.getId(), match.getId());
-        }
-        catch (InvalidAttributeValueException e)
-        {
-            assertEquals("The match is already added to the tournament!", e.getMessage());
-        }
+        String message = this.tournamentService.addMatchToTournament(tournament.getId(), match.getId());
+
+        assertEquals("The match does not exist", message);
 
         verify(matchRepositoryMock, times(1)).findById(match.getId());
         verify(tournamentRepositoryMock, times(1)).findById(tournament.getId());
@@ -369,8 +345,9 @@ class TournamentServiceTest {
 
     private void updateTournamentTestValid() {
         User user = new User(1, "testOwner");
-        Tournament tournament = new Tournament(1, "testTournament", "description", user, 2);
-        Tournament result = new Tournament(1, "testTournamentNew", "descriptionNew", user, 4);
+
+        Tournament tournament = new Tournament(1, "testTournament", "description", user, 2, new ArrayList<>(), new ArrayList<>());
+        Tournament result = new Tournament(1, "testTournamentNew", "descriptionNew", user, 4, new ArrayList<>(), new ArrayList<>());
 
         when(userRepositoryMock.findById(Mockito.any(Integer.class))).thenReturn(Optional.of(user));
         when(tournamentRepositoryMock.findById(Mockito.any(Integer.class))).thenReturn(Optional.of(tournament));
@@ -395,8 +372,8 @@ class TournamentServiceTest {
         User user = new User(1, "testOwner");
         User user1 = new User(2, "testOwnerNew");
 
-        Tournament tournament = new Tournament(1, "testTournament", "description", user, 2);
-        Tournament result = new Tournament(1, "testTournamentNew", "descriptionNew", user1, 4);
+        Tournament tournament = new Tournament(1, "testTournament", "description", user, 2, new ArrayList<>(), new ArrayList<>());
+        Tournament result = new Tournament(1, "testTournamentNew", "descriptionNew", user1, 4, new ArrayList<>(), new ArrayList<>());
 
         when(userRepositoryMock.findById(Mockito.any(Integer.class))).thenReturn(Optional.of(user));
         when(tournamentRepositoryMock.save(Mockito.any(Tournament.class))).thenReturn(tournament);
@@ -421,7 +398,8 @@ class TournamentServiceTest {
     {
         User user = new User(1, "User 1");
         Team team = new Team(1, "The A Team");
-        Tournament tournament = new Tournament(1, "Tournament1", "Tournament 1", user, 4);
+
+        Tournament tournament = new Tournament(1, "Tournament1", "Tournament 1", user, 4, new ArrayList<>(), new ArrayList<>());
 
         List<Team> teams = new ArrayList<>();
         teams.add(team);
@@ -443,7 +421,8 @@ class TournamentServiceTest {
     {
         User user = new User(1, "User 1");
         Team team = new Team(1, "The A Team");
-        Tournament tournament = new Tournament(1, "Tournament1", "Tournament 1", user, 4);
+
+        Tournament tournament = new Tournament(1, "Tournament1", "Tournament 1", user, 4, new ArrayList<>(), new ArrayList<>());
 
         List<Team> teams = new ArrayList<>();
         teams.add(team);
@@ -465,7 +444,8 @@ class TournamentServiceTest {
     {
         User user = new User(1, "User 1");
         Team team = new Team(1, "The A Team");
-        Tournament tournament = new Tournament(1, "Tournament1", "Tournament 1", user, 4);
+
+        Tournament tournament = new Tournament(1, "Tournament1", "Tournament 1", user, 4, new ArrayList<>(), new ArrayList<>());
 
         List<Team> teams = new ArrayList<>();
         teams.add(team);
@@ -528,7 +508,7 @@ class TournamentServiceTest {
 
         String response = this.tournamentService.addTeamToTournament(tournament.getId(), team5.getId());
 
-        assertEquals("The tournament has no empty slot for this team!", response);
+        assertEquals("The tournament is currently filled with teams!", response);
         Mockito.verify(teamRepositoryMock, times(1)).findById(team5.getId());
         Mockito.verify(tournamentRepositoryMock, times(1)).findById(tournament.getId());
         Mockito.verify(tournamentRepositoryMock, times(0)).save(tournament);

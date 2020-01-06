@@ -16,22 +16,31 @@ public class Match
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @ManyToOne
+    @OneToOne(fetch = FetchType.EAGER)
     private Team teamHome;
 
-    @ManyToOne
+    @OneToOne(fetch = FetchType.EAGER)
     private Team teamAway;
 
-    @ManyToOne
+    @OneToOne(fetch = FetchType.EAGER)
     private Team winner;
 
     private Date date;
 
-    private Integer homeScore;
-    private Integer awayScore;
-
     @ManyToOne
     private Tournament tournament;
+
+    public Match(Team teamHome, Team teamAway) {
+        this.teamHome = teamHome;
+        this.teamAway = teamAway;
+    }
+
+    public Match(Team teamHome, Team teamAway, Date date)
+    {
+        this.teamHome = teamHome;
+        this.teamAway = teamAway;
+        this.date = date;
+    }
 
     public Match(Team teamHome, Team teamAway, Date date, Tournament tournament)
     {

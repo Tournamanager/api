@@ -16,17 +16,19 @@ type Mutation {
     createUser(uuid:String!) : User
     deleteUser(uuid:String!) : String
 
+    createTournament(name:String!, description:String, owner:Int, numberOfTeams:Int):Tournament
+    deleteTournament(id:Int!):String
+    addTeamToTournament(tournamentId:Int!, teamId:Int!): String
+    addMatchToTournament(tournamentId: Int!, matchId: Int!):String
+    updateTournament(id:Int!, name : String!, description:String!, ownerId:Int!, numberOfTeams:Int!) : Tournament
+
+    generateMatches(id:Int!, method: String!):Tournament
+
     createTeam(name:String!) : Team
     deleteTeam(id:Int!) : String
     updateTeam(id:Int!, name:String!) : Team
     addUserToTeam(teamId:Int!, userId:Int!) : String
     removeUserFromTeam(teamId: Int!, userId:Int!) : String
-
-    createTournament(name:String!, description:String!, owner:Int!, numberOfTeams:Int!) : Tournament
-    deleteTournament(id:Int!) : String    
-    updateTournament(id:Int!, name : String!, description:String!, ownerId:Int!, numberOfTeams:Int!) : Tournament
-    addTeamToTournament(tournamentId:Int!, teamId:Int!): String
-    addMatchToTournament(tournamentId: Int!, matchId: Int!):String
 
     createMatch(teamHomeId:Int!, teamAwayId:Int!, date:String!, tournamentId: Int!):Match
     updateMatch(id:Int!, date:String!, winnerId:Int!, homeScore:Int!, awayScore:Int!):Match
