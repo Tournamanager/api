@@ -2,8 +2,10 @@ package com.fontys.api.service;
 
 import com.fontys.api.entities.Match;
 import com.fontys.api.entities.Team;
+import com.fontys.api.entities.Tournament;
 import com.fontys.api.repositories.MatchRepository;
 import com.fontys.api.repositories.TeamRepository;
+import com.fontys.api.repositories.TournamentRepository;
 import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -28,13 +30,15 @@ public class MatchServiceTest
 
     private MatchRepository matchRepositoryMock;
     private TeamRepository teamRepositoryMock;
+    private TournamentRepository tournamentRepositoryMock;
 
     @BeforeEach
     void setUp() {
         matchRepositoryMock = mock(MatchRepository.class);
         teamRepositoryMock = mock(TeamRepository.class);
+        tournamentRepositoryMock = mock(TournamentRepository.class);
 
-        matchService = new MatchService(matchRepositoryMock, teamRepositoryMock);
+        matchService = new MatchService(matchRepositoryMock, teamRepositoryMock, tournamentRepositoryMock);
     }
 
     @Test
@@ -42,6 +46,7 @@ public class MatchServiceTest
     {
         Team team1 = new Team(1, "The A Team");
         Team team2 = new Team(2, "The B Team");
+        Tournament tournament = new Tournament(1, "Tournament 1", "Tournament 1", null, 8);
 
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(new Date());
@@ -53,18 +58,20 @@ public class MatchServiceTest
 
         SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
 
-        Match match = new Match(team1, team2, calendar.getTime());
-        Match expectedMatch = new Match(1, team1, team2, null, calendar.getTime());
+        Match match = new Match(team1, team2, calendar.getTime(), tournament);
+        Match expectedMatch = new Match(1, team1, team2, null, calendar.getTime(), 0, 0, tournament);
 
         Mockito.when(teamRepositoryMock.findById(1)).thenReturn(Optional.of(team1));
         Mockito.when(teamRepositoryMock.findById(2)).thenReturn(Optional.of(team2));
 
         Mockito.when(matchRepositoryMock.save(Mockito.any(Match.class))).thenReturn(expectedMatch);
 
+        Mockito.when(tournamentRepositoryMock.findById(1)).thenReturn(Optional.of(tournament));
+
         Match actualMatch = null;
         try
         {
-            actualMatch = this.matchService.createMatch(match.getTeamHome().getId(), match.getTeamAway().getId(), formatter.format(match.getDate()));
+            actualMatch = this.matchService.createMatch(match.getTeamHome().getId(), match.getTeamAway().getId(), formatter.format(match.getDate()), tournament.getId());
         }
         catch (ParseException | InvalidAttributeValueException e)
         {
@@ -82,6 +89,7 @@ public class MatchServiceTest
     {
         Team team1 = new Team(1, "The A Team");
         Team team2 = new Team(2, "The B Team");
+        Tournament tournament = new Tournament(1, "Tournament 1", "Tournament 1", null, 8);
 
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(new Date());
@@ -93,16 +101,18 @@ public class MatchServiceTest
 
         SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
 
-        Match match = new Match(team1, team2, calendar.getTime());
-        Match expectedMatch = new Match(1, team1, team2, null, calendar.getTime());
+        Match match = new Match(team1, team2, calendar.getTime(), tournament);
+        Match expectedMatch = new Match(1, team1, team2, null, calendar.getTime(), 0, 0, tournament);
 
         Mockito.when(teamRepositoryMock.findById(1)).thenReturn(Optional.of(team1));
         Mockito.when(teamRepositoryMock.findById(2)).thenReturn(Optional.of(team2));
 
+        Mockito.when(tournamentRepositoryMock.findById(1)).thenReturn(Optional.of(tournament));
+
         Match actualMatch = null;
         try
         {
-            actualMatch = this.matchService.createMatch(match.getTeamHome().getId(), match.getTeamAway().getId(), formatter.format(match.getDate()));
+            actualMatch = this.matchService.createMatch(match.getTeamHome().getId(), match.getTeamAway().getId(), formatter.format(match.getDate()), tournament.getId());
             fail();
         }
         catch (ParseException | InvalidAttributeValueException e)
@@ -116,6 +126,7 @@ public class MatchServiceTest
     {
         Team team1 = new Team(1, "The A Team");
         Team team2 = new Team(2, "The B Team");
+        Tournament tournament = new Tournament(1, "Tournament 1", "Tournament 1", null, 8);
 
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(new Date());
@@ -127,16 +138,18 @@ public class MatchServiceTest
 
         SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
 
-        Match match = new Match(team1, team2, calendar.getTime());
-        Match expectedMatch = new Match(1, team1, team2, null, calendar.getTime());
+        Match match = new Match(team1, team2, calendar.getTime(), tournament);
+        Match expectedMatch = new Match(1, team1, team2, null, calendar.getTime(), 0, 0, tournament);
 
         Mockito.when(teamRepositoryMock.findById(1)).thenReturn(Optional.of(team1));
         Mockito.when(teamRepositoryMock.findById(2)).thenReturn(Optional.of(team2));
 
+        Mockito.when(tournamentRepositoryMock.findById(1)).thenReturn(Optional.of(tournament));
+
         Match actualMatch = null;
         try
         {
-            actualMatch = this.matchService.createMatch(match.getTeamHome().getId(), match.getTeamAway().getId(), "12-12-2020");
+            actualMatch = this.matchService.createMatch(match.getTeamHome().getId(), match.getTeamAway().getId(), "12-12-2020", tournament.getId());
             fail();
         }
         catch (ParseException | InvalidAttributeValueException e)
@@ -150,6 +163,7 @@ public class MatchServiceTest
     {
         Team team1 = new Team(4, "The A Team");
         Team team2 = new Team(2, "The B Team");
+        Tournament tournament = new Tournament(1, "Tournament 1", "Tournament 1", null, 8);
 
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(new Date());
@@ -161,15 +175,17 @@ public class MatchServiceTest
 
         SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
 
-        Match match = new Match(team1, team2, calendar.getTime());
-        Match expectedMatch = new Match(1, team1, team2, null, calendar.getTime());
+        Match match = new Match(team1, team2, calendar.getTime(), tournament);
+        Match expectedMatch = new Match(1, team1, team2, null, calendar.getTime(), 0, 0, tournament);
 
         Mockito.when(teamRepositoryMock.findById(4)).thenReturn(Optional.empty());
+
+        Mockito.when(tournamentRepositoryMock.findById(1)).thenReturn(Optional.of(tournament));
 
         Match actualMatch = null;
         try
         {
-            actualMatch = this.matchService.createMatch(match.getTeamHome().getId(), match.getTeamAway().getId(), formatter.format(calendar.getTime()));
+            actualMatch = this.matchService.createMatch(match.getTeamHome().getId(), match.getTeamAway().getId(), formatter.format(calendar.getTime()), tournament.getId());
             fail();
         }
         catch (ParseException | InvalidAttributeValueException e)
@@ -182,6 +198,7 @@ public class MatchServiceTest
     void createMatchInvalidSameTeam()
     {
         Team team1 = new Team(1, "The A Team");
+        Tournament tournament = new Tournament(1, "Tournament 1", "Tournament 1", null, 8);
 
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(new Date());
@@ -193,15 +210,17 @@ public class MatchServiceTest
 
         SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
 
-        Match match = new Match(team1, team1, calendar.getTime());
-        Match expectedMatch = new Match(1, team1, team1, null, calendar.getTime());
+        Match match = new Match(team1, team1, calendar.getTime(), tournament);
+        Match expectedMatch = new Match(1, team1, team1, null, calendar.getTime(), 0, 0, tournament);
 
         Mockito.when(teamRepositoryMock.findById(1)).thenReturn(Optional.of(team1));
+
+        Mockito.when(tournamentRepositoryMock.findById(1)).thenReturn(Optional.of(tournament));
 
         Match actualMatch = null;
         try
         {
-            actualMatch = this.matchService.createMatch(match.getTeamHome().getId(), match.getTeamAway().getId(), formatter.format(calendar.getTime()));
+            actualMatch = this.matchService.createMatch(match.getTeamHome().getId(), match.getTeamAway().getId(), formatter.format(calendar.getTime()), tournament.getId());
             fail();
         }
         catch (ParseException | InvalidAttributeValueException e)

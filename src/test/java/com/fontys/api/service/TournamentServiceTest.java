@@ -203,7 +203,7 @@ class TournamentServiceTest {
         Team team1 = new Team(1, "The A Team");
         Team team2 = new Team(2, "The B Team");
 
-        Match match = new Match(1, team1, team2, null, new Date());
+        Match match = new Match(1, team1, team2, null, new Date(), 0, 0, null);
         List<Match> matches = new ArrayList<>();
         matches.add(match);
 
@@ -238,7 +238,7 @@ class TournamentServiceTest {
         Team team1 = new Team(1, "The A Team");
         Team team2 = new Team(2, "The B Team");
 
-        Match match = new Match(1, team1, team2, null, new Date());
+        Match match = new Match(1, team1, team2, null, new Date(), 0, 0, null);
         List<Match> matches = new ArrayList<>();
         matches.add(match);
 
@@ -271,7 +271,7 @@ class TournamentServiceTest {
         Team team1 = new Team(1, "The A Team");
         Team team2 = new Team(2, "The B Team");
 
-        Match match = new Match(1, team1, team2, null, new Date());
+        Match match = new Match(1, team1, team2, null, new Date(), 0, 0, null);
         List<Match> matches = new ArrayList<>();
         matches.add(match);
 
@@ -304,7 +304,7 @@ class TournamentServiceTest {
         Team team1 = new Team(1, "The A Team");
         Team team2 = new Team(2, "The B Team");
 
-        Match match = new Match(1, team1, team2, null, new Date());
+        Match match = new Match(1, team1, team2, null, new Date(), 0, 0, null);
         List<Match> matches = new ArrayList<>();
         matches.add(match);
 

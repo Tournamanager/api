@@ -7,6 +7,9 @@ type Query {
 
     tournaments(idOfOwner: Int) : [Tournament]
     tournament(id:ID, name: String) : Tournament
+
+    matches(count: Int) : [Match]
+    match(id:ID) : Match
 }
 
 type Mutation {
@@ -25,5 +28,6 @@ type Mutation {
     addTeamToTournament(tournamentId:Int!, teamId:Int!): String
     addMatchToTournament(tournamentId: Int!, matchId: Int!):String
 
-    createMatch(teamHomeId:Int!, teamAwayId:Int!, date:String):Match
+    createMatch(teamHomeId:Int!, teamAwayId:Int!, date:String!, tournamentId: Int!):Match
+    updateMatch(id:Int!, date:String!, winnerId:Int!, homeScore:Int!, awayScore:Int!):Match
 }
