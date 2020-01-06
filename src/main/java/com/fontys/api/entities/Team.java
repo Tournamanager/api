@@ -20,18 +20,29 @@ public class Team {
     @Column(unique = true)
     private String name;
 
-    @OneToMany(fetch = FetchType.EAGER)
+    @ManyToMany
     private List<User> users;
+
+    @ManyToMany
+    private List<Tournament> tournaments;
 
     public Team(String name) {
         this.name = name;
         this.users = new ArrayList<>();
+        this.tournaments = new ArrayList<>();
     }
 
     public Team(Integer id, String name) {
         this.id = id;
         this.name = name;
         this.users = new ArrayList<>();
+        this.tournaments = new ArrayList<>();
+    }
+
+    public Team(Integer id, String name, List<User> users) {
+        this.id = id;
+        this.name = name;
+        this.users = users;
     }
 
     @Override

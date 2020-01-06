@@ -2,6 +2,7 @@ type Match{
     id: ID!,
     teamHome: Team!,
     teamAway: Team!,
+    tournament: Tournament!,
     winner: Team,
     date: String!,
 }

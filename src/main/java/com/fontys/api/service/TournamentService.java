@@ -1,5 +1,6 @@
 package com.fontys.api.service;
 
+
 import com.fontys.api.entities.*;
 import com.fontys.api.repositories.TeamRepository;
 import com.fontys.api.repositories.MatchRepository;
@@ -24,8 +25,8 @@ public class TournamentService
     {
         this.tournamentRepository = tournamentRepository;
         this.userRepository = userRepository;
-        this.teamRepository = teamRepository;
         this.matchRepository = matchRepository;
+        this.teamRepository = teamRepository;
     }
 
     @Transactional
@@ -37,7 +38,7 @@ public class TournamentService
         validateNumberOfTeams(numberOfTeams);
 
         User user = userRepository.findById(ownerId).orElse(null);
-        validateOwner(user);
+        validateOwner(user, "An error occurred while creating the tournament. The user was not found! Please try again.");
 
         return tournamentRepository.save(new Tournament(name, description, user, numberOfTeams));
     }
@@ -48,17 +49,16 @@ public class TournamentService
     {
 
 
-        Tournament tournamentOld = validateTournament(id);
+        Tournament tournament = validateTournamentId(tournamentRepository.findById(id));
+
         validateTournamentName(name);
         validateUserId(ownerId);
         validateNumberOfTeams(numberOfTeams);
 
         User user = userRepository.findById(ownerId).orElse(null);
-        validateOwner(user);
+        validateOwner(user, "An error occurred while updating the tournament. The user was not found! Please try again.");
 
-        return tournamentRepository
-                .save(new Tournament(id, name, description, user, numberOfTeams, tournamentOld.getTeams(),
-                                     tournamentOld.getMatches()));
+        return tournamentRepository.save(new Tournament(id, name, description, user, numberOfTeams, tournament.getTeams(), tournament.getMatches()));
     }
 
     @Transactional
@@ -77,11 +77,13 @@ public class TournamentService
     }
 
     @Transactional(readOnly = true)
-    public List<Tournament> tournaments(Integer idOfOwner)
+    public List<Tournament> tournaments(Integer idOfOwner) throws InvalidAttributeValueException
     {
         if (idOfOwner != null)
         {
-            return tournamentRepository.findByOwner(userRepository.findById(idOfOwner).orElse(null));
+            User owner = userRepository.findById(idOfOwner).orElse(null);
+            validateOwner(owner, "An error occurred while loading the tournament. The user was not found! Please try again.");
+            return tournamentRepository.findByOwner(owner);
         }
         return tournamentRepository.findAll();
     }
@@ -98,6 +100,17 @@ public class TournamentService
             return tournamentRepository.findByName(name);
         }
         return Optional.empty();
+    }
+
+
+    private Tournament validateTournamentId(Optional<Tournament> tournament) throws InvalidAttributeValueException
+    {
+        if (tournament.isEmpty())
+        {
+            throw new InvalidAttributeValueException(
+                    "The tournament doesn't exist. Please select a tournament and try again.");
+        }
+        return tournament.get();
     }
 
     @Transactional
@@ -219,12 +232,29 @@ public class TournamentService
         }
     }
 
-    private void validateOwner(User owner) throws InvalidAttributeValueException
+    private void validateOwner(User owner, String errorMessage) throws InvalidAttributeValueException
     {
         if (owner == null)
         {
-            throw new InvalidAttributeValueException(
-                    "An error occurred while creating the tournament. The user was not found! Please try again.");
+            throw new InvalidAttributeValueException(errorMessage);
+        }
+    }
+
+    private Match validateMatchId(Optional<Match> match) throws InvalidAttributeValueException
+    {
+        if(match.isEmpty())
+        {
+            throw new InvalidAttributeValueException("The Match doesn't exist. Please select a different match and try again.");
+        }
+        return match.get();
+    }
+
+    private void validateTournamentDoesNotAlreadyHaveMatch(Tournament tournament, Match match)
+    throws InvalidAttributeValueException
+    {
+        if(tournament.getMatches().contains(match))
+        {
+            throw new InvalidAttributeValueException("The match is already added to the tournament!");
         }
     }
 }

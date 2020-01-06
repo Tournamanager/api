@@ -5,6 +5,7 @@ import com.fontys.api.repositories.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Optional;
 
@@ -19,7 +20,12 @@ public class UserService
     }
 
     @Transactional
-    public User createUser(String uuid) { return userRepository.save(new User(uuid)); }
+    public User createUser(String uuid) {
+        if (userRepository.findByUuid(uuid).isEmpty()) {
+            return userRepository.save(new User(uuid));
+        }
+        return null;
+    }
 
     @Transactional
     public String deleteUser(String uuid) {
@@ -38,7 +44,13 @@ public class UserService
     public List<User> getAllUsers() { return userRepository.findAll(); }
 
     @Transactional(readOnly = true)
-    public Optional<User> getUser(Integer id) { return userRepository.findById(id); }
+    public Optional<User> getUser(@Nullable Integer id, @Nullable String uuid) {
+        if (id != null)
+            return userRepository.findById(id);
+        if (uuid != null)
+            return userRepository.findByUuid(uuid);
+        return Optional.empty();
+    }
 
     @Transactional(readOnly = true)
     public Optional<User> getUserByUuid(String uuid)

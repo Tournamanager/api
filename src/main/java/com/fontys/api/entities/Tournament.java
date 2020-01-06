@@ -50,6 +50,17 @@ public class Tournament
         this.description = description;
         this.owner = owner;
         this.numberOfTeams = numberOfTeams;
+        this.matches = new ArrayList<>();
+        this.teams = new ArrayList<>();
+    }
+
+    public Tournament(Integer id, String name, String description, User owner, Integer numberOfTeams)
+    {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.owner = owner;
+        this.numberOfTeams = numberOfTeams;
         this.teams = new ArrayList<>();
         this.matches = new ArrayList<>();
     }

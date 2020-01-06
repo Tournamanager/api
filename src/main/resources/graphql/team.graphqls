@@ -1,5 +1,6 @@
 type Team {
     id: ID!,
     name: String,
-    users: [User]
+    users: [User],
+    tournaments: [Tournament]
 }
