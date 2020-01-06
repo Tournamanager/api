@@ -18,13 +18,13 @@ public class Match
 
     private String name;
 
-    @OneToMany(fetch = FetchType.EAGER)
+    @OneToOne(fetch = FetchType.EAGER)
     private Team teamHome;
 
-    @OneToMany(fetch = FetchType.EAGER)
+    @OneToOne(fetch = FetchType.EAGER)
     private Team teamAway;
 
-    @OneToMany(fetch = FetchType.EAGER)
+    @OneToOne(fetch = FetchType.EAGER)
     private Team winner;
 
     private Date date;
@@ -37,6 +37,11 @@ public class Match
     public Match(String name, Team teamHome, Team teamAway)
     {
         this.name = name;
+        this.teamHome = teamHome;
+        this.teamAway = teamAway;
+    }
+
+    public Match(Team teamHome, Team teamAway) {
         this.teamHome = teamHome;
         this.teamAway = teamAway;
     }

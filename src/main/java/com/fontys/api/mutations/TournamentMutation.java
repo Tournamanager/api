@@ -29,9 +29,9 @@ public class TournamentMutation implements GraphQLMutationResolver {
         return tournamentService.deleteTournament(id);
     }
 
-    public Tournament generateMatches(Integer id) throws InvalidAttributeValueException
+    public Tournament generateMatches(Integer id, String method) throws InvalidAttributeValueException
     {
-        return tournamentService.generateMatches(id);
+        return tournamentService.generateMatches(id, method);
     }
 
     public String addTeamToTournament(Integer tournamentId, Integer teamId) {
