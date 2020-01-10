@@ -84,4 +84,21 @@ public class CompetitionScheduleTest
 
         assertEquals(20, matches.size());
     }
+
+    @Test
+    public void getScheduleTest3() {
+        Team team1 = new Team("The A Team");
+        Team team2 = new Team("The B Team");
+        List<Team> teams = new ArrayList<>();
+        teams.add(team1);
+        teams.add(team2);
+
+
+        Tournament tournament = new Tournament(1, "tournament1", "The first tournament", new User("1"), 8, teams, new ArrayList<>());
+        CompetitionGenerator competitionGenerator = new CompetitionGenerator();
+        CompetitionSchedule tournamentSchedule = competitionGenerator.generateSchedule(tournament);
+        List<Match> matches = tournamentSchedule.getMatches();
+
+        assertEquals(2, matches.size());
+    }
 }
