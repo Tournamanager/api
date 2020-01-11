@@ -6,5 +6,4 @@ type Tournament {
     numberOfTeams: Int,
     matches: [Match!]!
     teams: [Team!]!
-    matches: [Match!]!
 }
