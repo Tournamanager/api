@@ -632,16 +632,83 @@ class TournamentServiceTest {
         teams.add(team7);
         teams.add(team8);
         Tournament tournament = new Tournament(1, "tournament1", "The first tournament", new User("1"), 8, teams, new ArrayList<>());
+        List<Match> matches = new ArrayList<>();
+        matches.add(new Match(team1, team2));
+        matches.add(new Match(team1, team3));
+        matches.add(new Match(team1, team4));
+        matches.add(new Match(team1, team5));
+        matches.add(new Match(team1, team6));
+        matches.add(new Match(team1, team7));
+        matches.add(new Match(team1, team8));
+        matches.add(new Match(team2, team1));
+        matches.add(new Match(team2, team3));
+        matches.add(new Match(team2, team4));
+        matches.add(new Match(team2, team5));
+        matches.add(new Match(team2, team6));
+        matches.add(new Match(team2, team7));
+        matches.add(new Match(team2, team8));
+        matches.add(new Match(team3, team1));
+        matches.add(new Match(team3, team2));
+        matches.add(new Match(team3, team4));
+        matches.add(new Match(team3, team5));
+        matches.add(new Match(team3, team6));
+        matches.add(new Match(team3, team7));
+        matches.add(new Match(team3, team8));
+        matches.add(new Match(team4, team1));
+        matches.add(new Match(team4, team2));
+        matches.add(new Match(team4, team3));
+        matches.add(new Match(team4, team5));
+        matches.add(new Match(team4, team6));
+        matches.add(new Match(team4, team7));
+        matches.add(new Match(team4, team8));
+        matches.add(new Match(team5, team1));
+        matches.add(new Match(team5, team2));
+        matches.add(new Match(team5, team3));
+        matches.add(new Match(team5, team4));
+        matches.add(new Match(team5, team6));
+        matches.add(new Match(team5, team7));
+        matches.add(new Match(team5, team8));
+        matches.add(new Match(team6, team1));
+        matches.add(new Match(team6, team2));
+        matches.add(new Match(team6, team3));
+        matches.add(new Match(team6, team4));
+        matches.add(new Match(team6, team5));
+        matches.add(new Match(team6, team7));
+        matches.add(new Match(team6, team8));
+        matches.add(new Match(team7, team1));
+        matches.add(new Match(team7, team2));
+        matches.add(new Match(team7, team3));
+        matches.add(new Match(team7, team4));
+        matches.add(new Match(team7, team5));
+        matches.add(new Match(team7, team6));
+        matches.add(new Match(team7, team8));
+        matches.add(new Match(team8, team1));
+        matches.add(new Match(team8, team2));
+        matches.add(new Match(team8, team3));
+        matches.add(new Match(team8, team4));
+        matches.add(new Match(team8, team5));
+        matches.add(new Match(team8, team6));
+        matches.add(new Match(team8, team7));
 
         when(tournamentRepositoryMock.findById(Mockito.anyInt())).thenReturn(Optional.of(tournament));
 
-
-        CompetitionGenerator competitionGenerator = new CompetitionGenerator();
-        CompetitionSchedule tournamentSchedule = competitionGenerator.generateSchedule(tournament);
-        List<Match> matches = tournamentSchedule.getMatches();
-        for(Match match: matches) {
-            System.out.println(match.getTeamHome().getName() + " vs " + match.getTeamAway().getName());
+        Tournament tournamentOut = null;
+        try
+        {
+            tournamentOut = this.tournamentService.generateMatches(tournament.getId(), "competition");
         }
-        assertEquals(56, matches.size());
+        catch (InvalidAttributeValueException e)
+        {
+            fail();
+        }
+
+        List<Match> matchesActual = tournament.getMatches();
+        assertEquals(matches.size(), matchesActual.size());
+
+        for(int i = 0; i < matches.size(); i++) {
+            assertEquals(matches.get(i), matchesActual.get(i));
+        }
+
+        verify(tournamentRepositoryMock, times(1)).findById(tournament.getId());
     }
 }

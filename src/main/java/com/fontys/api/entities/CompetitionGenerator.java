@@ -19,6 +19,7 @@ public class CompetitionGenerator
         }
         schedule.setMatches(matches);
         tournament.setSchedule(schedule);
+        tournament.setMatches(tournament.getSchedule().getMatches());
         return schedule;
     }
 }

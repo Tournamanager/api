@@ -145,8 +145,7 @@ public class TournamentService
     public Tournament generateMatches(Integer id, String method) throws InvalidAttributeValueException
     {
         Tournament tournament = validateTournament(id);
-        int numberOfTeams = tournament.getTeams().size();
-        if (numberOfTeams < 2)
+        if (tournament.getTeams().size() < 2)
         {
             throw new InvalidAttributeValueException(
                     "The tournament must at least have 2 teams to generate a tournament!");
