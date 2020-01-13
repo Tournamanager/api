@@ -6,7 +6,6 @@ import com.fontys.api.entities.Tournament;
 import com.fontys.api.repositories.MatchRepository;
 import com.fontys.api.repositories.TeamRepository;
 import com.fontys.api.repositories.TournamentRepository;
-import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -14,7 +13,6 @@ import org.mockito.Mockito;
 import javax.naming.directory.InvalidAttributeValueException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.text.spi.DateFormatProvider;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Optional;
@@ -28,6 +26,7 @@ public class MatchServiceTest
 {
     private MatchService matchService;
 
+    private RoundService roundServiceMock;
     private MatchRepository matchRepositoryMock;
     private TeamRepository teamRepositoryMock;
     private TournamentRepository tournamentRepositoryMock;
@@ -37,8 +36,9 @@ public class MatchServiceTest
         matchRepositoryMock = mock(MatchRepository.class);
         teamRepositoryMock = mock(TeamRepository.class);
         tournamentRepositoryMock = mock(TournamentRepository.class);
+        roundServiceMock = mock(RoundService.class);
 
-        matchService = new MatchService(matchRepositoryMock, teamRepositoryMock, tournamentRepositoryMock);
+        matchService = new MatchService(matchRepositoryMock, teamRepositoryMock, tournamentRepositoryMock,roundServiceMock);
     }
 
     @Test

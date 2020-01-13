@@ -1,16 +1,21 @@
 package com.fontys.api.service;
 
 
-import com.fontys.api.entities.*;
-import com.fontys.api.repositories.TeamRepository;
+import com.fontys.api.entities.Team;
+import com.fontys.api.entities.Tournament;
+import com.fontys.api.entities.User;
+import com.fontys.api.generate.GenerateMatches;
 import com.fontys.api.repositories.MatchRepository;
+import com.fontys.api.repositories.TeamRepository;
 import com.fontys.api.repositories.TournamentRepository;
 import com.fontys.api.repositories.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.naming.directory.InvalidAttributeValueException;
-import java.util.*;
+import java.text.ParseException;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 public class TournamentService
@@ -19,14 +24,16 @@ public class TournamentService
     private final UserRepository userRepository;
     private final MatchRepository matchRepository;
     private final TeamRepository teamRepository;
+    private final GenerateMatches generateMatches;
 
     public TournamentService(TournamentRepository tournamentRepository, UserRepository userRepository,
-                             TeamRepository teamRepository, MatchRepository matchRepository)
+                             TeamRepository teamRepository, MatchRepository matchRepository, GenerateMatches generateMatches)
     {
         this.tournamentRepository = tournamentRepository;
         this.userRepository = userRepository;
         this.matchRepository = matchRepository;
         this.teamRepository = teamRepository;
+        this.generateMatches = generateMatches;
     }
 
     @Transactional
@@ -47,8 +54,6 @@ public class TournamentService
     public Tournament updateTournament(Integer id, String name, String description, Integer ownerId,
                                        Integer numberOfTeams) throws InvalidAttributeValueException
     {
-
-
         Tournament tournament = validateTournamentId(tournamentRepository.findById(id));
 
         validateTournamentName(name);
@@ -58,7 +63,7 @@ public class TournamentService
         User user = userRepository.findById(ownerId).orElse(null);
         validateOwner(user, "An error occurred while updating the tournament. The user was not found! Please try again.");
 
-        return tournamentRepository.save(new Tournament(id, name, description, user, numberOfTeams, tournament.getTeams(), tournament.getMatches()));
+        return tournamentRepository.save(new Tournament(id, name, description, user, numberOfTeams, tournament.getTeams(), tournament.getRounds()));
     }
 
     @Transactional
@@ -142,55 +147,18 @@ public class TournamentService
 
     }
 
-    public Tournament generateMatches(Integer id, String method) throws InvalidAttributeValueException
-    {
-        Tournament tournament = validateTournament(id);
-        int numberOfTeams = tournament.getTeams().size();
-        if (numberOfTeams < 2)
-        {
-            throw new InvalidAttributeValueException(
-                    "The tournament must at least have 2 teams to generate a tournament!");
+    @Transactional
+    public Tournament startTournament(Integer tournamentId, String method) throws InvalidAttributeValueException, ParseException {
+        Tournament tournament = validateTournament(tournamentId);
+
+        if (method.equals("competition")) {
+            tournament = generateMatches.competition(tournament);
+        } else if (method.equals("brackets")) {
+            tournament = generateMatches.bracket(tournament);
+        } else {
+            throw new InvalidAttributeValueException("Can't generate matches");
         }
-        CompetitionGenerator generator = null;
-        if (method.equals("competition"))
-        {
-            generator = new CompetitionGenerator();
-        }
-//        else if (method.equals("brackets"))
-//        {
-//            generator = new BracketGenerator();
-//        }
-        else
-        {
-            throw new InvalidAttributeValueException("Can't generate the method for method " + method);
-        }
-        generator.generateSchedule(tournament);
         return tournament;
-    }
-
-    public String addMatchToTournament(Integer tournamentId, Integer matchId)
-    {
-        Optional<Tournament> tournament = tournamentRepository.findById(tournamentId);
-        Optional<Match> match = matchRepository.findById(matchId);
-
-        if (tournament.isEmpty())
-        {
-            return "The tournament does not exist";
-        }
-        if (match.isEmpty())
-        {
-            return "The match does not exist";
-        }
-        Tournament tournament1 = tournament.get();
-        Match match1 = match.get();
-
-        if (tournament1.getMatches().contains(match1))
-        {
-            return "The match is already added to the tournament!";
-        }
-        tournament1.getMatches().add(match1);
-        tournamentRepository.save(tournament1);
-        return "The match was successfully added to the tournament.";
     }
 
     private Tournament validateTournament(Integer id) throws InvalidAttributeValueException
@@ -240,21 +208,5 @@ public class TournamentService
         }
     }
 
-    private Match validateMatchId(Optional<Match> match) throws InvalidAttributeValueException
-    {
-        if(match.isEmpty())
-        {
-            throw new InvalidAttributeValueException("The Match doesn't exist. Please select a different match and try again.");
-        }
-        return match.get();
-    }
 
-    private void validateTournamentDoesNotAlreadyHaveMatch(Tournament tournament, Match match)
-    throws InvalidAttributeValueException
-    {
-        if(tournament.getMatches().contains(match))
-        {
-            throw new InvalidAttributeValueException("The match is already added to the tournament!");
-        }
-    }
 }

@@ -26,22 +26,19 @@ public class Tournament
     private List<Team> teams;
 
     @OneToMany
-    private List<Match> matches;
-
-    @OneToOne
-    private CompetitionSchedule schedule;
+    private List<Round> rounds;
 
     private String method = "competition";
 
     public Tournament(String name, String description, User owner, Integer numberOfTeams, List<Team> teams,
-                      List<Match> matches)
+                      List<Round> rounds)
     {
         this.name = name;
         this.description = description;
         this.owner = owner;
         this.numberOfTeams = numberOfTeams;
         this.teams = teams;
-        this.matches = matches;
+        this.rounds = rounds;
     }
 
     public Tournament(String name, String description, User owner, Integer numberOfTeams)
@@ -50,7 +47,7 @@ public class Tournament
         this.description = description;
         this.owner = owner;
         this.numberOfTeams = numberOfTeams;
-        this.matches = new ArrayList<>();
+        this.rounds = new ArrayList<>();
         this.teams = new ArrayList<>();
     }
 
@@ -62,11 +59,11 @@ public class Tournament
         this.owner = owner;
         this.numberOfTeams = numberOfTeams;
         this.teams = new ArrayList<>();
-        this.matches = new ArrayList<>();
+        this.rounds = new ArrayList<>();
     }
 
     public Tournament(Integer id, String name, String description, User owner, Integer numberOfTeams, List<Team> teams,
-                      List<Match> matches)
+                      List<Round> rounds)
     {
         this.id = id;
         this.name = name;
@@ -74,6 +71,6 @@ public class Tournament
         this.owner = owner;
         this.numberOfTeams = numberOfTeams;
         this.teams = teams;
-        this.matches = matches;
+        this.rounds = rounds;
     }
 }

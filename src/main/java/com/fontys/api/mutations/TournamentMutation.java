@@ -6,6 +6,7 @@ import com.fontys.api.service.TournamentService;
 import org.springframework.stereotype.Component;
 
 import javax.naming.directory.InvalidAttributeValueException;
+import java.text.ParseException;
 
 @Component
 public class TournamentMutation implements GraphQLMutationResolver {
@@ -29,14 +30,8 @@ public class TournamentMutation implements GraphQLMutationResolver {
         return tournamentService.deleteTournament(id);
     }
 
-    public Tournament generateMatches(Integer id, String method) throws InvalidAttributeValueException
-    {
-        return tournamentService.generateMatches(id, method);
-    }
-
-    public String addMatchToTournament(Integer tournamentId, Integer matchId) throws InvalidAttributeValueException
-    {
-        return tournamentService.addMatchToTournament(tournamentId, matchId);
+    public Tournament startTournament(Integer id, String method) throws InvalidAttributeValueException, ParseException {
+        return tournamentService.startTournament(id, method);
     }
 
     public String addTeamToTournament(Integer tournamentId, Integer teamId) {
