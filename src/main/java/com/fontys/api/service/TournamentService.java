@@ -65,6 +65,7 @@ public class TournamentService
     public String deleteTournament(Integer id)
     {
         Optional<Tournament> tournament = tournamentRepository.findById(id);
+
         if (tournament.isPresent())
         {
             tournamentRepository.delete(tournament.get());
@@ -137,7 +138,9 @@ public class TournamentService
             return "The tournament is currently filled with teams!";
         }
         tournament1.getTeams().add(team1);
+        team1.getTournaments().add(tournament1);
         tournamentRepository.save(tournament1);
+        teamRepository.save(team1);
         return "Team " + team1.getName() + " added to tournament " + tournament1.getName();
 
     }
@@ -189,7 +192,9 @@ public class TournamentService
             return "The match is already added to the tournament!";
         }
         tournament1.getMatches().add(match1);
+        match1.setTournament(tournament1);
         tournamentRepository.save(tournament1);
+        matchRepository.save(match1);
         return "The match was successfully added to the tournament.";
     }
 

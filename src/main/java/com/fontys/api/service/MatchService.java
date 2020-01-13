@@ -52,7 +52,10 @@ public class MatchService
 
         Match match = new Match(teamHome, teamAway, date, tournament);
 
-        return matchRepository.save(match);
+        Match match1 = matchRepository.save(match);
+        tournament.getMatches().add(match1);
+        tournamentRepository.save(tournament);
+        return match1;
     }
 
     public Match updateMatch(Integer id, String dateString, Integer winnerId, Integer homeScore, Integer awayScore)
