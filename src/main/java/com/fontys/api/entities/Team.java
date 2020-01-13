@@ -43,6 +43,7 @@ public class Team {
         this.id = id;
         this.name = name;
         this.users = users;
+        this.tournaments = new ArrayList<>();
     }
 
     @Override
