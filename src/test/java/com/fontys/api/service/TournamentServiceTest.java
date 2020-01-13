@@ -94,9 +94,6 @@ class TournamentServiceTest {
 
     @Test
     void getTournamentTestInvalidParametersNull() {
-        User user = new User(1, "User 1");
-        Tournament tournament = new Tournament(1, "Tournament1", "Tournament number 1", user, 4);
-
         Optional<Tournament> tournamentActual = this.tournamentService.tournament(null, null);
 
         assertEquals(Optional.empty(), tournamentActual);
@@ -106,9 +103,6 @@ class TournamentServiceTest {
 
     @Test
     void getTournamentTestInvalidId() {
-        User user = new User(1, "User 1");
-        Tournament tournament = new Tournament(1, "Tournament1", "Tournament number 1", user, 4);
-
         when(tournamentRepositoryMock.findById(Mockito.anyInt())).thenReturn(Optional.empty());
 
         Optional<Tournament> tournamentActual = this.tournamentService.tournament(2, null);
@@ -120,9 +114,6 @@ class TournamentServiceTest {
 
     @Test
     void getTournamentTestInvalidName() {
-        User user = new User(1, "User 1");
-        Tournament tournament = new Tournament(1, "Tournament1", "Tournament number 1", user, 4);
-
         when(tournamentRepositoryMock.findByName(Mockito.anyString())).thenReturn(Optional.empty());
 
         Optional<Tournament> tournamentActual = this.tournamentService.tournament(null, "Tournament2");
