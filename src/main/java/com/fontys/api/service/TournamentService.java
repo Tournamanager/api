@@ -193,6 +193,48 @@ public class TournamentService
         return "The match was successfully added to the tournament.";
     }
 
+    @Transactional
+    public String removeTeamFromTournament(Integer tournamentId, Integer teamId)
+    {
+        Optional<Tournament> tournament = tournamentRepository.findById(tournamentId);
+        Optional<Team> team = teamRepository.findById(teamId);
+        if (tournament.isEmpty())
+        {
+            return "Tournament does not exist";
+        }
+        else if (team.isEmpty())
+        {
+            return "Team does not exist";
+        }
+        else
+        {
+            Tournament tournament1 = tournament.get();
+            Team team1 = team.get();
+
+            int removeIndex = 0;
+
+            boolean found = false;
+            for(Tournament t: team1.getTournaments()){
+                if (t.getId() == tournament1.getId()){
+                    found = true;
+                    removeIndex = team1.getTournaments().indexOf(t);
+                }
+            }
+
+            if (!found){
+                return "The team is not part of this tournament";
+            }
+            else if (tournament1.getMatches().size() > 0)
+            {
+                return "You cannot leave a tournament that is already started";
+            }
+
+            team1.getTournaments().remove(removeIndex);
+            teamRepository.save(team1);
+            return "Team " + team1.getId() + " is removed from tournament " + tournament1.getName();
+        }
+    }
+
     private Tournament validateTournament(Integer id) throws InvalidAttributeValueException
     {
         Optional<Tournament> tournament = tournamentRepository.findById(id);
