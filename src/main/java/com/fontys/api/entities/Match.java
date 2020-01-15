@@ -3,6 +3,7 @@ package com.fontys.api.entities;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.beans.factory.config.SmartInstantiationAwareBeanPostProcessor;
 
 import javax.persistence.*;
 import java.util.Date;

@@ -23,7 +23,7 @@ public class Team {
     @ManyToMany
     private List<User> users;
 
-    @ManyToMany
+    @ManyToMany(mappedBy = "teams")
     private List<Tournament> tournaments;
 
     public Team(String name) {
