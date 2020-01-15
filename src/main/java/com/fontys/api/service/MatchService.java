@@ -40,17 +40,24 @@ public class MatchService
     public Match createMatch(Integer teamHomeId, Integer teamAwayId, String dateString, Integer tournamentId)
             throws ParseException, InvalidAttributeValueException
     {
-        Team teamHome = teamRepository.findById(teamHomeId).orElse(null);
-        Team teamAway = teamRepository.findById(teamAwayId).orElse(null);
+        Team teamHome = null;
+        Team teamAway = null;
+        if (teamHomeId != null)
+        {
+            teamHome = teamRepository.findById(teamHomeId).orElse(null);
+        }
+        if (teamAwayId != null) {
+            teamAway = teamRepository.findById(teamAwayId).orElse(null);
+        }
+
         Tournament tournament = tournamentRepository.findById(tournamentId).orElse(null);
         SimpleDateFormat dateFormatter = new SimpleDateFormat("dd/MM/yyyy");
-        Date date = dateFormatter.parse(dateString);
+        Date date = new Date();
+        if(dateString != null) {
+            date = dateFormatter.parse(dateString);
+        }
 
-        validateTeam(teamHome);
-        validateTeam(teamAway);
-        validateTeams(teamHome, teamAway);
         validateTournament(tournament);
-        validateDate(date);
 
         Match match = new Match(teamHome, teamAway, date);
 

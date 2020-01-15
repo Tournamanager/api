@@ -22,7 +22,6 @@ public class TournamentService
 {
     private final TournamentRepository tournamentRepository;
     private final UserRepository userRepository;
-    private final MatchRepository matchRepository;
     private final TeamRepository teamRepository;
     private final GenerateMatches generateMatches;
 
@@ -31,7 +30,6 @@ public class TournamentService
     {
         this.tournamentRepository = tournamentRepository;
         this.userRepository = userRepository;
-        this.matchRepository = matchRepository;
         this.teamRepository = teamRepository;
         this.generateMatches = generateMatches;
     }
