@@ -42,6 +42,7 @@ public class GenerateMatches {
             if (!teams.get(index).getName().equals("null")) {
                 matchList.add(matchService.createMatch(teamList.get(0).getId(), teams.get(index).getId(),null, tournament.getId()));
             }
+
             for (int j = 1; j < teamList.size()/2; j++) {
                 int teamHome = (i + j) % teams.size();
                 int teamAway = (i - j + teams.size()) % teams.size();
@@ -50,7 +51,7 @@ public class GenerateMatches {
                 }
                 matchList.add(matchService.createMatch(teams.get(teamHome).getId(), teams.get(teamAway).getId(),null, tournament.getId()));
             }
-            roundList.add(roundService.createRound(new Round(matchList)));
+            roundList.add(roundService.createRound(matchList));
         }
         tournament.setRounds(roundList);
         return tournament;
@@ -60,24 +61,24 @@ public class GenerateMatches {
         List<Team> teamList = new ArrayList<>(tournament.getTeams());
 
         int rounds = (int) Math.ceil(Math.log(teamList.size())/Math.log(2));
+        int numberOfFreePassesRound1 = (int) (Math.pow(2, rounds)) - teamList.size() ;
 
         List<Round> roundList = new ArrayList<>();
         for (int i = 0; i < rounds; i++) {
             List<Match> matchList = new ArrayList<>();
-            while (teamList.size() >= 2) {
+            int k = 2;
+            if(i == 0) {
+                k += numberOfFreePassesRound1;
+            }
+            while (teamList.size() >= k) {
                 matchList.add(matchService.createMatch(teamList.get(0).getId(),teamList.get(1).getId(),null,tournament.getId()));
-                teamList.removeAll(Arrays.asList(teamList.get(0), teamList.get(1)));
+                teamList.remove(0);
+                teamList.remove(0);
             }
             for (int j = 0; j < matchList.size(); j++) {
                 teamList.add(new Team());
             }
-            int roundTeamCount;
-            if (i == 0) {
-                roundTeamCount = (int) Math.ceil(teamList.size()/2.0);
-            } else {
-                roundTeamCount = roundList.get(i-1).getTeamCount()/2;
-            }
-            roundList.add(roundService.createRound(new Round(matchList,roundTeamCount)));
+            roundList.add(roundService.createRound(matchList));
         }
         tournament.setRounds(roundList);
         return tournament;

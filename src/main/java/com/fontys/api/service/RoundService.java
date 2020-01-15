@@ -19,12 +19,13 @@ public class RoundService {
         this.tournamentRepository = tournamentRepository;
     }
 
-    public Round createRound(Round round) {
-        return roundRepository.save(round);
+    public Round createRound(List<Match> matchList) {
+        return roundRepository.save(new Round(matchList));
     }
 
     public void updateRound(Match match) {
-        Tournament tournament = match.getTournament();
+        Round round = match.getRound();
+        Tournament tournament = round.getTournament();
         List<Round> roundList = tournament.getRounds();
 
         int roundIndex = -1;

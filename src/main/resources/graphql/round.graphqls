@@ -1,0 +1,5 @@
+type Round{
+    id: ID!
+    matches: [Match]
+    tournament: Tournament
+}

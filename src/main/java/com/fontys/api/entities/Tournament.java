@@ -24,10 +24,8 @@ public class Tournament
     private int numberOfTeams;
     @ManyToMany
     private List<Team> teams;
-
-    @OneToMany
+    @OneToMany(mappedBy = "tournament")
     private List<Round> rounds;
-
     private String method = "competition";
 
     public Tournament(String name, String description, User owner, Integer numberOfTeams, List<Team> teams,

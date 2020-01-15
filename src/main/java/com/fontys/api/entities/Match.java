@@ -3,6 +3,7 @@ package com.fontys.api.entities;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.beans.factory.config.SmartInstantiationAwareBeanPostProcessor;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -27,8 +28,8 @@ public class Match
 
     private Date date;
 
-    @ManyToOne
-    private Tournament tournament;
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Round round;
 
     public Match(Team teamHome, Team teamAway) {
         this.teamHome = teamHome;
@@ -40,13 +41,5 @@ public class Match
         this.teamHome = teamHome;
         this.teamAway = teamAway;
         this.date = date;
-    }
-
-    public Match(Team teamHome, Team teamAway, Date date, Tournament tournament)
-    {
-        this.teamHome = teamHome;
-        this.teamAway = teamAway;
-        this.date = date;
-        this.tournament = tournament;
     }
 }

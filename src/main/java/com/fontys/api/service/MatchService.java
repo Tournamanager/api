@@ -40,21 +40,30 @@ public class MatchService
     public Match createMatch(Integer teamHomeId, Integer teamAwayId, String dateString, Integer tournamentId)
             throws ParseException, InvalidAttributeValueException
     {
-        Team teamHome = teamRepository.findById(teamHomeId).orElse(null);
-        Team teamAway = teamRepository.findById(teamAwayId).orElse(null);
+        Team teamHome = null;
+        Team teamAway = null;
+        if (teamHomeId != null)
+        {
+            teamHome = teamRepository.findById(teamHomeId).orElse(null);
+        }
+        if (teamAwayId != null) {
+            teamAway = teamRepository.findById(teamAwayId).orElse(null);
+        }
+
         Tournament tournament = tournamentRepository.findById(tournamentId).orElse(null);
         SimpleDateFormat dateFormatter = new SimpleDateFormat("dd/MM/yyyy");
-        Date date = dateFormatter.parse(dateString);
+        Date date = new Date();
+        if(dateString != null) {
+            date = dateFormatter.parse(dateString);
+        }
 
-        validateTeam(teamHome);
-        validateTeam(teamAway);
-        validateTeams(teamHome, teamAway);
         validateTournament(tournament);
-        validateDate(date);
 
-        Match match = new Match(teamHome, teamAway, date, tournament);
+        Match match = new Match(teamHome, teamAway, date);
 
-        return matchRepository.save(match);
+        Match savedMatch = matchRepository.save(match);
+        tournamentRepository.save(tournament);
+        return savedMatch;
     }
 
     public Match updateMatch(Integer id, String dateString, Integer winnerId, Integer homeScore, Integer awayScore)
@@ -68,6 +77,7 @@ public class MatchService
         match.setDate(dateFormatter.parse(dateString));
         match.setWinner(validateWinnerInMatch(match, winnerId));
         if (match.getWinner() != null && match.getTournament().getMethod().equals("brackets")) {
+
             roundService.updateRound(match);
         }
 

@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -19,7 +20,7 @@ public class User
 
     private String uuid;
 
-    @ManyToMany
+    @ManyToMany(mappedBy = "users")
     private List<Team> teams;
 
     public User(String UUID) {
@@ -29,6 +30,7 @@ public class User
     public User(int id, String uuid) {
         this.id = id;
         this.uuid = uuid;
+        this.teams = new ArrayList<>();
     }
 
     @Override
