@@ -28,8 +28,8 @@ public class Match
 
     private Date date;
 
-    @ManyToOne
-    private Tournament tournament;
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Round round;
 
     public Match(Team teamHome, Team teamAway) {
         this.teamHome = teamHome;
@@ -41,13 +41,5 @@ public class Match
         this.teamHome = teamHome;
         this.teamAway = teamAway;
         this.date = date;
-    }
-
-    public Match(Team teamHome, Team teamAway, Date date, Tournament tournament)
-    {
-        this.teamHome = teamHome;
-        this.teamAway = teamAway;
-        this.date = date;
-        this.tournament = tournament;
     }
 }

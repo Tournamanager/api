@@ -27,33 +27,41 @@ public class MatchService
     private MatchRepository matchRepository;
     private TeamRepository teamRepository;
     private TournamentRepository tournamentRepository;
+    private RoundService roundService;
 
-    public MatchService(MatchRepository matchRepository, TeamRepository teamRepository, TournamentRepository tournamentRepository)
+    public MatchService(MatchRepository matchRepository, TeamRepository teamRepository, TournamentRepository tournamentRepository, RoundService roundService)
     {
         this.matchRepository = matchRepository;
         this.teamRepository = teamRepository;
         this.tournamentRepository = tournamentRepository;
+        this.roundService = roundService;
     }
 
     public Match createMatch(Integer teamHomeId, Integer teamAwayId, String dateString, Integer tournamentId)
             throws ParseException, InvalidAttributeValueException
     {
-        Team teamHome = teamRepository.findById(teamHomeId).orElse(null);
-        Team teamAway = teamRepository.findById(teamAwayId).orElse(null);
+        Team teamHome = null;
+        Team teamAway = null;
+        if (teamHomeId != null)
+        {
+            teamHome = teamRepository.findById(teamHomeId).orElse(null);
+        }
+        if (teamAwayId != null) {
+            teamAway = teamRepository.findById(teamAwayId).orElse(null);
+        }
+
         Tournament tournament = tournamentRepository.findById(tournamentId).orElse(null);
         SimpleDateFormat dateFormatter = new SimpleDateFormat("dd/MM/yyyy");
-        Date date = dateFormatter.parse(dateString);
+        Date date = new Date();
+        if(dateString != null) {
+            date = dateFormatter.parse(dateString);
+        }
 
-        validateTeam(teamHome);
-        validateTeam(teamAway);
-        validateTeams(teamHome, teamAway);
         validateTournament(tournament);
-        validateDate(date);
 
-        Match match = new Match(teamHome, teamAway, date, tournament);
+        Match match = new Match(teamHome, teamAway, date);
 
         Match savedMatch = matchRepository.save(match);
-        tournament.getMatches().add(savedMatch);
         tournamentRepository.save(tournament);
         return savedMatch;
     }
@@ -64,13 +72,15 @@ public class MatchService
         Match match = matchRepository.findById(id).orElse(null);
         validateMatch(match);
         SimpleDateFormat dateFormatter = new SimpleDateFormat("dd/MM/yyyy");
-        Date date = dateFormatter.parse(dateString);
+        validateDate(dateFormatter.parse(dateString));
 
-        Team winner = validateWinnerInMatch(match, winnerId);
+        match.setDate(dateFormatter.parse(dateString));
+        match.setWinner(validateWinnerInMatch(match, winnerId));
+        if (match.getWinner() != null) {
+            roundService.updateRound(match);
+        }
 
-        validateDate(date);
-
-        return matchRepository.save(new Match(id, match.getTeamHome(), match.getTeamAway(), winner, date, match.getTournament()));
+        return matchRepository.save(match);
     }
 
     @Transactional(readOnly = true)
