@@ -20,7 +20,7 @@ public class User
 
     private String uuid;
 
-    @ManyToMany
+    @ManyToMany(mappedBy = "users")
     private List<Team> teams;
 
     public User(String UUID) {

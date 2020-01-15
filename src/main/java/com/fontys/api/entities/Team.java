@@ -20,7 +20,7 @@ public class Team {
     @Column(unique = true)
     private String name;
 
-    @ManyToMany(mappedBy = "teams")
+    @ManyToMany
     private List<User> users;
 
     @ManyToMany(mappedBy = "teams")
