@@ -24,7 +24,8 @@ public class RoundService {
     }
 
     public void updateRound(Match match) {
-        Tournament tournament = match.getTournament();
+        Round round = match.getRound();
+        Tournament tournament = round.getTournament();
         List<Round> roundList = tournament.getRounds();
 
         int roundIndex = -1;

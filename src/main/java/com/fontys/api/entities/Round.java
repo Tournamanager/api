@@ -19,6 +19,9 @@ public class Round {
     @OneToMany
     private List<Match> matches;
 
+    @ManyToOne
+    private Tournament tournament;
+
     public Round(List<Match> matches) {
         this.matches = matches;
     }

@@ -52,7 +52,7 @@ public class MatchService
         validateTournament(tournament);
         validateDate(date);
 
-        Match match = new Match(teamHome, teamAway, date, tournament);
+        Match match = new Match(teamHome, teamAway, date);
 
         return matchRepository.save(match);
     }

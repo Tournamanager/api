@@ -61,13 +61,19 @@ public class GenerateMatches {
         List<Team> teamList = new ArrayList<>(tournament.getTeams());
 
         int rounds = (int) Math.ceil(Math.log(teamList.size())/Math.log(2));
+        int numberOfFreePassesRound1 = (int) (Math.pow(2, rounds)) - teamList.size() ;
 
         List<Round> roundList = new ArrayList<>();
         for (int i = 0; i < rounds; i++) {
             List<Match> matchList = new ArrayList<>();
-            while (teamList.size() >= 2) {
+            int k = 2;
+            if(i == 0) {
+                k += numberOfFreePassesRound1;
+            }
+            while (teamList.size() >= k) {
                 matchList.add(matchService.createMatch(teamList.get(0).getId(),teamList.get(1).getId(),null,tournament.getId()));
-                teamList.removeAll(Arrays.asList(teamList.get(0), teamList.get(1)));
+                teamList.remove(0);
+                teamList.remove(0);
             }
             for (int j = 0; j < matchList.size(); j++) {
                 teamList.add(new Team());
