@@ -20,10 +20,10 @@ public class Team {
     @Column(unique = true)
     private String name;
 
-    @ManyToMany
+    @ManyToMany(mappedBy = "teams")
     private List<User> users;
 
-    @ManyToMany
+    @ManyToMany(mappedBy = "teams")
     private List<Tournament> tournaments;
 
     public Team(String name) {

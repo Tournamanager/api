@@ -119,9 +119,23 @@ public class TeamService {
             {
                 return "User is not added to the team!";
             }
-            team1.getUsers().remove(user1);
-            user1.getTeams().remove(team1);
-            teamRepository.save(team1);
+
+
+            int removeIndex = 0;
+
+            boolean found = false;
+            for(Team t: user1.getTeams()){
+                if (t.getId() == team1.getId()){
+                    found = true;
+                    removeIndex = user1.getTeams().indexOf(t);
+                }
+            }
+
+            if (!found){
+                return "User is not added to the team!";
+            }
+
+            user1.getTeams().remove(removeIndex);
             userRepository.save(user1);
             return "User " + user1.getId() + " is removed from team " + team1.getName();
         }

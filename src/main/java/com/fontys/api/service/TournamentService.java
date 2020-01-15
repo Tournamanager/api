@@ -219,10 +219,10 @@ public class TournamentService
             int removeIndex = 0;
 
             boolean found = false;
-            for(Tournament t: team1.getTournaments()){
-                if (t.getId() == tournament1.getId()){
+            for(Team t: tournament1.getTeams()){
+                if (t.getId() == team1.getId()){
                     found = true;
-                    removeIndex = team1.getTournaments().indexOf(t);
+                    removeIndex = tournament1.getTeams().indexOf(t);
                 }
             }
 
@@ -234,8 +234,8 @@ public class TournamentService
                 return "You cannot leave a tournament that is already started";
             }
 
-            team1.getTournaments().remove(removeIndex);
-            teamRepository.save(team1);
+            tournament1.getTeams().remove(removeIndex);
+            tournamentRepository.save(tournament1);
             return "Team " + team1.getId() + " is removed from tournament " + tournament1.getName();
         }
     }
