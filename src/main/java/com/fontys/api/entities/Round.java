@@ -19,14 +19,11 @@ public class Round {
     @OneToMany(mappedBy = "round")
     private List<Match> matches;
 
-    private int teamCount;
+    @ManyToOne
+    private Tournament tournament;
 
-    public Round(List<Match> matches, int teamCount) {
+    public Round(List<Match> matches, Tournament tournament) {
         this.matches = matches;
-        this.teamCount = teamCount;
-    }
-
-    public Round(List<Match> matches) {
-        this.matches = matches;
+        this.tournament = tournament;
     }
 }

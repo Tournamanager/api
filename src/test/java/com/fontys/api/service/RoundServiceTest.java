@@ -42,18 +42,22 @@ class RoundServiceTest {
         List<Team> teamList = Arrays.asList(t1,t2,t3,t4);
         t.setTeams(teamList);
 
-        Match m1 = new Match(1,t1,t2,t1,null,t);
-        Match m2 = new Match(2,t3,t4,null,null,t);
-        Match m3 = new Match(3,null,null,null,null,t);
+        Match m1 = new Match(1,t1,t2,null,null,null);
+        Match m2 = new Match(2,t3,t4,null,null,null);
+        Match m3 = new Match(3,null,null,null,null,null);
 
         List<Match> ml1 = Arrays.asList(m1,m2);
         List<Match> ml2 = Collections.singletonList(m3);
-        Round r1 = new Round(ml1);
-        Round r2 = new Round(ml2);
+        Round r1 = new Round(ml1,t);
+        Round r2 = new Round(ml2,t);
         List<Round> roundList = Arrays.asList(r1,r2);
         t.setRounds(roundList);
 
-        roundService.updateRound(m1);
+        m1.setRound(r1);
+        m2.setRound(r1);
+        m3.setRound(r2);
+
+        roundService.updateRound(new Match(1,t1,t2,t1,null,r1));
 
         //updating the tournament for verification
         m3.setTeamHome(t1);
@@ -71,20 +75,23 @@ class RoundServiceTest {
         List<Team> teamList = Arrays.asList(t1,t2,t3);
         t.setTeams(teamList);
 
-        Match m1 = new Match(1,t1,t2,t1,null,t);
-        Match m2 = new Match(2,t3,null,null,null,t);
+        Match m1 = new Match(1,t1,t2,t1,null,null);
+        Match m2 = new Match(2,null,t3,null,null,null);
 
         List<Match> ml1 = Collections.singletonList(m1);
         List<Match> ml2 = Collections.singletonList(m2);
-        Round r1 = new Round(ml1);
-        Round r2 = new Round(ml2);
+        Round r1 = new Round(ml1,t);
+        Round r2 = new Round(ml2,t);
         List<Round> roundList = Arrays.asList(r1,r2);
         t.setRounds(roundList);
+
+        m1.setRound(r1);
+        m2.setRound(r2);
 
         roundService.updateRound(m1);
 
         //updating the tournament for verification
-        m2.setTeamAway(t1);
+        m2.setTeamHome(t1);
 
         Mockito.verify(tournamentRepository,Mockito.times(1)).save(t);
     }

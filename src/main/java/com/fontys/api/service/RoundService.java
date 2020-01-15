@@ -19,8 +19,8 @@ public class RoundService {
         this.tournamentRepository = tournamentRepository;
     }
 
-    public Round createRound(List<Match> matchList) {
-        return roundRepository.save(new Round(matchList));
+    public Round createRound(List<Match> matchList,Tournament tournament) {
+        return roundRepository.save(new Round(matchList,tournament));
     }
 
     public void updateRound(Match match) {
@@ -28,28 +28,19 @@ public class RoundService {
         Tournament tournament = round.getTournament();
         List<Round> roundList = tournament.getRounds();
 
-        int roundIndex = -1;
-        int matchIndex = -1;
-
         for (int i = 0; i < roundList.size(); i++) {
             List<Match> matchList = roundList.get(i).getMatches();
             for (int j = 0; j < matchList.size(); j++) {
                 if (matchList.get(j).getId().equals(match.getId())) {
-                    roundIndex = i;
-                    matchIndex = j;
+                    if (i < roundList.size()-1) {
+                        if (j % 2 == 0) {
+                            roundList.get(i+1).getMatches().get(j/2).setTeamHome(matchList.get(j).getWinner());
+                        } else {
+                            roundList.get(i+1).getMatches().get((j-1)/2).setTeamAway(matchList.get(j).getWinner());
+                        }
+                    }
                     break;
                 }
-            }
-            if (roundIndex != -1) {
-                if (roundIndex < roundList.size()-1) {
-                    roundIndex++;
-                    if (matchIndex % 2 == 0) {
-                        roundList.get(roundIndex).getMatches().get(matchIndex/2).setTeamHome(matchList.get(matchIndex).getWinner());
-                    } else {
-                        roundList.get(roundIndex).getMatches().get((matchIndex-1)/2).setTeamAway(matchList.get(matchIndex).getWinner());
-                    }
-                }
-                break;
             }
         }
         tournament.setRounds(roundList);
