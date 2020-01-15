@@ -89,7 +89,9 @@ public class TeamService {
                 return "User is already added to the team!";
             }
             t.getUsers().add(u);
+            u.getTeams().add(t);
             teamRepository.save(t);
+            userRepository.save(u);
             return "User " + u.getId() + " added to team " + t.getName();
         } else {
             return "User or team does not exist";
@@ -118,7 +120,9 @@ public class TeamService {
                 return "User is not added to the team!";
             }
             team1.getUsers().remove(user1);
+            user1.getTeams().remove(team1);
             teamRepository.save(team1);
+            userRepository.save(user1);
             return "User " + user1.getId() + " is removed from team " + team1.getName();
         }
     }
