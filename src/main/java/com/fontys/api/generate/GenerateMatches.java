@@ -42,7 +42,6 @@ public class GenerateMatches {
             if (!teams.get(index).getName().equals("null")) {
                 matchList.add(matchService.createMatch(teamList.get(0).getId(), teams.get(index).getId(),null, tournament.getId()));
             }
-
             for (int j = 1; j < teamList.size()/2; j++) {
                 int teamHome = (i + j) % teams.size();
                 int teamAway = (i - j + teams.size()) % teams.size();
@@ -51,7 +50,7 @@ public class GenerateMatches {
                 }
                 matchList.add(matchService.createMatch(teams.get(teamHome).getId(), teams.get(teamAway).getId(),null, tournament.getId()));
             }
-            roundList.add(roundService.createRound(matchList));
+            roundList.add(roundService.createRound(new Round(matchList)));
         }
         tournament.setRounds(roundList);
         return tournament;
@@ -72,7 +71,13 @@ public class GenerateMatches {
             for (int j = 0; j < matchList.size(); j++) {
                 teamList.add(new Team());
             }
-            roundList.add(roundService.createRound(matchList));
+            int roundTeamCount;
+            if (i == 0) {
+                roundTeamCount = (int) Math.ceil(teamList.size()/2.0);
+            } else {
+                roundTeamCount = roundList.get(i-1).getTeamCount()/2;
+            }
+            roundList.add(roundService.createRound(new Round(matchList,roundTeamCount)));
         }
         tournament.setRounds(roundList);
         return tournament;

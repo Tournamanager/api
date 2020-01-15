@@ -19,6 +19,13 @@ public class Round {
     @OneToMany
     private List<Match> matches;
 
+    private int teamCount;
+
+    public Round(List<Match> matches, int teamCount) {
+        this.matches = matches;
+        this.teamCount = teamCount;
+    }
+
     public Round(List<Match> matches) {
         this.matches = matches;
     }

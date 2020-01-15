@@ -60,9 +60,9 @@ class GenerateMatchesTest {
         Round r2 = new Round(ml2);
         Round r3 = new Round(ml3);
 
-        Mockito.when(roundService.createRound(ml1)).thenReturn(r1);
-        Mockito.when(roundService.createRound(ml2)).thenReturn(r2);
-        Mockito.when(roundService.createRound(ml3)).thenReturn(r3);
+        Mockito.when(roundService.createRound(r1)).thenReturn(r1);
+        Mockito.when(roundService.createRound(r2)).thenReturn(r2);
+        Mockito.when(roundService.createRound(r3)).thenReturn(r3);
 
         Tournament test = new Tournament();
         test.setTeams(teamList);
@@ -72,7 +72,7 @@ class GenerateMatchesTest {
     }
 
     @Test
-    void bracket() throws ParseException, InvalidAttributeValueException {
+    void bracketEven() throws ParseException, InvalidAttributeValueException {
         Team t1 = new Team(1,"a");
         Team t2 = new Team(2,"b");
         Team t3 = new Team(3,"c");
@@ -96,8 +96,40 @@ class GenerateMatchesTest {
         Round r1 = new Round(ml1);
         Round r2 = new Round(ml2);
 
-        Mockito.when(roundService.createRound(ml1)).thenReturn(r1);
-        Mockito.when(roundService.createRound(ml2)).thenReturn(r2);
+        Mockito.when(roundService.createRound(r1)).thenReturn(r1);
+        Mockito.when(roundService.createRound(r2)).thenReturn(r2);
+
+        Tournament test = new Tournament();
+        test.setTeams(teamList);
+        test.setRounds(Arrays.asList(r1,r2));
+
+        assertEquals(test,generateMatches.bracket(t));
+    }
+
+    @Test
+    void bracketOdd() throws ParseException, InvalidAttributeValueException {
+        Team t1 = new Team(1,"a");
+        Team t2 = new Team(2,"b");
+        Team t3 = new Team(3,"c");
+        List<Team> teamList = Arrays.asList(t1,t2,t3);
+
+        Tournament t = new Tournament();
+        t.setTeams(teamList);
+
+        Match m1 = new Match(t1,t2);
+        Match m2 = new Match(t3,null);
+
+        Mockito.when(matchService.createMatch(1,2,null,t.getId())).thenReturn(m1);
+        Mockito.when(matchService.createMatch(3,null,null,t.getId())).thenReturn(m2);
+
+        List<Match> ml1 = Collections.singletonList(m1);
+        List<Match> ml2 = Collections.singletonList(m2);
+
+        Round r1 = new Round(ml1);
+        Round r2 = new Round(ml2);
+
+        Mockito.when(roundService.createRound(r1)).thenReturn(r1);
+        Mockito.when(roundService.createRound(r2)).thenReturn(r2);
 
         Tournament test = new Tournament();
         test.setTeams(teamList);

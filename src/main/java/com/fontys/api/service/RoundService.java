@@ -19,8 +19,8 @@ public class RoundService {
         this.tournamentRepository = tournamentRepository;
     }
 
-    public Round createRound(List<Match> matchList) {
-        return roundRepository.save(new Round(matchList));
+    public Round createRound(Round round) {
+        return roundRepository.save(round);
     }
 
     public void updateRound(Match match) {
