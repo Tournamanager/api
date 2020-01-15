@@ -25,7 +25,7 @@ public class Tournament
     @ManyToMany
     private List<Team> teams;
 
-    @OneToMany
+    @OneToMany(mappedBy = "tournament")
     private List<Round> rounds;
 
 
