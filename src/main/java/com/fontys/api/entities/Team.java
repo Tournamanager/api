@@ -23,7 +23,7 @@ public class Team {
     @ManyToMany
     private List<User> users;
 
-    @ManyToMany
+    @ManyToMany(mappedBy = "teams")
     private List<Tournament> tournaments;
 
     public Team(String name) {
@@ -43,5 +43,6 @@ public class Team {
         this.id = id;
         this.name = name;
         this.users = users;
+        this.tournaments = new ArrayList<>();
     }
 }
