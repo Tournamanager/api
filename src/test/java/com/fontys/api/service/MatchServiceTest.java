@@ -85,44 +85,6 @@ public class MatchServiceTest
     }
 
     @Test
-    void createMatchInvalidDate()
-    {
-        Team team1 = new Team(1, "The A Team");
-        Team team2 = new Team(2, "The B Team");
-        Tournament tournament = new Tournament(1, "Tournament 1", "Tournament 1", null, 8);
-
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(new Date());
-        calendar.set(Calendar.HOUR_OF_DAY, 0);
-        calendar.set(Calendar.MINUTE, 0);
-        calendar.set(Calendar.SECOND, 0);
-        calendar.set(Calendar.MILLISECOND, 0);
-        calendar.add(Calendar.YEAR, -1);
-
-        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
-
-        Match match = new Match(team1, team2, calendar.getTime());
-        Match expectedMatch = new Match(1, team1, team2, null, calendar.getTime(), null);
-
-
-        Mockito.when(teamRepositoryMock.findById(1)).thenReturn(Optional.of(team1));
-        Mockito.when(teamRepositoryMock.findById(2)).thenReturn(Optional.of(team2));
-
-        Mockito.when(tournamentRepositoryMock.findById(1)).thenReturn(Optional.of(tournament));
-
-        Match actualMatch = null;
-        try
-        {
-            actualMatch = this.matchService.createMatch(match.getTeamHome().getId(), match.getTeamAway().getId(), formatter.format(match.getDate()), tournament.getId());
-            fail();
-        }
-        catch (ParseException | InvalidAttributeValueException e)
-        {
-            assertEquals("You cannot create a match in the Past. Change the date and try again.", e.getMessage());
-        }
-    }
-
-    @Test
     void createMatchInvalidDateFormat()
     {
         Team team1 = new Team(1, "The A Team");
@@ -156,77 +118,6 @@ public class MatchServiceTest
         catch (ParseException | InvalidAttributeValueException e)
         {
             assertEquals("Unparseable date: \"12-12-2020\"", e.getMessage());
-        }
-    }
-
-    @Test
-    void createMatchInvalidTeam()
-    {
-        Team team1 = new Team(4, "The A Team");
-        Team team2 = new Team(2, "The B Team");
-        Tournament tournament = new Tournament(1, "Tournament 1", "Tournament 1", null, 8);
-
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(new Date());
-        calendar.set(Calendar.HOUR_OF_DAY, 0);
-        calendar.set(Calendar.MINUTE, 0);
-        calendar.set(Calendar.SECOND, 0);
-        calendar.set(Calendar.MILLISECOND, 0);
-        calendar.add(Calendar.YEAR, -1);
-
-        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
-
-        Match match = new Match(team1, team2, calendar.getTime());
-        Match expectedMatch = new Match(1, team1, team2, null, calendar.getTime(), null);
-
-        Mockito.when(teamRepositoryMock.findById(4)).thenReturn(Optional.empty());
-
-        Mockito.when(tournamentRepositoryMock.findById(1)).thenReturn(Optional.of(tournament));
-
-        Match actualMatch = null;
-        try
-        {
-            actualMatch = this.matchService.createMatch(match.getTeamHome().getId(), match.getTeamAway().getId(), formatter.format(calendar.getTime()), tournament.getId());
-            fail();
-        }
-        catch (ParseException | InvalidAttributeValueException e)
-        {
-            assertEquals("An error occurred while creating the match. A team was not found in the database. Please try again.", e.getMessage());
-        }
-    }
-
-    @Test
-    void createMatchInvalidSameTeam()
-    {
-        Team team1 = new Team(1, "The A Team");
-        Tournament tournament = new Tournament(1, "Tournament 1", "Tournament 1", null, 8);
-
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(new Date());
-        calendar.set(Calendar.HOUR_OF_DAY, 0);
-        calendar.set(Calendar.MINUTE, 0);
-        calendar.set(Calendar.SECOND, 0);
-        calendar.set(Calendar.MILLISECOND, 0);
-        calendar.add(Calendar.YEAR, -1);
-
-        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
-
-        Match match = new Match(team1, team1, calendar.getTime());
-        Match expectedMatch = new Match(1, team1, team1, null, calendar.getTime(), null);
-
-        Mockito.when(teamRepositoryMock.findById(1)).thenReturn(Optional.of(team1));
-
-        Mockito.when(tournamentRepositoryMock.findById(1)).thenReturn(Optional.of(tournament));
-
-        Match actualMatch = null;
-        try
-        {
-            actualMatch = this.matchService.createMatch(match.getTeamHome().getId(), match.getTeamAway().getId(), formatter.format(calendar.getTime()), tournament.getId());
-            fail();
-        }
-        catch (ParseException | InvalidAttributeValueException e)
-        {
-            assertEquals("An error occurred while creating the match. Tried to create a match with the same team. Please change one of the teams and try again.", e.getMessage());
         }
     }
 }

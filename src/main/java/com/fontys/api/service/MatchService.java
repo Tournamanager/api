@@ -62,7 +62,6 @@ public class MatchService
         Match match = new Match(teamHome, teamAway, date);
 
         Match savedMatch = matchRepository.save(match);
-        tournament.getMatches().add(savedMatch);
         tournamentRepository.save(tournament);
         return savedMatch;
     }
