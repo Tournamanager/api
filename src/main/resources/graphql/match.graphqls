@@ -1,7 +1,7 @@
 type Match{
     id: ID!,
-    teamHome: Team!,
-    teamAway: Team!,
+    teamHome: Team,
+    teamAway: Team,
     round: Round!,
     winner: Team,
     date: String!,
