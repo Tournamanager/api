@@ -26,7 +26,7 @@ public class Tournament
     private List<Team> teams;
     @OneToMany(mappedBy = "tournament")
     private List<Round> rounds;
-    private String method = "competition";
+    private String method;
 
     public Tournament(String name, String description, User owner, Integer numberOfTeams, List<Team> teams,
                       List<Round> rounds)
@@ -39,7 +39,7 @@ public class Tournament
         this.rounds = rounds;
     }
 
-    public Tournament(String name, String description, User owner, Integer numberOfTeams)
+    public Tournament(String name, String description, User owner, Integer numberOfTeams, String method)
     {
         this.name = name;
         this.description = description;
@@ -47,9 +47,10 @@ public class Tournament
         this.numberOfTeams = numberOfTeams;
         this.rounds = new ArrayList<>();
         this.teams = new ArrayList<>();
+        this.method = method;
     }
 
-    public Tournament(Integer id, String name, String description, User owner, Integer numberOfTeams)
+    public Tournament(Integer id, String name, String description, User owner, Integer numberOfTeams, String method)
     {
         this.id = id;
         this.name = name;
@@ -58,6 +59,7 @@ public class Tournament
         this.numberOfTeams = numberOfTeams;
         this.teams = new ArrayList<>();
         this.rounds = new ArrayList<>();
+        this.method = method;
     }
 
     public Tournament(Integer id, String name, String description, User owner, Integer numberOfTeams, List<Team> teams,

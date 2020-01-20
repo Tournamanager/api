@@ -16,9 +16,9 @@ public class TournamentMutation implements GraphQLMutationResolver {
         this.tournamentService = tournamentService;
     }
 
-    public Tournament createTournament(String name, String description, Integer ownerId, Integer numberOfTeams)
+    public Tournament createTournament(String name, String description, Integer ownerId, Integer numberOfTeams, String method)
             throws InvalidAttributeValueException {
-        return tournamentService.createTournament(name, description, ownerId, numberOfTeams);
+        return tournamentService.createTournament(name, description, ownerId, numberOfTeams, method);
     }
 
     public Tournament updateTournament(Integer id, String name, String description, Integer ownerId, Integer numberOfTeams)
