@@ -1,9 +1,9 @@
 type Tournament {
-    id: ID!,
-    name: String,
-    description: String,
-    owner: User,
-    numberOfTeams: Int,
+    id: ID!
+    name: String
+    description: String
+    owner: User
+    numberOfTeams: Int
     rounds: [Round!]!
     teams: [Team!]!
     method: String

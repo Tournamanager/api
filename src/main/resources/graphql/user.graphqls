@@ -1,5 +1,5 @@
 type User {
-    id: ID!,
-    uuid:String!,
+    id: ID!
+    uuid:String!
     teams: [Team!]!
 }
