@@ -22,7 +22,8 @@ public class Round {
     @ManyToOne
     private Tournament tournament;
 
-    public Round(List<Match> matches) {
+    public Round(List<Match> matches, Tournament tournament) {
         this.matches = matches;
+        this.tournament = tournament;
     }
 }

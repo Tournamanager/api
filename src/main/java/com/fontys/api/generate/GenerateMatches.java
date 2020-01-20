@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 import javax.naming.directory.InvalidAttributeValueException;
 import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 @Service
@@ -51,7 +50,7 @@ public class GenerateMatches {
                 }
                 matchList.add(matchService.createMatch(teams.get(teamHome).getId(), teams.get(teamAway).getId(),null, tournament.getId()));
             }
-            roundList.add(roundService.createRound(matchList));
+            roundList.add(roundService.createRound(matchList,tournament));
         }
         tournament.setRounds(roundList);
         return tournament;
@@ -75,10 +74,16 @@ public class GenerateMatches {
                 teamList.remove(0);
                 teamList.remove(0);
             }
+            int matchListLength = matchList.size();
             for (int j = 0; j < matchList.size(); j++) {
-                teamList.add(new Team());
+                if (matchListLength > 0) {
+                    teamList.add(0, new Team());
+                } else {
+                    teamList.add(new Team());
+                }
+                matchListLength--;
             }
-            roundList.add(roundService.createRound(matchList));
+            roundList.add(roundService.createRound(matchList,tournament));
         }
         tournament.setRounds(roundList);
         return tournament;

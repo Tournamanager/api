@@ -76,7 +76,8 @@ public class MatchService
 
         match.setDate(dateFormatter.parse(dateString));
         match.setWinner(validateWinnerInMatch(match, winnerId));
-        if (match.getWinner() != null) {
+        if (match.getWinner() != null && match.getRound().getTournament().getMethod().equals("brackets")) {
+
             roundService.updateRound(match);
         }
 
