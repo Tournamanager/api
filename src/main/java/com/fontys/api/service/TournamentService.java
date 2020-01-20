@@ -148,12 +148,12 @@ public class TournamentService
     }
 
     @Transactional
-    public Tournament startTournament(Integer tournamentId, String method) throws InvalidAttributeValueException, ParseException {
+    public Tournament startTournament(Integer tournamentId) throws InvalidAttributeValueException, ParseException {
         Tournament tournament = validateTournament(tournamentId);
 
-        if (method.equals("competition")) {
+        if (tournament.getMethod().equals("competition")) {
             tournament = generateMatches.competition(tournament);
-        } else if (method.equals("brackets")) {
+        } else if (tournament.getMethod().equals("brackets")) {
             tournament = generateMatches.bracket(tournament);
         } else {
             throw new InvalidAttributeValueException("Can't generate matches");

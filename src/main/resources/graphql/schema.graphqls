@@ -24,7 +24,7 @@ type Mutation {
 
     updateTournament(id:Int!, name : String!, description:String!, ownerId:Int!, numberOfTeams:Int!) : Tournament
 
-    startTournament(id:Int!, method: String!):Tournament
+    startTournament(id:Int!):Tournament
 
     createTeam(name:String!) : Team
     deleteTeam(id:Int!) : String
@@ -32,6 +32,5 @@ type Mutation {
     addUserToTeam(teamId:Int!, userId:Int!) : String
     removeUserFromTeam(teamId: Int!, userId:Int!) : String
 
-    createMatch(teamHomeId:Int!, teamAwayId:Int!, date:String!, tournamentId: Int!):Match
     updateMatch(id:Int!, date:String!, winnerId:Int!, homeScore:Int!, awayScore:Int!):Match
 }

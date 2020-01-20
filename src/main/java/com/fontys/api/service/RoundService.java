@@ -8,6 +8,7 @@ import com.fontys.api.repositories.TournamentRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class RoundService {
@@ -19,8 +20,18 @@ public class RoundService {
         this.tournamentRepository = tournamentRepository;
     }
 
-    public Round createRound(List<Match> matchList,Tournament tournament) {
-        return roundRepository.save(new Round(matchList,tournament));
+    public Round getRound(int id) {
+        Optional<Round> round = roundRepository.findById(id);
+        return round.orElse(null);
+    }
+
+    public Round createRound(Tournament tournament) {
+        return roundRepository.save(new Round(tournament));
+    }
+
+    public Round setMatches(Round round, List<Match> matchList) {
+        round.setMatches(matchList);
+        return roundRepository.save(round);
     }
 
     public void updateRound(Match match) {

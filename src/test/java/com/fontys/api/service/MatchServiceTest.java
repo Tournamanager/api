@@ -1,6 +1,7 @@
 package com.fontys.api.service;
 
 import com.fontys.api.entities.Match;
+import com.fontys.api.entities.Round;
 import com.fontys.api.entities.Team;
 import com.fontys.api.entities.Tournament;
 import com.fontys.api.repositories.MatchRepository;
@@ -38,7 +39,7 @@ public class MatchServiceTest
         tournamentRepositoryMock = mock(TournamentRepository.class);
         roundServiceMock = mock(RoundService.class);
 
-        matchService = new MatchService(matchRepositoryMock, teamRepositoryMock, tournamentRepositoryMock,roundServiceMock);
+        matchService = new MatchService(matchRepositoryMock, teamRepositoryMock, roundServiceMock);
     }
 
     @Test
@@ -46,7 +47,6 @@ public class MatchServiceTest
     {
         Team team1 = new Team(1, "The A Team");
         Team team2 = new Team(2, "The B Team");
-        Tournament tournament = new Tournament(1, "Tournament 1", "Tournament 1", null, 8,"competition");
 
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(new Date());
@@ -58,22 +58,21 @@ public class MatchServiceTest
 
         SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
 
-        Match match = new Match(team1, team2, calendar.getTime());
+        Round round = new Round(1,null,null);
+        Match match = new Match(team1, team2, calendar.getTime(),round);
         Match expectedMatch = new Match(1, team1, team2, null, calendar.getTime(), null);
 
         Mockito.when(teamRepositoryMock.findById(1)).thenReturn(Optional.of(team1));
         Mockito.when(teamRepositoryMock.findById(2)).thenReturn(Optional.of(team2));
-
         Mockito.when(matchRepositoryMock.save(Mockito.any(Match.class))).thenReturn(expectedMatch);
-
-        Mockito.when(tournamentRepositoryMock.findById(1)).thenReturn(Optional.of(tournament));
+        Mockito.when(roundServiceMock.getRound(round.getId())).thenReturn(round);
 
         Match actualMatch = null;
         try
         {
-            actualMatch = this.matchService.createMatch(match.getTeamHome().getId(), match.getTeamAway().getId(), formatter.format(match.getDate()), tournament.getId());
+            actualMatch = this.matchService.createMatch(match.getTeamHome().getId(), match.getTeamAway().getId(), formatter.format(match.getDate()), round);
         }
-        catch (ParseException | InvalidAttributeValueException e)
+        catch (ParseException e)
         {
             fail();
         }
@@ -89,7 +88,6 @@ public class MatchServiceTest
     {
         Team team1 = new Team(1, "The A Team");
         Team team2 = new Team(2, "The B Team");
-        Tournament tournament = new Tournament(1, "Tournament 1", "Tournament 1", null, 8,"competition");
 
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(new Date());
@@ -99,23 +97,19 @@ public class MatchServiceTest
         calendar.set(Calendar.MILLISECOND, 0);
         calendar.add(Calendar.YEAR, -1);
 
-        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
-
-        Match match = new Match(team1, team2, calendar.getTime());
-        Match expectedMatch = new Match(1, team1, team2, null, calendar.getTime(), null);
+        Round round = new Round(1,null,null);
+        Match match = new Match(team1, team2, calendar.getTime(), round);
 
         Mockito.when(teamRepositoryMock.findById(1)).thenReturn(Optional.of(team1));
         Mockito.when(teamRepositoryMock.findById(2)).thenReturn(Optional.of(team2));
+        Mockito.when(roundServiceMock.getRound(round.getId())).thenReturn(round);
 
-        Mockito.when(tournamentRepositoryMock.findById(1)).thenReturn(Optional.of(tournament));
-
-        Match actualMatch = null;
         try
         {
-            actualMatch = this.matchService.createMatch(match.getTeamHome().getId(), match.getTeamAway().getId(), "12-12-2020", tournament.getId());
+            matchService.createMatch(match.getTeamHome().getId(), match.getTeamAway().getId(), "12-12-2020", round);
             fail();
         }
-        catch (ParseException | InvalidAttributeValueException e)
+        catch (ParseException e)
         {
             assertEquals("Unparseable date: \"12-12-2020\"", e.getMessage());
         }
