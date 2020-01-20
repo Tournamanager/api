@@ -6,4 +6,5 @@ type Tournament {
     numberOfTeams: Int,
     rounds: [Round!]!
     teams: [Team!]!
+    method: String
 }

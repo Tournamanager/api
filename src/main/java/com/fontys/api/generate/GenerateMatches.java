@@ -36,10 +36,12 @@ public class GenerateMatches {
         List<Round> roundList = new ArrayList<>();
 
         for (int i = 0; i < teamList.size() - 1; i++) {
+            Round r = roundService.createRound(tournament);
             List<Match> matchList = new ArrayList<>();
+
             int index = i % teamList.size();
             if (!teams.get(index).getName().equals("null")) {
-                matchList.add(matchService.createMatch(teamList.get(0).getId(), teams.get(index).getId(),null, tournament.getId()));
+                matchList.add(matchService.createMatch(teamList.get(0).getId(), teams.get(index).getId(),null, r));
             }
 
             for (int j = 1; j < teamList.size()/2; j++) {
@@ -48,15 +50,15 @@ public class GenerateMatches {
                 if (teams.get(teamHome).getName().equals("null") || teams.get(teamAway).getName().equals("null")) {
                     continue;
                 }
-                matchList.add(matchService.createMatch(teams.get(teamHome).getId(), teams.get(teamAway).getId(),null, tournament.getId()));
+                matchList.add(matchService.createMatch(teams.get(teamHome).getId(), teams.get(teamAway).getId(),null, r));
             }
-            roundList.add(roundService.createRound(matchList,tournament));
+            roundList.add(roundService.setMatches(r,matchList));
         }
         tournament.setRounds(roundList);
         return tournament;
     }
 
-    public Tournament bracket(Tournament tournament) throws ParseException, InvalidAttributeValueException {
+    public Tournament bracket(Tournament tournament) throws ParseException {
         List<Team> teamList = new ArrayList<>(tournament.getTeams());
 
         int rounds = (int) Math.ceil(Math.log(teamList.size())/Math.log(2));
@@ -64,13 +66,15 @@ public class GenerateMatches {
 
         List<Round> roundList = new ArrayList<>();
         for (int i = 0; i < rounds; i++) {
+            Round r = roundService.createRound(tournament);
             List<Match> matchList = new ArrayList<>();
+
             int k = 2;
             if(i == 0) {
                 k += numberOfFreePassesRound1;
             }
             while (teamList.size() >= k) {
-                matchList.add(matchService.createMatch(teamList.get(0).getId(),teamList.get(1).getId(),null,tournament.getId()));
+                matchList.add(matchService.createMatch(teamList.get(0).getId(),teamList.get(1).getId(),null,r));
                 teamList.remove(0);
                 teamList.remove(0);
             }
@@ -83,7 +87,7 @@ public class GenerateMatches {
                 }
                 matchListLength--;
             }
-            roundList.add(roundService.createRound(matchList,tournament));
+            roundList.add(roundService.setMatches(r,matchList));
         }
         tournament.setRounds(roundList);
         return tournament;

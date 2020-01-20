@@ -1,6 +1,7 @@
 package com.fontys.api.service;
 
 import com.fontys.api.entities.Match;
+import com.fontys.api.entities.Round;
 import com.fontys.api.entities.Team;
 import com.fontys.api.entities.Tournament;
 import com.fontys.api.repositories.MatchRepository;
@@ -26,20 +27,17 @@ public class MatchService
 {
     private MatchRepository matchRepository;
     private TeamRepository teamRepository;
-    private TournamentRepository tournamentRepository;
     private RoundService roundService;
 
-    public MatchService(MatchRepository matchRepository, TeamRepository teamRepository, TournamentRepository tournamentRepository, RoundService roundService)
+    public MatchService(MatchRepository matchRepository, TeamRepository teamRepository, RoundService roundService)
     {
         this.matchRepository = matchRepository;
         this.teamRepository = teamRepository;
-        this.tournamentRepository = tournamentRepository;
         this.roundService = roundService;
     }
 
-    public Match createMatch(Integer teamHomeId, Integer teamAwayId, String dateString, Integer tournamentId)
-            throws ParseException, InvalidAttributeValueException
-    {
+    public Match createMatch(Integer teamHomeId, Integer teamAwayId, String dateString, Round round)
+            throws ParseException {
         Team teamHome = null;
         Team teamAway = null;
         if (teamHomeId != null)
@@ -50,20 +48,16 @@ public class MatchService
             teamAway = teamRepository.findById(teamAwayId).orElse(null);
         }
 
-        Tournament tournament = tournamentRepository.findById(tournamentId).orElse(null);
+        Round r = roundService.getRound(round.getId());
         SimpleDateFormat dateFormatter = new SimpleDateFormat("dd/MM/yyyy");
         Date date = new Date();
         if(dateString != null) {
             date = dateFormatter.parse(dateString);
         }
 
-        validateTournament(tournament);
+        Match match = new Match(teamHome, teamAway, date, r);
 
-        Match match = new Match(teamHome, teamAway, date);
-
-        Match savedMatch = matchRepository.save(match);
-        tournamentRepository.save(tournament);
-        return savedMatch;
+        return matchRepository.save(match);
     }
 
     public Match updateMatch(Integer id, String dateString, Integer winnerId, Integer homeScore, Integer awayScore)
