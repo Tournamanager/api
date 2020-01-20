@@ -159,7 +159,7 @@ public class TournamentService
             throw new InvalidAttributeValueException("Can't generate matches");
         }
 
-        return tournament;
+        return tournamentRepository.save(tournament);
     }
 
     @Transactional

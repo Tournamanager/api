@@ -8,7 +8,7 @@ public class ApiApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(ApiApplication.class, args);
-		System.out.println("http://localhost:8080/graphiql");
+		System.out.println("http://localhost:8090/graphiql");
 	}
 
 }
