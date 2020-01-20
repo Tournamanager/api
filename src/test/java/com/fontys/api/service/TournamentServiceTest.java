@@ -4,7 +4,6 @@ import com.fontys.api.entities.Team;
 import com.fontys.api.entities.Tournament;
 import com.fontys.api.entities.User;
 import com.fontys.api.generate.GenerateMatches;
-import com.fontys.api.repositories.MatchRepository;
 import com.fontys.api.repositories.TeamRepository;
 import com.fontys.api.repositories.TournamentRepository;
 import com.fontys.api.repositories.UserRepository;
@@ -27,7 +26,6 @@ class TournamentServiceTest {
     private TeamRepository teamRepositoryMock;
 
     private TournamentService tournamentService;
-    private MatchRepository matchRepositoryMock;
 
     private GenerateMatches generateMatches;
 
@@ -48,26 +46,25 @@ class TournamentServiceTest {
         tournamentRepositoryMock = mock(TournamentRepository.class);
         userRepositoryMock = mock(UserRepository.class);
         teamRepositoryMock = mock(TeamRepository.class);
-        matchRepositoryMock = mock(MatchRepository.class);
         generateMatches = mock(GenerateMatches.class);
 
-        tournamentService = new TournamentService(tournamentRepositoryMock, userRepositoryMock, teamRepositoryMock, matchRepositoryMock, generateMatches);
+        tournamentService = new TournamentService(tournamentRepositoryMock, userRepositoryMock, teamRepositoryMock, generateMatches);
 
         user1 = new User(1, "TEST");
         user2 = new User(2, "TEST");
         user3 = new User(3, "Test");
-        tournament1 = new Tournament("Tournament 1", "Tournament For Testing", user1, 4);
-        tournament2 = new Tournament("Tournament 2", "Tournament For Testing", user1, 8);
-        tournament3 = new Tournament("Tournament 3", "Tournament For Testing", user1, 64);
-        tournament4 = new Tournament("Tournament 4", "Tournament For Testing", user2, 4);
-        tournament5 = new Tournament("Tournament 5", "Tournament For Testing", user2, 8);
-        tournament6 = new Tournament("Tournament 6", "Tournament For Testing", user2, 64);
+        tournament1 = new Tournament("Tournament 1", "Tournament For Testing", user1, 4,"competition");
+        tournament2 = new Tournament("Tournament 2", "Tournament For Testing", user1, 8,"competition");
+        tournament3 = new Tournament("Tournament 3", "Tournament For Testing", user1, 64,"competition");
+        tournament4 = new Tournament("Tournament 4", "Tournament For Testing", user2, 4,"competition");
+        tournament5 = new Tournament("Tournament 5", "Tournament For Testing", user2, 8,"competition");
+        tournament6 = new Tournament("Tournament 6", "Tournament For Testing", user2, 64,"competition");
     }
 
     @Test
     void getTournamentTestValidId() {
         User user = new User(1, "User 1");
-        Tournament tournament = new Tournament(1, "Tournament1", "Tournament number 1", user, 4);
+        Tournament tournament = new Tournament(1, "Tournament1", "Tournament number 1", user, 4,"competition");
 
         when(tournamentRepositoryMock.findById(Mockito.anyInt())).thenReturn(Optional.of(tournament));
 
@@ -81,7 +78,7 @@ class TournamentServiceTest {
     @Test
     void getTournamentTestValidName() {
         User user = new User(1, "User 1");
-        Tournament tournament = new Tournament(1, "Tournament1", "Tournament number 1", user, 4);
+        Tournament tournament = new Tournament(1, "Tournament1", "Tournament number 1", user, 4,"competition");
 
         when(tournamentRepositoryMock.findByName(Mockito.anyString())).thenReturn(Optional.of(tournament));
 
@@ -161,7 +158,7 @@ class TournamentServiceTest {
     @Test
     void TournamentNumberOfTournamentsInvalid() {
         createTournamentTestInvalid("testTournament", "Tournament for testing 3", 2, -1,
-                "A tournament must be created for at least 2 teams. Number of teams provided was -1." +
+                "A tournament must be created for at least 2 teams and not bigger than 8 teams. Number of teams provided was -1." +
                         " Please change the value and try again.");
     }
 
@@ -169,7 +166,7 @@ class TournamentServiceTest {
     void createTournamentNumberOfTournamentsIs1Invalid()
     {
         createTournamentTestInvalid("testTournament", "Tournament for testing 3", 2, 1,
-                                    "A tournament must be created for at least 2 teams. Number of teams provided was 1." +
+                                    "A tournament must be created for at least 2 teams and not bigger than 8 teams. Number of teams provided was 1." +
                                     " Please change the value and try again.");
     }
 
@@ -193,7 +190,7 @@ class TournamentServiceTest {
 
     private void createTournamentTestValid(String description, Integer ownerId, int numberOfTournaments) {
         User user = new User(ownerId, "test");
-        Tournament tournament = new Tournament("testTournament", description, user, numberOfTournaments);
+        Tournament tournament = new Tournament("testTournament", description, user, numberOfTournaments,"competition");
 
         when(userRepositoryMock.findById(Mockito.any(Integer.class))).thenReturn(Optional.of(user));
         when(tournamentRepositoryMock.save(Mockito.any(Tournament.class))).thenReturn(tournament);
@@ -201,7 +198,7 @@ class TournamentServiceTest {
 
         try {
             actualTournamentOut = this.tournamentService.createTournament(
-                    "testTournament", description, user.getId(), numberOfTournaments);
+                    "testTournament", description, user.getId(), numberOfTournaments,"competition");
         } catch (InvalidAttributeValueException e) {
             fail();
             return;
@@ -214,13 +211,13 @@ class TournamentServiceTest {
 
     private void createTournamentTestInvalid(String name, String description, Integer ownerId, int numberOfTournaments, String errorMessage) {
         User user = new User(ownerId, "test");
-        Tournament tournament = new Tournament(name, description, user, numberOfTournaments);
+        Tournament tournament = new Tournament(name, description, user, numberOfTournaments,"competition");
 
         when(userRepositoryMock.findById(Mockito.any(Integer.class))).thenReturn(Optional.of(user));
         when(tournamentRepositoryMock.save(Mockito.any(Tournament.class))).thenReturn(tournament);
 
         try {
-            this.tournamentService.createTournament(name, description, user.getId(), numberOfTournaments);
+            this.tournamentService.createTournament(name, description, user.getId(), numberOfTournaments,"competition");
             fail();
         } catch (InvalidAttributeValueException e) {
             assertEquals(errorMessage, e.getMessage());

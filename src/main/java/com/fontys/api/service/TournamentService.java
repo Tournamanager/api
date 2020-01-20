@@ -5,7 +5,6 @@ import com.fontys.api.entities.Team;
 import com.fontys.api.entities.Tournament;
 import com.fontys.api.entities.User;
 import com.fontys.api.generate.GenerateMatches;
-import com.fontys.api.repositories.MatchRepository;
 import com.fontys.api.repositories.TeamRepository;
 import com.fontys.api.repositories.TournamentRepository;
 import com.fontys.api.repositories.UserRepository;
@@ -26,7 +25,7 @@ public class TournamentService
     private final GenerateMatches generateMatches;
 
     public TournamentService(TournamentRepository tournamentRepository, UserRepository userRepository,
-                             TeamRepository teamRepository, MatchRepository matchRepository, GenerateMatches generateMatches)
+                             TeamRepository teamRepository, GenerateMatches generateMatches)
     {
         this.tournamentRepository = tournamentRepository;
         this.userRepository = userRepository;
@@ -35,7 +34,7 @@ public class TournamentService
     }
 
     @Transactional
-    public Tournament createTournament(String name, String description, Integer ownerId, int numberOfTeams)
+    public Tournament createTournament(String name, String description, Integer ownerId, int numberOfTeams, String method)
     throws InvalidAttributeValueException
     {
         validateTournamentName(name);
@@ -45,7 +44,7 @@ public class TournamentService
         User user = userRepository.findById(ownerId).orElse(null);
         validateOwner(user, "An error occurred while creating the tournament. The user was not found! Please try again.");
 
-        return tournamentRepository.save(new Tournament(name, description, user, numberOfTeams));
+        return tournamentRepository.save(new Tournament(name, description, user, numberOfTeams, method));
     }
 
     @Transactional
@@ -160,7 +159,7 @@ public class TournamentService
             throw new InvalidAttributeValueException("Can't generate matches");
         }
 
-        return tournament;
+        return tournamentRepository.save(tournament);
     }
 
     @Transactional
@@ -185,7 +184,7 @@ public class TournamentService
 
             boolean found = false;
             for(Team t: tournament1.getTeams()){
-                if (t.getId() == team1.getId()){
+                if (t.getId().equals(team1.getId())){
                     found = true;
                     removeIndex = tournament1.getTeams().indexOf(t);
                 }
@@ -236,10 +235,10 @@ public class TournamentService
 
     private void validateNumberOfTeams(Integer numberOfTeams) throws InvalidAttributeValueException
     {
-        if (numberOfTeams <= 1)
+        if (numberOfTeams < 2 || numberOfTeams > 8)
         {
             throw new InvalidAttributeValueException(String.format(
-                    "A tournament must be created for at least 2 teams. Number of teams provided was %d." +
+                    "A tournament must be created for at least 2 teams and not bigger than 8 teams. Number of teams provided was %d." +
                     " Please change the value and try again.", numberOfTeams));
         }
     }

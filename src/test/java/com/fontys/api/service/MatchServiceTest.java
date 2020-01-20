@@ -46,7 +46,7 @@ public class MatchServiceTest
     {
         Team team1 = new Team(1, "The A Team");
         Team team2 = new Team(2, "The B Team");
-        Tournament tournament = new Tournament(1, "Tournament 1", "Tournament 1", null, 8);
+        Tournament tournament = new Tournament(1, "Tournament 1", "Tournament 1", null, 8,"competition");
 
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(new Date());
@@ -89,7 +89,7 @@ public class MatchServiceTest
     {
         Team team1 = new Team(1, "The A Team");
         Team team2 = new Team(2, "The B Team");
-        Tournament tournament = new Tournament(1, "Tournament 1", "Tournament 1", null, 8);
+        Tournament tournament = new Tournament(1, "Tournament 1", "Tournament 1", null, 8,"competition");
 
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(new Date());
